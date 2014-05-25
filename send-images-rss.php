@@ -26,13 +26,14 @@ function change_feed_images( $content ) {
 		$images  = $doc->getElementsByTagName( 'img' );
 		foreach ( $images as $image ) {
 			$image->removeAttribute( 'height' );
-			$image->setAttribute( 'width', '560px' );
-			//$image->setAttribute( 'width', '250px' ); // uncomment if you want a smaller image
-			//$image->setAttribute( 'align', 'right' ); //uncomment if you want a smaller image with alignment instead
+			$image->setAttribute( 'width', '560' );
+			//$image->setAttribute( 'width', '250' ); // uncomment if you want a smaller image
+			//$image->setAttribute( 'align', 'right' ); // uncomment if you want a smaller image with alignment instead
 		}
 	// Strip weird DOCTYPE that DOMDocument() adds in
 	$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 	}
 	// Send the content on its way
 	return $content;
+
 }

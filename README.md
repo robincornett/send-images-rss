@@ -41,7 +41,7 @@ Then go to your Plugins screen and click __Activate__.
 
 ### How can I change the size of the image being sent to the RSS?
 
-On line 29 of send-images-rss.php, change the width to something other than 560px (I chose this size based on the default email template from MailChimp). You can try 100%, for example, or if you want your images to be smaller in your emails, do 250px. If you comment out line 29 and uncomment lines 30 and 31, your images should be all 250px wide and aligned right.
+On line 29 of send-images-rss.php, change the width to something other than 560 (I chose this size based on the default email template from MailChimp). You can try 100%, for example, or if you want your images to be smaller in your emails, do 250. If you comment out line 29 and uncomment lines 30 and 31, your images should be all 250 pixels wide and aligned right.
 
 ###
 ## Credits
