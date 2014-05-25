@@ -22,7 +22,7 @@ function change_feed_images( $content ) {
 		$content = '<div>' . $content . '</div>';
 		$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
 		$doc     = new DOMDocument();
-		$doc->LoadXML( $content );
+		$doc->LoadHTML( $content );
 		$images  = $doc->getElementsByTagName( 'img' );
 		foreach ( $images as $image ) {
 			$image->removeAttribute( 'height' );
