@@ -33,7 +33,7 @@ Check out the Codex for more information about [installing plugins manually](htt
 
 Using git, browse to your `/wp-content/plugins/` directory and clone this repository:
 
-`git clone git@github.com:robincornett/simple-listings-genesis.git`
+`git clone git@github.com:robincornett/send-images-rss.git`
 
 Then go to your Plugins screen and click __Activate__.
 
@@ -41,7 +41,7 @@ Then go to your Plugins screen and click __Activate__.
 
 ### How can I change the size of the image being sent to the RSS?
 
-On line 29 of send-images-rss.php, change the width to something other than 560 (I chose this size based on the default email template from MailChimp). You can try 100%, for example, or if you want your images to be smaller in your emails, do 250. If you comment out line 29 and uncomment lines 30 and 31, your images should be all 250 pixels wide and aligned right.
+On line 25 of send-images-rss.php, change the max-width to something other than 560 (I chose this size based on the default email template from MailChimp). If you want your images to be smaller in your emails, do 250.
 
 ###
 ## Credits
