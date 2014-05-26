@@ -47,4 +47,3 @@ On line 29 of send-images-rss.php, change the width to something other than 560 
 ## Credits
 
 Built by [Robin Cornett](http://www.robincornett.com/)
-Inspired by [CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)

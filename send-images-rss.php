@@ -7,7 +7,7 @@
  * Author URI:        http://robincornett.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Version:           1.0.0
+ * Version:           1.1.0
 */
 
 // If this file is called directly, abort.
@@ -17,23 +17,13 @@ if ( ! defined( 'WPINC' ) ) {
 
 add_filter( 'the_excerpt_rss', 'change_feed_images', 20 );
 add_filter( 'the_content_feed', 'change_feed_images', 20 );
+
 function change_feed_images( $content ) {
 	if ( is_feed() ) {
-		$content = '<div>' . $content . '</div>';
 		$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
-		$doc     = new DOMDocument();
-		$doc->LoadHTML( $content );
-		$images  = $doc->getElementsByTagName( 'img' );
-		foreach ( $images as $image ) {
-			$image->removeAttribute( 'height' );
-			$image->setAttribute( 'width', '560' );
-			//$image->setAttribute( 'width', '250' ); // uncomment if you want a smaller image
-			//$image->setAttribute( 'align', 'right' ); // uncomment if you want a smaller image with alignment instead
-		}
-	// Strip weird DOCTYPE that DOMDocument() adds in
-	$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
+		$content = preg_replace( '(width="\d{3,4}")', 'width="100%"', $content );
+		$content = preg_replace( '(height="\d{3,4}")', 'style="max-width:560;"', $content );
 	}
-	// Send the content on its way
-	return $content;
 
+	return $content;
 }
