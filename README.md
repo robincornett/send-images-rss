@@ -6,6 +6,8 @@ WordPress plugin that replaces smaller images with their full-size counterpart i
 
 This plugin searches your RSS feed for any <img> tag and looks for evidence of a WordPress generated image (the filename ends in -150x150 for thumbnails, for example). It strips that from the image src so that the full size image is what's being sent to the RSS reader. [source](http://kb.mailchimp.com/article/why-does-my-email-look-like-monkey-poop-in-outlook/)
 
+Then the plugin scans all images in the feed and removes height, sets width and max-width.
+
 Caveat: if you're using a service like MailChimp (woot!) for your RSS emails, they do warn that email clients can ignore the width set by the plugin, and instead just send the full size image. Don't know a way to work around that one yet.
 
 ## Requirements
@@ -41,9 +43,10 @@ Then go to your Plugins screen and click __Activate__.
 
 ### How can I change the size of the image being sent to the RSS?
 
-On line 25 of send-images-rss.php, change the max-width to something other than 560 (I chose this size based on the default email template from MailChimp). If you want your images to be smaller in your emails, do 250.
+It's possible to use the same technique to set up smaller images for your emails, with alignment. To use this, comment out lines 30-31, and uncomment lines 37-39. The align="right" can be changed to left ... this is necessary for emails, which apparently don't support pretty CSS classes.
 
-###
 ## Credits
 
-Built by [Robin Cornett](http://www.robincornett.com/)
+* Built by [Robin Cornett](http://robincornett.com/)
+* Borrowed heavily from [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
+* With insight from [David Gale](http://davidsgale.com)

@@ -7,7 +7,7 @@
  * Author URI:        http://robincornett.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Version:           1.1.0
+ * Version:           1.2.0
 */
 
 // If this file is called directly, abort.
@@ -20,9 +20,26 @@ add_filter( 'the_content_feed', 'change_feed_images', 20 );
 
 function change_feed_images( $content ) {
 	if ( is_feed() ) {
+		$content = '<div>' . $content . '</div>'; // set up something you can scan
 		$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
-		$content = preg_replace( '(width="\d{3,4}")', 'width="100%"', $content );
-		$content = preg_replace( '(height="\d{3,4}")', 'style="max-width:560;"', $content );
+		$doc     = new DOMDocument();
+		$doc->LoadHTML( $content );
+		$images  = $doc->getElementsByTagName( 'img' );
+		foreach ( $images as $image ) {
+			$image->removeAttribute( 'height' );
+			$image->setAttribute( 'width', '100%' ); // comment out for smaller image
+			$image->setAttribute( 'style', 'max-width:560px;'); // comment out for smaller image
+
+			/* It's possible to use the same technique to set up smaller images for your emails, with alignment.
+			 * To use this, comment out lines 30-31, and uncomment lines 37-39.
+			 */
+
+			//$image->setAttribute( 'width', '250' ); // uncomment if you want a smaller image
+			//$image->setAttribute( 'align', 'right' ); // uncomment if you want a smaller image
+			//$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;' );
+		}
+		// Strips extra added by line 23
+		$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 	}
 
 	return $content;
