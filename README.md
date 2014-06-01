@@ -4,11 +4,11 @@ WordPress plugin that replaces smaller images with their full-size counterpart i
 
 ## Description
 
-This plugin searches your RSS feed for any <img> tag and looks for evidence of a WordPress generated image (the filename ends in -150x150 for thumbnails, for example). It strips that from the image src so that the full size image is what's being sent to the RSS reader. [source](http://kb.mailchimp.com/article/why-does-my-email-look-like-monkey-poop-in-outlook/)
+This plugin searches your RSS feed for any <img> tag and looks for evidence of a WordPress generated image (the filename ends in -150x150 for thumbnails, for example). It strips that from the image src so that the full size image is what's being sent to the RSS reader.
 
 Then the plugin scans all images in the feed and removes height, sets width and max-width.
 
-Caveat: if you're using a service like MailChimp (woot!) for your RSS emails, they do warn that email clients can ignore the width set by the plugin, and instead just send the full size image. Don't know a way to work around that one yet.
+The plugin adds a new image size called "mailchimp" to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to MailChimp, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site.)
 
 ## Requirements
 * WordPress 3.5, tested up to 4.0alpha
@@ -43,10 +43,14 @@ Then go to your Plugins screen and click __Activate__.
 
 ### How can I change the size of the image being sent to the RSS?
 
-It's possible to use the same technique to set up smaller images for your emails, with alignment. To use this, comment out lines 30-31, and uncomment lines 37-39. The align="right" can be changed to left ... this is necessary for emails, which apparently don't support pretty CSS classes.
+At this time, you can't. If you upload large images, they'll be full width images in your email. With the new image size, however, they won't be excessively large, even if you upload excessively large images to your site.
+
+### What about smaller images?
+
+Smaller images will still be small. WordPress handles image alignment differently than email clients (set by class v. align). If your image has an alignment set in post, the plugin will assign an alignment in your email as well, and add a margin.
 
 ## Credits
 
 * Built by [Robin Cornett](http://robincornett.com/)
-* Borrowed heavily from [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
+* Inspired by [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
 * With insight from [David Gale](http://davidsgale.com)

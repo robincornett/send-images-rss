@@ -7,7 +7,7 @@
  * Author URI:        http://robincornett.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Version:           1.2.0
+ * Version:           2.0.0beta
 */
 
 // If this file is called directly, abort.
@@ -15,32 +15,69 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-add_filter( 'the_excerpt_rss', 'change_feed_images', 20 );
-add_filter( 'the_content_feed', 'change_feed_images', 20 );
+// add an email/feed specific image size.
+add_image_size( 'mailchimp', 560 );
 
-function change_feed_images( $content ) {
-	if ( is_feed() ) {
-		$content = '<div>' . $content . '</div>'; // set up something you can scan
-		$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
-		$doc     = new DOMDocument();
-		$doc->LoadHTML( $content );
-		$images  = $doc->getElementsByTagName( 'img' );
-		foreach ( $images as $image ) {
-			$image->removeAttribute( 'height' );
-			$image->setAttribute( 'width', '100%' ); // comment out for smaller image
-			$image->setAttribute( 'style', 'max-width:560px;'); // comment out for smaller image
+add_filter( 'the_excerpt_rss', 'send_rss_change_images', 20 );
+add_filter( 'the_content_feed', 'send_rss_change_images', 20 );
 
-			/* It's possible to use the same technique to set up smaller images for your emails, with alignment.
-			 * To use this, comment out lines 30-31, and uncomment lines 37-39.
-			 */
+/**
+ * get the ID of each image dynamically
+ * http://pippinsplugins.com/retrieve-attachment-id-from-image-url/
+ * @author Pippin Williamson
+ */
+function send_images_get_image_id( $image_url ) {
+	global $wpdb;
+	$attachment = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid='%s';", $image_url ) );
 
-			//$image->setAttribute( 'width', '250' ); // uncomment if you want a smaller image
-			//$image->setAttribute( 'align', 'right' ); // uncomment if you want a smaller image
-			//$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;' );
-		}
-		// Strips extra added by line 23
-		$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
+	return $attachment[0];
+}
+
+function send_rss_change_images( $content ) {
+	$content = '<div>' . $content . '</div>'; // set up something you can scan
+	$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
+	$doc     = new DOMDocument();
+	$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8'));
+	$captions = $doc->getElementsByTagName( 'div' );
+	foreach ( $captions as $caption ) {
+		$caption->removeAttribute( 'style' );
 	}
+	$figures = $doc->getElementsByTagName( 'figure' );
+	foreach ( $figures as $figure ) {
+		$figure->removeAttribute( 'style' );
+	}
+	$images  = $doc->getElementsByTagName( 'img' );
+	foreach ( $images as $image ) {
+		$image_url = $image->getAttribute( 'src' ); // get the image URL
+		$image_id  = send_images_get_image_id( $image_url ); // use the image URL to get the image ID
+		$mailchimp = image_downsize( $image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
+
+		$image->removeAttribute( 'height' );
+
+		$image->setAttribute( 'src', $mailchimp[0] );
+		$image->setAttribute( 'width', '100%' );
+
+		/* Check the image's alignment in the post. If set to right or left, do the same in the feed.
+		 * Otherwise, set the image to align center.
+		 * Should be OK even with authors who do funny things with images (like full width, aligned left).
+		 */
+		$class = $image->getAttribute( 'class' );
+		if ( strpos( $class, 'alignright' ) !== false ) {
+			$image->setAttribute( 'align', 'right' );
+			$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;max-width:250px;' );
+		}
+		elseif ( strpos( $class, 'alignleft' ) !== false ) {
+			$image->setAttribute( 'align', 'left' );
+			$image->setAttribute( 'style', 'margin:0px 10px 10px 0px;max-width:250px;' );
+		}
+		else {
+			$image->setAttribute( 'align', 'center' );
+			$image->setAttribute( 'style', 'max-width:560px;');
+		}
+
+	}
+	// Strips extra added by line 37
+	$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 
 	return $content;
 }
