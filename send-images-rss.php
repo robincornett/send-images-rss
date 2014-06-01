@@ -21,7 +21,7 @@ add_image_size( 'mailchimp', 560 );
 add_filter( 'the_excerpt_rss', 'send_rss_change_images', 20 );
 add_filter( 'the_content_feed', 'send_rss_change_images', 20 );
 
-/**
+/*
  * get the ID of each image dynamically
  * http://pippinsplugins.com/retrieve-attachment-id-from-image-url/
  * @author Pippin Williamson
@@ -37,13 +37,15 @@ function send_rss_change_images( $content ) {
 	$content = '<div>' . $content . '</div>'; // set up something you can scan
 	$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
 	$doc     = new DOMDocument();
-	libxml_use_internal_errors( true );
-	$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8') );
-	libxml_clear_errors();
+	libxml_use_internal_errors( true ); // turn off errors for HTML5
+	$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8') ); // convert the feed from XML to HTML
+	libxml_clear_errors(); // now that it's loaded, go ahead
+	// remove inline style (width) from XHTML captions
 	$captions = $doc->getElementsByTagName( 'div' );
 	foreach ( $captions as $caption ) {
 		$caption->removeAttribute( 'style' );
 	}
+	// remove inline style (width) from HTML5 captions
 	$figures = $doc->getElementsByTagName( 'figure' );
 	foreach ( $figures as $figure ) {
 		$figure->removeAttribute( 'style' );
@@ -59,7 +61,8 @@ function send_rss_change_images( $content ) {
 		$image->setAttribute( 'src', $mailchimp[0] );
 		$image->setAttribute( 'width', '100%' );
 
-		/* Check the image's alignment in the post. If set to right or left, do the same in the feed.
+		/*
+		 * Check the image's alignment in the post. If set to right or left, do the same in the feed.
 		 * Otherwise, set the image to align center.
 		 * Should be OK even with authors who do funny things with images (like full width, aligned left).
 		 */
