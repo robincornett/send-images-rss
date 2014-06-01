@@ -37,7 +37,9 @@ function send_rss_change_images( $content ) {
 	$content = '<div>' . $content . '</div>'; // set up something you can scan
 	$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
 	$doc     = new DOMDocument();
-	$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8'));
+	libxml_use_internal_errors( true );
+	$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8') );
+	libxml_clear_errors();
 	$captions = $doc->getElementsByTagName( 'div' );
 	foreach ( $captions as $caption ) {
 		$caption->removeAttribute( 'style' );
