@@ -80,11 +80,11 @@ function send_rss_change_images( $content ) {
 		$class = $image->getAttribute( 'class' );
 		if ( strpos( $class, 'alignright' ) !== false ) {
 			$image->setAttribute( 'align', 'right' );
-			$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;max-width:250px;' );
+			$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;max-width:280px;' );
 		}
 		elseif ( strpos( $class, 'alignleft' ) !== false ) {
 			$image->setAttribute( 'align', 'left' );
-			$image->setAttribute( 'style', 'margin:0px 10px 10px 0px;max-width:250px;' );
+			$image->setAttribute( 'style', 'margin:0px 10px 10px 0px;max-width:280px;' );
 		}
 		else {
 			$image->setAttribute( 'align', 'center' );
