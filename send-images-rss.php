@@ -37,9 +37,20 @@ function send_rss_change_images( $content ) {
 	$content = '<div>' . $content . '</div>'; // set up something you can scan
 	$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
 	$doc     = new DOMDocument();
+
+	//* Load up the document, hopefully cleanly, but otherwise, still load.
 	libxml_use_internal_errors( true ); // turn off errors for HTML5
-	$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8') ); // convert the feed from XML to HTML
+	if ( function_exists( 'mb_convert_encoding') ) {
+		$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8') ); // convert the feed from XML to HTML
+	}
+	elseif ( function_exists( 'iconv' ) ) {
+		$doc->LoadHTML( iconv( 'UTF-8', 'ISO-8859-1//IGNORE', $content ) );
+	}
+	else {
+		$doc->LoadHTML( $content );
+	}
 	libxml_clear_errors(); // now that it's loaded, go ahead
+
 	// remove inline style (width) from XHTML captions
 	$captions = $doc->getElementsByTagName( 'div' );
 	foreach ( $captions as $caption ) {

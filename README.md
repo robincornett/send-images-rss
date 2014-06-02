@@ -1,14 +1,10 @@
 # Send Images to RSS
 
-WordPress plugin that replaces smaller images with their full-size counterpart in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images.
+WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
 
 ## Description
 
-This plugin searches your RSS feed for any <img> tag and looks for evidence of a WordPress generated image (the filename ends in -150x150 for thumbnails, for example). It strips that from the image src so that the full size image is what's being sent to the RSS reader.
-
-Then the plugin scans all images in the feed and removes height, sets width and max-width.
-
-The plugin adds a new image size called "mailchimp" to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to MailChimp, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site.)
+The plugin adds a new image size called "mailchimp" to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to MailChimp, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
 * WordPress 3.5, tested up to 4.0alpha
@@ -49,8 +45,12 @@ At this time, you can't. If you upload large images, they'll be full width image
 
 Smaller images will still be small. WordPress handles image alignment differently than email clients (set by class v. align). If your image has an alignment set in post, the plugin will assign an alignment in your email as well, and add a margin.
 
+### I have funky characters in my RSS feed and emails. Why?
+
+Because you have funky characters and/or invalid markup in your posts. The plugin attempts to process your feed and encode wonky markup, but if your server doesn't have certain packages installed, the fallback is to process your feed as is, warts and all.
+
 ## Credits
 
 * Built by [Robin Cornett](http://robincornett.com/)
-* Inspired by [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
-* With insight from [David Gale](http://davidsgale.com)
+* Inspired by [Erik Teichmann](http://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
+* With insight from [David Gale](http://davidsgale.com) and [Gary Jones](http://gamajo.com)
