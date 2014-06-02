@@ -1,5 +1,7 @@
 # Send Images to RSS
 
+__NOTE: this plugin is totally a beta version, and it is up to you to check that your feed output is still working, especially in MailChimp, once it's installed.__ I've attempted to set it up to handle XHTML or HTML5, and function even if your feed is wonky, but __please__ double check, and let me know if you have issues, and if so, what specifically they are.
+
 WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
 
 ## Description
