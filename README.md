@@ -51,9 +51,6 @@ Smaller images will still be small. WordPress handles image alignment differentl
 
 Because you have funky characters and/or invalid markup in your posts. The plugin attempts to process your feed and encode wonky markup, but if your server doesn't have certain packages installed, the fallback is to process your feed as is, warts and all.
 
-### I added a form to my post and the RSS feed broke. What's up with that?
-
-__Known Issue.__ Looking at the Gravity Forms support forums, looks like a modified feed (like feedburner) can't handle complex input/data such as a form, although my tests show that a form in an unmodified feed is OK. Since this plugin does have to modify the feed in order to scan the images, I'm not sure if I can resolve this, but I'm looking into it. Their response at the time was to not include a form in a post, but to keep it on pages. I'd do that for now.
 
 ## Credits
 

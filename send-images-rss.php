@@ -35,6 +35,11 @@ function send_images_get_image_id( $image_url ) {
 
 function send_rss_change_images( $content ) {
 	$content = '<div>' . $content . '</div>'; // set up something you can scan
+
+	if ( shortcode_exists( 'gravityform' ) ) {
+		remove_shortcode( 'gravityform' ); // because gravity forms explode the feed
+	}
+
 	$content = preg_replace( '(-\d{3,4}x\d{3,4})', '', $content );
 	$doc     = new DOMDocument();
 
