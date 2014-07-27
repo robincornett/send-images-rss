@@ -1,6 +1,6 @@
 # Send Images to RSS
 
-__NOTE: this plugin is totally a beta version, and it is up to you to check that your feed output is still working, especially in MailChimp, once it's installed.__ I've attempted to set it up to handle XHTML or HTML5, and function even if your feed is wonky, but __please__ double check, and let me know if you have issues, and if so, what specifically they are.
+__NOTE: this plugin is totally a work in progress, and it is up to you to check that your feed output is still working, especially in MailChimp, once it's installed.__ I've attempted to set it up to handle XHTML or HTML5, and function even if your feed is wonky, but __please__ double check, and let me know if you have issues, and if so, what specifically they are.
 
 WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
 
@@ -41,7 +41,7 @@ Then go to your Plugins screen and click __Activate__.
 
 ### How can I change the size of the image being sent to the RSS?
 
-At this time, you can't. If you upload large images, they'll be full width images in your email. With the new image size, however, they won't be excessively large, even if you upload excessively large images to your site.
+At this time, you can't. The plugin assumes that you are using a single column email template and plans accordingly. If you upload large images, they'll be full width images in your email. With the new image size, however, they won't be excessively large, even if you upload excessively large images to your site.
 
 ### What about smaller images?
 
@@ -51,9 +51,31 @@ Smaller images will still be small. WordPress handles image alignment differentl
 
 Because you have funky characters and/or invalid markup in your posts. The plugin attempts to process your feed and encode wonky markup, but if your server doesn't have certain packages installed, the fallback is to process your feed as is, warts and all.
 
+### I installed this plugin and the email that I sent out five minutes later still had giant images.
+
+The plugin only generates properly sized images for new uploads--anything you uploaded before the plugin was active will still be giant, if that's what you uploaded. You can re-upload the images and they should behave as desired.
+
 
 ## Credits
 
 * Built by [Robin Cornett](http://robincornett.com/)
 * Inspired by [Erik Teichmann](http://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
 * With insight from [David Gale](http://davidsgale.com) and [Gary Jones](http://gamajo.com)
+
+## Changelog
+
+###2.1.0
+* Much revising--set conditional to use MailChimp size image if exists
+* Updated function to retrieve image URL to not use guid
+* Changed filter to the_content instead of the_content_rss due to shortcode explosions
+* If an image is smaller than MailChimp size, left/right alignment will be honored; otherwise, alignment will be set to center.
+* If a post has a gallery, an additional scan occurs to pull full size images and use those (if a MailChimp size image exists, it will still be used).
+
+###2.0.0beta
+* Total rewrite
+* Adds a new image size called 'mailchimp' to WordPress so that it can be used instead of trying to shoehorn the large images.
+* strips out GravityForm shortcodes, but if others exist, that could be problematic.
+
+###1.1.1
+* simplified immensely. Dropped need for user to edit plugin files.
+* deals with captions, both XHTML and HTML5
