@@ -85,7 +85,7 @@ function send_rss_change_images( $content ) {
 				$class = $image->getAttribute( 'class' );
 				$width = $image->getAttribute( 'width' );
 
-				// first check: only images in [gallery] should have had the width stripped out
+				// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
 				if ( empty( $width ) ) {
 					$original_width = wp_get_attachment_image_src( $image_id, 'original' );
 					$image->setAttribute( 'width', $original_width[1] );
@@ -110,6 +110,7 @@ function send_rss_change_images( $content ) {
 		}
 		// Strips extra added by line 38
 		$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
+
 	}
 	return $content;
 
