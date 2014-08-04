@@ -1,52 +1,69 @@
 <?php
+/**
+ * Send Images to RSS
+ *
+ * @package   SendImagesRSS
+ * @author    Robin Cornett
+ * @author    Gary Jones <gary@garyjones.co.uk>
+ * @link      https://github.com/robincornett/send-images-rss
+ * @copyright 2014 Robin Cornett
+ * @license   GPL-2.0+
+ */
 
 /**
- * Class for adding a new field to the options-media.php page
+ * Class for adding a new field to the options-media.php page.
+ *
+ * @package SendImagesRSS
  */
-class Add_MailChimp_Settings {
-
+class SendImagesRSS_Settings {
 	/**
-	 * Class constructor
+	 * Add new fields to wp-admin/options-media.php page.
+	 *
+	 * @since x.y.z
 	 */
-	function __construct() {
-		add_filter( 'admin_init' , array( &$this , 'register_fields' ) );
-	}
-
-	/**
-	 * Add new fields to wp-admin/options-media.php page
-	 */
-	public function register_fields() {
+	public function register_settings() {
 		register_setting( 'media', 'mailchimp_image_size', 'esc_attr' );
 		register_setting( 'media', 'mailchimp_alternate_feed', 'esc_attr' );
+
 		add_settings_section(
 			'send_rss_section',
 			__( 'RSS Feeds', 'send-images-rss' ),
-			array( &$this, 'send_rss_section_callback'),
+			array( $this, 'section_description'),
 			'media'
 		);
+
 		add_settings_field(
 			'mailchimp_image_size_setting',
 			'<label for="mailchimp_image_size">' . __( 'RSS image size:' , 'send-images-rss' ) . '</label>',
-			array( &$this, 'send_rss_field' ),
+			array( $this, 'field_image_size' ),
 			'media',
 			'send_rss_section'
 		);
+
 		add_settings_field(
 			'mailchimp_alternate_rss_feed',
 			'<label for="mailchimp_alternate_feed">' . __( 'Alternate feed?' , 'send-images-rss' ) . '</label>',
-			array( &$this, 'send_rss_alternate' ),
+			array( $this, 'field_alternate_feed' ),
 			'media',
 			'send_rss_section'
 		);
 	}
 
-	public function send_rss_section_callback() {
+	/**
+	 * Callback for RSS Feeds section.
+	 *
+	 * @since x.y.z
+	 */
+	public function section_description() {
 		echo '<p>' . __( 'The <i>Send Images to RSS</i> plugin works out of the box without changing any settings. However, if you want to customize your image size and do not want to change the default feed, change those items here.', 'send-images-rss' ) . '</p>';
 	}
+
 	/**
-	 * HTML for extra settings
+	 * Callback for image size field setting.
+	 *
+	 * @since x.y.z
 	 */
-	public function send_rss_field() {
+	public function field_image_size() {
 		$value = get_option( 'mailchimp_image_size', '' );
 		if ( !$value ) {
 			$value = 560;
@@ -59,22 +76,22 @@ class Add_MailChimp_Settings {
 
 	}
 
-	public function send_rss_alternate() {
+	/**
+	 * Callback for alternate feed setting.
+	 *
+	 * @since x.y.z
+	 */
+	public function field_alternate_feed() {
 		$value = get_option( 'mailchimp_alternate_feed' );
 
 		echo '<input type="checkbox" name="mailchimp_alternate_feed" id="mailchimp_alternate_feed" value="1"' . checked( 1, $value, false ) . ' class="code" /> <label for="mailchimp_alternate_feed">' . __( 'Apply sizes only to new custom feed', 'send-images-rss' ) . '</label>';
 		echo '<p class="description">' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, check this box.', 'send-images-rss' ) . '</p>';
 
-		if ( $value === '1' ) {
+		if ( $value ) {
 			echo '<p>' . sprintf(
 				__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
 				esc_url( trailingslashit( home_url() ) . 'feed/?custom=email' )
 			) . '</p>';
 		}
-		elseif ( $value === '' ) {
-			echo '<p>' . __( 'The checkbox is NOT checked.', 'send-images-rss' ) . '</p>'; // this line could be tossed but have it in my working code for my own referece.
-		}
 	}
-
 }
-new Add_MailChimp_Settings();
