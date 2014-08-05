@@ -41,7 +41,7 @@ class SendImagesRSS {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this->settings, 'register_settings' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
-		add_filter( 'the_content_feed', array( $this->gallery_stripper, 'strip' ), 19 );
+		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
 	}
 
 	/**
@@ -73,7 +73,7 @@ class SendImagesRSS {
 
 		$alt_feed = get_option( 'mailchimp_alternate_feed' );
 		if ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) {
-			add_filter( 'the_content_feed', array( $this->feed_fixer, 'fix' ), 20 );
+			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
 		}
 	}
 }
