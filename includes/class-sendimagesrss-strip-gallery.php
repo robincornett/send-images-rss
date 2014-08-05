@@ -18,7 +18,7 @@
 class SendImagesRSS_Strip_Gallery {
 	/**
 	 * Strip out WP generated file names so that the original file is used instead.
-	 * 
+	 *
 	 * Desired behavior for galleries in feed regardless of whether alternate feed is used or not.
 	 *
 	 * Note: If alternate feed is used, gallery images in unaltered feeds will not have

@@ -60,7 +60,7 @@ class SendImagesRSS_Feed_Fixer {
 			else {
 				$class    = $image->getAttribute( 'class' );
 				$width    = $image->getAttribute( 'width' );
-				$maxwidth = esc_attr( get_option( 'mailchimp_image_size' ) );
+				$maxwidth = esc_attr( get_option( 'sendimagesrss_image_size' ) );
 
 				// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
 				if ( empty( $width ) ) {
@@ -145,7 +145,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * Get the ID of each image dynamically.
 	 *
 	 * @since x.y.z
-	 * 
+	 *
 	 * @author Philip Newcomer
 	 * @link   http://philipnewcomer.net/2012/11/get-the-attachment-id-from-an-image-url-in-wordpress/
 	 */
