@@ -80,7 +80,7 @@ class SendImagesRSS {
 		}
 
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );
-		$alt_feed = get_option( 'mailchimp_alternate_feed' );
+		$alt_feed = get_option( 'sendimagesrss_alternate_feed' );
 		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
 		}
