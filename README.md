@@ -2,14 +2,14 @@
 
 __NOTE: this plugin is totally a work in progress, and it is up to you to check that your feed output is still working, especially in MailChimp, once it's installed.__ I've attempted to set it up to handle XHTML or HTML5, and function even if your feed is wonky, but __please__ double check, and let me know if you have issues, and if so, what specifically they are.
 
-WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
+WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, even if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
 
 ## Description
 
 The plugin adds a new image size called "mailchimp" to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to MailChimp, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
-* WordPress 3.5, tested up to 4.0alpha
+* WordPress 3.5, tested up to 4.0beta
 
 ## Installation
 
@@ -41,11 +41,13 @@ Then go to your Plugins screen and click __Activate__.
 
 ### How can I change the size of the image being sent to the RSS?
 
-At this time, you can't. The plugin assumes that you are using a single column email template and plans accordingly. If you upload large images, they'll be full width images in your email. With the new image size, however, they won't be excessively large, even if you upload excessively large images to your site.
+Most users should not need to change this. The plugin is designed with a default image size of 560 pixels for the width of the new image. If, however, your MailChimp email template is more or less than 600 pixels wide, or you're using a template with a sidebar, you may need to change this setting. What number you choose is up to you.
+
+__Note:__ If you use a template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
 
 ### What about smaller images?
 
-Smaller images will still be small. WordPress handles image alignment differently than email clients (set by class v. align). If your image has an alignment set in post, the plugin will assign an alignment in your email as well, and add a margin.
+Smaller images will still be small. WordPress handles image alignment differently than email clients (set by class v. inline align). If your smaller image has an right/left alignment set in post, the plugin will copy that alignment in your email as well, and add a margin.
 
 ### I have funky characters in my RSS feed and emails. Why?
 
@@ -53,7 +55,11 @@ Because you have funky characters and/or invalid markup in your posts. The plugi
 
 ### I installed this plugin and the email that I sent out five minutes later still had giant images.
 
-The plugin only generates properly sized images for new uploads--anything you uploaded before the plugin was active will still be giant, if that's what you uploaded. You can re-upload the images and they should behave as desired.
+The plugin only generates properly sized images for new uploads--anything you uploaded before the plugin was active will still be giant, if that's what you uploaded and your email client ignores a max-width setting. You can re-upload the images and they should behave as desired.
+
+### Alternate Feed?
+
+Because I use Feedly, and as a former photographer, it bothers me to see the freshly rendered email sized images blown up and soft to fit Feedly/Feedburner specs. So this gives you the option of having your main feed(s) with large images (galleries will be converted, too), but a special email-only feed which you can use with MailChimp. At this time, if you use the alternate feed, smaller images will not have alignment applied.
 
 
 ## Credits
@@ -63,6 +69,16 @@ The plugin only generates properly sized images for new uploads--anything you up
 * With insight from [David Gale](http://davidsgale.com) and [Gary Jones](http://gamajo.com)
 
 ## Changelog
+
+###2.3.0
+* Added an alternate feed method so that original feed could serve up full sized images while alternate feed would be used for email.
+
+###2.2.0
+* Added a image width setting to the Settings > Media screen so that the MailChimp size image can be changed.
+
+###2.1.1
+* Revised for class
+* integrated gallery scan into main function
 
 ###2.1.0
 * Much revising--set conditional to use MailChimp size image if exists
@@ -78,4 +94,4 @@ The plugin only generates properly sized images for new uploads--anything you up
 
 ###1.1.1
 * simplified immensely. Dropped need for user to edit plugin files.
-* deals with captions, both XHTML and HTML5
+* deals with captions.
