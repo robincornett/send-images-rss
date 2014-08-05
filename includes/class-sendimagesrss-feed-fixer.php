@@ -3,7 +3,7 @@
  * Send Images to RSS
  *
  * @package   SendImagesRSS
- * @author    Robin Cornett
+ * @author    Robin Cornett <hello@robincornett.com>
  * @author    Gary Jones <gary@garyjones.co.uk>
  * @link      https://github.com/robincornett/send-images-rss
  * @copyright 2014 Robin Cornett
