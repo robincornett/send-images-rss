@@ -95,12 +95,6 @@ class SendImagesRSS_Settings {
 			$value = 560;
 		}
 
-		$simplify = get_option( 'sendimagesrss_simplify_feed' );
-
-		if ( $simplify ) {
-			echo '<p class="description"><strong>' . __( 'Warning! You have the Simplify Feed option checked! This setting will be ignored.', 'send-images-rss' ) . '</strong></p>';
-		}
-
 		echo '<label for="sendimagesrss_image_size">' . __( 'Max Width', 'send-images-rss' ) . '</label>';
 		echo '<input type="number" step="1" min="200" id="sendimagesrss_image_size" name="sendimagesrss_image_size" value="' . esc_attr( $value ) . '" class="small-text" />';
 		echo '<p class="description">' . __( 'Most users should <strong>should not</strong> need to change this number, but if you have customized your emails to be a different width, or you are using a template with a sidebar, you will want to change the width here. The default width is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>';
@@ -117,10 +111,6 @@ class SendImagesRSS_Settings {
 		$value = get_option( 'sendimagesrss_alternate_feed' );
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );
 
-		if ( $value && $simplify ) {
-			echo '<p class="description"><strong>' . __( 'Warning! You have the Simplify Feed option checked! This setting will be ignored.', 'send-images-rss' ) . '</strong></p>';
-		}
-
 		echo '<input type="checkbox" name="sendimagesrss_alternate_feed" id="sendimagesrss_alternate_feed" value="1"' . checked( 1, $value, false ) . ' class="code" /> <label for="sendimagesrss_alternate_feed">' . __( 'Apply sizes only to new custom feed', 'send-images-rss' ) . '</label>';
 		echo '<p class="description">' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, check this box.', 'send-images-rss' ) . '</p>';
 
@@ -129,6 +119,20 @@ class SendImagesRSS_Settings {
 				__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
 				esc_url( trailingslashit( home_url() ) . 'feed/email' )
 			) . '</p>';
+		}
+	}
+
+	/**
+	 * Error message if both Simplify Feed and Alternate Feed are checked.
+	 *
+	 * @since x.y.z
+	 */
+	public function error_message() {
+		$value = get_option( 'sendimagesrss_alternate_feed' );
+		$simplify = get_option( 'sendimagesrss_simplify_feed' );
+
+		if ( $value && $simplify ) {
+			echo '<div class="error"><p><strong>' . __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' ) . '</strong></p></div>';
 		}
 	}
 }
