@@ -60,7 +60,7 @@ class SendImagesRSS_Feed_Fixer {
 			else {
 				$class    = $image->getAttribute( 'class' );
 				$width    = $image->getAttribute( 'width' );
-				$maxwidth = esc_attr( get_option( 'sendimagesrss_image_size', '560' ) );
+				$maxwidth = get_option( 'sendimagesrss_image_size', '560' );
 
 				// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
 				if ( empty( $width ) ) {
@@ -80,7 +80,7 @@ class SendImagesRSS_Feed_Fixer {
 				// now what's left are large images which don't have a MailChimp sized image, so set a max-width
 				else {
 					$image->setAttribute( 'align', 'center' );
-					$image->setAttribute( 'style', 'max-width:' . $maxwidth . 'px;' );
+					$image->setAttribute( 'style', 'max-width:' . esc_attr( $maxwidth ) . 'px;' );
 				}
 			}
 		}
