@@ -22,9 +22,9 @@ class SendImagesRSS_Settings {
 	 * @since x.y.z
 	 */
 	public function register_settings() {
-		register_setting( 'media', 'sendimagesrss_simplify_feed', 'esc_attr' );
-		register_setting( 'media', 'sendimagesrss_image_size', 'esc_attr' );
-		register_setting( 'media', 'sendimagesrss_alternate_feed', 'esc_attr' );
+		register_setting( 'media', 'sendimagesrss_simplify_feed', array( $this, 'one_zero' ) );
+		register_setting( 'media', 'sendimagesrss_image_size', 'intval' );
+		register_setting( 'media', 'sendimagesrss_alternate_feed', array( $this, 'one_zero' ) );
 
 		add_settings_section(
 			'send_rss_section',
@@ -58,6 +58,19 @@ class SendImagesRSS_Settings {
 		);
 	}
 
+	/**
+	 * Returns a 1 or 0, for all truthy / falsy values.
+	 *
+	 * Uses double casting. First, we cast to bool, then to integer.
+	 *
+	 * @since x.y.z
+	 *
+	 * @param mixed $new_value Should ideally be a 1 or 0 integer passed in
+	 * @return integer 1 or 0.
+	 */
+	function one_zero( $new_value ) {
+	    return (int) (bool) $new_value;
+	}
 
 	/**
 	 * Callback for RSS Feeds section.
@@ -91,12 +104,12 @@ class SendImagesRSS_Settings {
 	 */
 	public function field_image_size() {
 		$value = get_option( 'sendimagesrss_image_size', '560' );
-		if ( !$value ) {
+		if ( ! $value ) {
 			$value = 560;
 		}
 
 		echo '<label for="sendimagesrss_image_size">' . __( 'Max Width', 'send-images-rss' ) . '</label>';
-		echo '<input type="number" step="1" min="200" id="sendimagesrss_image_size" name="sendimagesrss_image_size" value="' . esc_attr( $value ) . '" class="small-text" />';
+		echo '<input type="number" step="1" min="200" max="900" id="sendimagesrss_image_size" name="sendimagesrss_image_size" value="' . esc_attr( $value ) . '" class="small-text" />';
 		echo '<p class="description">' . __( 'Most users should <strong>should not</strong> need to change this number, but if you have customized your emails to be a different width, or you are using a template with a sidebar, you will want to change the width here. The default width is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>';
 		echo '<p class="description">' . __( '<strong>Note:</strong> Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>';
 
