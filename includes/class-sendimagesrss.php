@@ -38,7 +38,7 @@ class SendImagesRSS {
 	 * @since x.y.z
 	 */
 	public function run() {
-		add_action( 'plugins_loaded', array( $this, 'translatable' ) );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this->settings, 'register_settings' ) );
 		add_action( 'admin_notices', array( $this->settings, 'error_message' ) );
@@ -51,7 +51,7 @@ class SendImagesRSS {
 	 *
 	 * @since x.y.z
 	 */
-	public function translatable() {
+	public function load_textdomain() {
 		load_plugin_textdomain( 'send-images-rss', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
