@@ -38,11 +38,21 @@ class SendImagesRSS {
 	 * @since x.y.z
 	 */
 	public function run() {
+		add_action( 'plugins_loaded', array( $this, 'translatable' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this->settings, 'register_settings' ) );
 		add_action( 'admin_notices', array( $this->settings, 'error_message' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
 		add_filter( 'the_content_feed', array( $this->gallery_stripper, 'strip' ), 19 ); // this negates adding width back during Feed_Fixer...
+	}
+
+	/**
+	 * Set up text domain for translations
+	 *
+	 * @since x.y.z
+	 */
+	public function translatable() {
+		load_plugin_textdomain( 'send-images-rss', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
 	/**
