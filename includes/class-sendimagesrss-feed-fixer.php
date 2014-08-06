@@ -60,7 +60,7 @@ class SendImagesRSS_Feed_Fixer {
 			else {
 				$class    = $image->getAttribute( 'class' );
 				$width    = $image->getAttribute( 'width' );
-				$maxwidth = esc_attr( get_option( 'sendimagesrss_image_size' ) );
+				$maxwidth = esc_attr( get_option( 'sendimagesrss_image_size', '560' ) );
 
 				// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
 				if ( empty( $width ) ) {

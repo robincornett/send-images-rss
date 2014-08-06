@@ -90,7 +90,7 @@ class SendImagesRSS_Settings {
 	 * @since x.y.z
 	 */
 	public function field_image_size() {
-		$value = get_option( 'sendimagesrss_image_size', '' );
+		$value = get_option( 'sendimagesrss_image_size', '560' );
 		if ( !$value ) {
 			$value = 560;
 		}
