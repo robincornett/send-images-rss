@@ -42,7 +42,7 @@ class SendImagesRSS {
 		add_action( 'admin_init', array( $this->settings, 'register_settings' ) );
 		add_action( 'admin_notices', array( $this->settings, 'error_message' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
-		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
+		add_filter( 'the_content_feed', array( $this->gallery_stripper, 'strip' ), 19 ); // this negates adding width back during Feed_Fixer...
 	}
 
 	/**
