@@ -41,6 +41,7 @@ class SendImagesRSS {
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this->settings, 'register_settings' ) );
+		add_action( 'load-options-media.php', array( $this->settings, 'help' ) );
 		add_action( 'admin_notices', array( $this->settings, 'error_message' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
 	}
