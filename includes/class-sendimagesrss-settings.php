@@ -23,7 +23,7 @@ class SendImagesRSS_Settings {
 	 */
 	public function register_settings() {
 		register_setting( 'media', 'sendimagesrss_simplify_feed', array( $this, 'one_zero' ) );
-		register_setting( 'media', 'sendimagesrss_image_size', 'intval' );
+		register_setting( 'media', 'sendimagesrss_image_size', array( $this, 'media_value' ) );
 		register_setting( 'media', 'sendimagesrss_alternate_feed', array( $this, 'one_zero' ) );
 
 		add_settings_section(
@@ -73,6 +73,22 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
+	 * Returns previous value for image size if not correct
+	 * @param  string $new_value New value
+	 * @param  string $old_value Previous value
+	 * @return string            New or previous value, depending on allowed image size.
+	 */
+	function media_value( $new_value, $old_value ) {
+		$old_value = get_option( 'sendimagesrss_image_size', '560' );
+		if ( ! $new_value || $new_value < '200' || $new_value > '900' ) {
+			return $old_value;
+		}
+		else {
+			return $new_value;
+		}
+	}
+
+	/**
 	 * Callback for RSS Feeds section.
 	 *
 	 * @since 2.4.0
@@ -103,9 +119,6 @@ class SendImagesRSS_Settings {
 	 */
 	public function field_image_size() {
 		$value = get_option( 'sendimagesrss_image_size', '560' );
-		if ( ! $value || $value < '200' || $value > '900' ) {
-			$value = 560;
-		}
 
 		echo '<label for="sendimagesrss_image_size">' . __( 'Max Width', 'send-images-rss' ) . '</label>';
 		echo '<input type="number" step="1" min="200" max="900" id="sendimagesrss_image_size" name="sendimagesrss_image_size" value="' . esc_attr( $value ) . '" class="small-text" />';

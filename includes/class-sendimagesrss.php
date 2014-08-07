@@ -65,12 +65,7 @@ class SendImagesRSS {
 		$image_width = esc_attr( get_option( 'sendimagesrss_image_size', '560' ) );
 
 		if ( ! $simplify ) {
-			if ( $image_width ) {
-				add_image_size( 'mailchimp', intval( $image_width ) );
-			}
-			else {
-				add_image_size( 'mailchimp', '560' );
-			}
+			add_image_size( 'mailchimp', intval( $image_width ) );
 		}
 
 		// Add a new feed, but tell WP to treat it as a standard RSS2 feed
