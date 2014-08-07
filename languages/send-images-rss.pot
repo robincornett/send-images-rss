@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Send Images to RSS x.y.z\n"
+"Project-Id-Version: Send Images to RSS 2.4.0\n"
 "Report-Msgid-Bugs-To: Robin Cornett <hello@robincornett.com>\n"
 "POT-Creation-Date: 2014-08-06 08:33-0500\n"
-"PO-Revision-Date: 2014-08-06 08:36-0500\n"
+"PO-Revision-Date: 2014-08-07 10:38-0500\n"
 "Last-Translator: Robin Cornett <hello@robincornett.com>\n"
 "Language-Team: Robin Cornett <hello@robincornett.com>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgid "RSS Feeds"
 msgstr ""
 
 #: ../includes/class-sendimagesrss-settings.php:38
-msgid "Simplify Feed?"
+msgid "Simplify feed?"
 msgstr ""
 
 #: ../includes/class-sendimagesrss-settings.php:46
@@ -41,67 +41,94 @@ msgstr ""
 msgid "Alternate feed?"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:68
+#: ../includes/class-sendimagesrss-settings.php:81
 msgid ""
 "The <i>Send Images to RSS</i> plugin works out of the box without changing "
 "any settings. However, if you want to customize your image size and do not "
 "want to change the default feed, change those items here."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:79
+#: ../includes/class-sendimagesrss-settings.php:92
 msgid "Convert galleries only; do not fix feeds for email."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:80
-msgid ""
-"If you are not concerned about sending your feed out over email and want "
-"only your galleries changed from thumbnails to large images, check this box."
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:83
+#: ../includes/class-sendimagesrss-settings.php:95
 msgid ""
 "The only part of your feed which will be modified are your galleries. Email "
 "sized images will not be created."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:98
+#: ../includes/class-sendimagesrss-settings.php:110
 msgid "Max Width"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:100
+#: ../includes/class-sendimagesrss-settings.php:112
 msgid ""
-"Most users should <strong>should not</strong> need to change this number, "
-"but if you have customized your emails to be a different width, or you are "
-"using a template with a sidebar, you will want to change the width here. The "
-"default width is 560 pixels, which is the content width of a standard single "
-"column email (600 pixels wide with 20 pixels padding on the content)."
+"Most users should <strong>should not</strong> need to change this number."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:101
-msgid ""
-"<strong>Note:</strong> Changing the width here will not affect previously "
-"uploaded images, but it will affect the max-width applied to images&rsquo; "
-"style."
+#: ../includes/class-sendimagesrss-settings.php:126
+msgid "Create a custom feed and use that for sending emails."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:114
-msgid "Apply sizes only to new custom feed"
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:115
-msgid ""
-"By default, the Send Images to RSS plugin modifies every feed from your "
-"site. If you want to leave your main feed untouched and set up a totally "
-"separate feed for emails only, check this box."
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:119
+#: ../includes/class-sendimagesrss-settings.php:131
+#: ../includes/class-sendimagesrss-settings.php:137
 #, php-format
 msgid "Hey! Your new feed is at <a href=\"%1$s\" target=\"_blank\">%1$s</a>."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:135
+#: ../includes/class-sendimagesrss-settings.php:154
 msgid ""
 "Warning! You have the Simplify Feed option checked! Your Alternate Feed "
 "setting will be ignored."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:168
+msgid "Simplify Feed"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:169
+msgid ""
+"If you are not concerned about sending your feed out over email and want "
+"only your galleries changed from thumbnails to large images, select Simplify "
+"Feed."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:171
+msgid "RSS Image Size"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:172
+msgid ""
+"If you have customized your emails to be a nonstandard width, or you are "
+"using a template with a sidebar, you will want to change your RSS Image size "
+"(width). The default is 560 pixels, which is the content width of a standard "
+"single column email (600 pixels wide with 20 pixels padding on the content)."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:173
+msgid ""
+"Note: Changing the width here will not affect previously uploaded images, "
+"but it will affect the max-width applied to images&rsquo; style."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:175
+msgid "Alternate Feed"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:176
+msgid ""
+"By default, the Send Images to RSS plugin modifies every feed from your "
+"site. If you want to leave your main feed untouched and set up a totally "
+"separate feed for emails only, select this option."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:177
+msgid ""
+"If you use custom post types with their own feeds, the alternate feed method "
+"will work even with them."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:181
+msgid "Send Images to RSS"
 msgstr ""
