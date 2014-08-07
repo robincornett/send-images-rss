@@ -84,7 +84,7 @@ class SendImagesRSS_Settings {
 			return $old_value;
 		}
 		else {
-			return $new_value;
+			return absint( $new_value );
 		}
 	}
 
