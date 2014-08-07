@@ -121,14 +121,23 @@ class SendImagesRSS_Settings {
 	public function field_alternate_feed() {
 		$value = get_option( 'sendimagesrss_alternate_feed' );
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );
+		$pretty_permalinks = get_option( 'permalink_structure' );
 
 		echo '<input type="checkbox" name="sendimagesrss_alternate_feed" id="sendimagesrss_alternate_feed" value="1"' . checked( 1, $value, false ) . ' class="code" /> <label for="sendimagesrss_alternate_feed">' . __( 'Create a custom feed and use that for sending emails.', 'send-images-rss' ) . '</label>';
 
 		if ( $value && ! $simplify ) {
-			echo '<p>' . sprintf(
-				__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
-				esc_url( trailingslashit( home_url() ) . 'feed/email' )
-			) . '</p>';
+			if ( $pretty_permalinks ){
+				echo '<p>' . sprintf(
+					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
+					esc_url( trailingslashit( home_url() ) . 'feed/email' )
+				) . '</p>';
+			}
+			else {
+				echo '<p>' . sprintf(
+					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
+					esc_url( trailingslashit( home_url() ) . '?feed=email' )
+				) . '</p>';
+			}
 		}
 	}
 
@@ -165,7 +174,7 @@ class SendImagesRSS_Settings {
 
 			'<h3>' . __( 'Alternate Feed', 'send-images-rss' ) . '</h3>' .
 			'<p>' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'send-images-rss' ) . '</p>' .
-			'<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them. Simply add /email to the end of the feed URL.', 'send-images-rss' ) . '</p>';
+			'<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'send-images-rss' ) . '</p>';
 
 		$screen->add_help_tab( array(
 			'id'      => 'sendimagesrss-help',
