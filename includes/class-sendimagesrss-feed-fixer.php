@@ -80,7 +80,12 @@ class SendImagesRSS_Feed_Fixer {
 				// now what's left are large images which don't have a MailChimp sized image, so set a max-width
 				else {
 					$image->setAttribute( 'align', 'center' );
-					$image->setAttribute( 'style', 'max-width:' . esc_attr( $maxwidth ) . 'px;' );
+					if ( $maxwidth ) {
+						$image->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
+					}
+					else {
+						$image->setAttribute( 'style', esc_attr( 'max-width:560px;' ) );
+					}
 				}
 			}
 		}
