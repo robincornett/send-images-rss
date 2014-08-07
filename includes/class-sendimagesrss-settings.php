@@ -19,7 +19,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Add new fields to wp-admin/options-media.php page.
 	 *
-	 * @since x.y.z
+	 * @since 2.2.0
 	 */
 	public function register_settings() {
 		register_setting( 'media', 'sendimagesrss_simplify_feed', array( $this, 'one_zero' ) );
@@ -63,7 +63,7 @@ class SendImagesRSS_Settings {
 	 *
 	 * Uses double casting. First, we cast to bool, then to integer.
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 *
 	 * @param mixed $new_value Should ideally be a 1 or 0 integer passed in
 	 * @return integer 1 or 0.
@@ -75,7 +75,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for RSS Feeds section.
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 */
 	public function section_description() {
 		echo '<p>' . __( 'The <i>Send Images to RSS</i> plugin works out of the box without changing any settings. However, if you want to customize your image size and do not want to change the default feed, change those items here.', 'send-images-rss' ) . '</p>';
@@ -84,7 +84,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for feed simplification setting.
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 */
 	public function field_simplify() {
 		$value = get_option( 'sendimagesrss_simplify_feed' );
@@ -99,7 +99,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for image size field setting.
 	 *
-	 * @since x.y.z
+	 * @since 2.2.0
 	 */
 	public function field_image_size() {
 		$value = get_option( 'sendimagesrss_image_size', '560' );
@@ -116,7 +116,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for alternate feed setting.
 	 *
-	 * @since x.y.z
+	 * @since 2.3.0
 	 */
 	public function field_alternate_feed() {
 		$value = get_option( 'sendimagesrss_alternate_feed' );
@@ -144,7 +144,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Error message if both Simplify Feed and Alternate Feed are checked.
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 */
 	public function error_message() {
 		$value = get_option( 'sendimagesrss_alternate_feed' );
@@ -159,7 +159,7 @@ class SendImagesRSS_Settings {
 	 * Help tab for media screen
 	 * @return help tab with verbose information for plugin
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 */
 	public function help() {
 		$screen = get_current_screen();

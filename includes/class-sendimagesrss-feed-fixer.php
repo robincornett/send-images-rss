@@ -99,7 +99,7 @@ class SendImagesRSS_Feed_Fixer {
 	/**
 	 * Try and load HTML as an XML document.
 	 *
-	 * @since x.y.z
+	 * @since 1.0.0
 	 *
 	 * @param string $content Feed content.
 	 *
@@ -129,7 +129,7 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 * Argument passed by reference, so no return needed.
 	 *
-	 * @since x.y.z
+	 * @since 1.1.1
 	 *
 	 * @param DOMDocument $doc
 	 */
@@ -149,7 +149,7 @@ class SendImagesRSS_Feed_Fixer {
 	/**
 	 * Get the ID of each image dynamically.
 	 *
-	 * @since x.y.z
+	 * @since 2.1.0
 	 *
 	 * @author Philip Newcomer
 	 * @link   http://philipnewcomer.net/2012/11/get-the-attachment-id-from-an-image-url-in-wordpress/

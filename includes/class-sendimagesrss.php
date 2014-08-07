@@ -24,7 +24,7 @@ class SendImagesRSS {
 	/**
 	 * Inject dependencies.
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 */
 	public function __construct( $gallery_stripper, $feed_fixer, $settings ) {
 		$this->gallery_stripper = $gallery_stripper;
@@ -35,7 +35,7 @@ class SendImagesRSS {
 	/**
 	 * Set up hooks.
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 */
 	public function run() {
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
@@ -49,7 +49,7 @@ class SendImagesRSS {
 	/**
 	 * Set up text domain for translations
 	 *
-	 * @since x.y.z
+	 * @since 2.4.0
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain( 'send-images-rss', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
@@ -58,7 +58,7 @@ class SendImagesRSS {
 	/**
 	 * Add a feed-specific image size, and custom feed.
 	 *
-	 * @since x.y.z
+	 * @since 2.0.0
 	 */
 	public function init() {
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );
@@ -85,7 +85,7 @@ class SendImagesRSS {
 	/**
 	 * Choose which feeds to fix.
 	 *
-	 * @since x.y.z
+	 * @since 2.3.0
 	 *
 	 * @return null Return early if not a feed.
 	 */

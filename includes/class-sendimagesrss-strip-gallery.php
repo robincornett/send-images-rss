@@ -24,7 +24,7 @@ class SendImagesRSS_Strip_Gallery {
 	 * Note: If alternate feed is used, gallery images in unaltered feeds will not have
 	 * width/height parameters inline. Calling this OK due to example set by Envira.
 	 *
-	 * @since x.y.z
+	 * @since 1.0.0
 	 *
 	 * @param string $content Existing post content.
 	 *
