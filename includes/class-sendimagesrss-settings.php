@@ -78,14 +78,12 @@ class SendImagesRSS_Settings {
 	 * @param  string $old_value Previous value
 	 * @return string            New or previous value, depending on allowed image size.
 	 */
-	function media_value( $new_value, $old_value ) {
-		$old_value = get_option( 'sendimagesrss_image_size', '560' );
-		if ( ! $new_value || $new_value < '200' || $new_value > '900' ) {
-			return $old_value;
+	function media_value( $new_value ) {
+		$new_value = absint( $new_value );
+		if ( ! $new_value || $new_value < 200 || $new_value > 900 ) {
+			return get_option( 'sendimagesrss_image_size', '560' );
 		}
-		else {
-			return absint( $new_value );
-		}
+		return $new_value;
 	}
 
 	/**
