@@ -1,6 +1,6 @@
 === Send Images to RSS ===
 
-Contributors: littlerchicken, garyj
+Contributors: littler.chicken, garyj
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FEFGGUG88LBKQ
 Tags: email, RSS, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
 Requires at least: 3.5
