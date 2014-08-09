@@ -69,6 +69,8 @@ If this happens, your permalink for the new feed may not have been updated. Visi
 
 If you use native WordPress galleries in your posts, they're sent to your feed as thumbnails. Even if you do not use an RSS/email service, you can still use this plugin to sort out your galleries for subscribers who use an RSS reader. If you select Simplify Feed, your galleries will be converted, but there will not be an email sized image created, and no alternate feed will be created.
 
+## Screenshots ##
+![Screenshot of the optional plugin settings in Settings > Media.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)__Screenshot of the optional plugin settings in Settings > Media.__
 
 ## Credits
 
