@@ -9,7 +9,7 @@ WordPress plugin that replaces images with an email friendly size image in RSS f
 The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
-* WordPress 3.5, tested up to 4.0beta3
+* WordPress 3.8, tested up to 4.0RC1
 
 ## Installation
 
@@ -43,7 +43,11 @@ Then go to your Plugins screen and click __Activate__.
 
 Most users should not need to change this. The plugin is designed with a default image size of 560 pixels for the width of the new image. If, however, your RSS email template is more or less than 600 pixels wide, or you're using a template with a sidebar, you may need to change this setting. What number you choose is up to you.
 
-__Note:__ If you use a template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
+__Note:__ If you use an email template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
+
+### Does this plugin work with excerpts?
+
+Nope. This plugin is intended for use with full content feeds only. There are several plugins which will resize and/or add your post's featured image to your feed; those work best if your feed is excerpts.
 
 ### What about smaller images?
 
@@ -70,7 +74,8 @@ If this happens, your permalink for the new feed may not have been updated. Visi
 If you use native WordPress galleries in your posts, they're sent to your feed as thumbnails. Even if you do not use an RSS/email service, you can still use this plugin to sort out your galleries for subscribers who use an RSS reader. If you select Simplify Feed, your galleries will be converted, but there will not be an email sized image created, and no alternate feed will be created.
 
 ## Screenshots ##
-![Screenshot of the optional plugin settings in Settings > Media.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)__Screenshot of the optional plugin settings in Settings > Media.__
+![Screenshot of the optional plugin settings in Settings > Media.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
+__Screenshot of the optional plugin settings in Settings > Media.__
 
 ## Credits
 

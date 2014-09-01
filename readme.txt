@@ -3,8 +3,8 @@
 Contributors: littler.chicken, garyj
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FEFGGUG88LBKQ
 Tags: email, RSS, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
-Requires at least: 3.5
-Tested up to: 4.0beta3
+Requires at least: 3.8
+Tested up to: 4.0
 Stable tag: 2.4.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -30,6 +30,10 @@ The plugin optionally adds a new email friendly image size to WordPress. Any lar
 Most users should not need to change this. The plugin is designed with a default image size of 560 pixels for the width of the new image. If, however, your RSS email template is more or less than 600 pixels wide, or you're using a template with a sidebar, you may need to change this setting. What number you choose is up to you.
 
 **Note:** If you use a template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
+
+= Does this plugin work with excerpts? =
+
+Nope. This plugin is intended for use with full content feeds only. There are several plugins which will resize and/or add your post's featured image to your feed; those work best if your feed is excerpts.
 
 = What about smaller images? =
 
