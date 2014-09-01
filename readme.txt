@@ -63,7 +63,17 @@ If you use native WordPress galleries in your posts, they're sent to your feed a
 
 1. Screenshot of the optional plugin settings in Settings > Media.
 
+== Upgrade Notice ==
+
+= 2.4.2 =
+Prepared for WordPress 4.0 release.
+
 == Changelog ==
+
+= 2.4.2 =
+* updated for new WordPress version.
+* added plugin icon.
+* moved, but did not change, main image function.
 
 = 2.4.1 =
 * bugfix: corrected sanitization method for email image size.

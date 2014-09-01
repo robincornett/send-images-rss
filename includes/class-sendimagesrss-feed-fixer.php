@@ -34,62 +34,14 @@ class SendImagesRSS_Feed_Fixer {
 
 		$this->remove_caption_style( $doc );
 
-		// Now work on the images, which is why we're really here.
-		$images = $doc->getElementsByTagName( 'img' );
-		foreach ( $images as $image ) {
-			$image_url = $image->getAttribute( 'src' ); // get the image URL
-			$image_id  = $this->get_image_id( $image_url ); // use the image URL to get the image ID
-			$mailchimp = wp_get_attachment_image_src( $image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
-
-			$image->removeAttribute( 'height' );
-			$image->removeAttribute( 'style' );
-
-			// use the MailChimp size image if it exists.
-			if ( isset( $mailchimp[3] ) && $mailchimp[3] ) {
-				$image->setAttribute( 'src', $mailchimp[0] ); // use the MC size image for source
-				$image->setAttribute( 'width', $mailchimp[1] );
-				$image->setAttribute( 'align', 'center' );
-			}
-
-			/*
-			 * If there is no MailChimp sized image, check alignment.
-			 * If set to right or left, do the same in the feed for small images.
-			 * Otherwise, align images to center.
-			 * Should be OK even with authors who do funny things with images (like full width, aligned left).
-			 */
-			else {
-				$class    = $image->getAttribute( 'class' );
-				$width    = $image->getAttribute( 'width' );
-				$maxwidth = get_option( 'sendimagesrss_image_size', '560' );
-
-				// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
-				if ( empty( $width ) ) {
-					$original = wp_get_attachment_image_src( $image_id, 'original' );
-					$image->setAttribute( 'width', $original[1] );
-				}
-				// now, if it's a small image, aligned right
-				if ( ( false !== strpos( $class, 'alignright' ) ) && ( $width < $maxwidth ) ) {
-					$image->setAttribute( 'align', 'right' );
-					$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;max-width:280px;' );
-				}
-				// or if it's a small image, aligned left
-				elseif ( ( false !== strpos( $class, 'alignleft' ) ) && ( $width < $maxwidth ) ) {
-					$image->setAttribute( 'align', 'left' );
-					$image->setAttribute( 'style', 'margin:0px 10px 10px 0px;max-width:280px;' );
-				}
-				// now what's left are large images which don't have a MailChimp sized image, so set a max-width
-				else {
-					$image->setAttribute( 'align', 'center' );
-					$image->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
-				}
-			}
-		}
+		$this->modify_images( $doc );
 
 		// Strip extra div added by new DOMDocument
 		$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 
 		return $content;
 	}
+
 
 	/**
 	 * Try and load HTML as an XML document.
@@ -119,6 +71,7 @@ class SendImagesRSS_Feed_Fixer {
 		return $doc;
 	}
 
+
 	/**
 	 * Remove caption styles.
 	 *
@@ -139,6 +92,70 @@ class SendImagesRSS_Feed_Fixer {
 		foreach ( $figures as $figure ) {
 			$figure->removeAttribute( 'style' );
 		}
+	}
+
+
+	/**
+	 * Modify images in content.
+	 *
+	 * Argument passed by reference, so no return needed.
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param DOMDocument $doc
+	 */
+	protected function modify_images( DOMDocument &$doc ) {
+		// Now work on the images, which is why we're really here.
+		$images = $doc->getElementsByTagName( 'img' );
+		foreach ( $images as $image ) {
+			$image_url = $image->getAttribute( 'src' ); // get the image URL
+			$image_id  = $this->get_image_id( $image_url ); // use the image URL to get the image ID
+			$mailchimp = wp_get_attachment_image_src( $image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
+
+			$image->removeAttribute( 'height' );
+			$image->removeAttribute( 'style' );
+
+			// use the MailChimp size image if it exists.
+			if ( isset( $mailchimp[3] ) && $mailchimp[3] ) {
+				$image->setAttribute( 'src', $mailchimp[0] ); // use the MC size image for source
+				$image->setAttribute( 'width', $mailchimp[1] );
+				$image->setAttribute( 'align', 'center' );
+			}
+
+			/*
+			 * If there is no MailChimp sized image, check alignment.
+			 * If set to right or left, do the same in the feed for small images.
+			 * Otherwise, align images to center.
+			 * Should be OK even with authors who do funny things with images (like full width, aligned left).
+			 */
+			else {
+				$class    = $image->getAttribute( 'class' );
+				$width    = $image->getAttribute( 'width' );
+				$maxwidth = get_option( 'sendimagesrss_image_size', 560 );
+
+				// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
+				if ( empty( $width ) ) {
+					$original = wp_get_attachment_image_src( $image_id, 'original' );
+					$image->setAttribute( 'width', $original[1] );
+				}
+				// now, if it's a small image, aligned right
+				if ( ( false !== strpos( $class, 'alignright' ) ) && ( $width < $maxwidth ) ) {
+					$image->setAttribute( 'align', 'right' );
+					$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;max-width:280px;' );
+				}
+				// or if it's a small image, aligned left
+				elseif ( ( false !== strpos( $class, 'alignleft' ) ) && ( $width < $maxwidth ) ) {
+					$image->setAttribute( 'align', 'left' );
+					$image->setAttribute( 'style', 'margin:0px 10px 10px 0px;max-width:280px;' );
+				}
+				// now what's left are large images which don't have a MailChimp sized image, so set a max-width
+				else {
+					$image->setAttribute( 'align', 'center' );
+					$image->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
+				}
+			}
+		}
+
 	}
 
 	/**

@@ -85,6 +85,14 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 
 ## Changelog
 
+###2.4.2
+* updated for new WordPress version.
+* added plugin icon.
+* moved, but did not change, main image function.
+
+###2.4.1
+* Sanitization bug fix.
+
 ###2.4.0
 * Added a simplify feed method, which allows user to clean up galleries only, without creating an email friendly feed.
 * Many much refactoring and input and tail kicking from the incomparable [Gary Jones](http://gamajo.com)
