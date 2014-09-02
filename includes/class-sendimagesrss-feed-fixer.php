@@ -100,7 +100,7 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 * Argument passed by reference, so no return needed.
 	 *
-	 * @since 1.1.1
+	 * @since 2.4.2
 	 *
 	 * @param DOMDocument $doc
 	 */
