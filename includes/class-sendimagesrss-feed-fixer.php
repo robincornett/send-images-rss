@@ -32,7 +32,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		$doc = $this->load_html( $content );
 
-		$this->remove_caption_style( $doc );
+		//$this->remove_caption_style( $doc ); // deprecated as of 2.5.0
 
 		$this->modify_images( $doc );
 
@@ -80,6 +80,8 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 1.1.1
 	 *
 	 * @param DOMDocument $doc
+	 *
+	 * deprecated as of 2.5.0 ?
 	 */
 	protected function remove_caption_style( DOMDocument &$doc ) {
 		// remove inline style (width) from XHTML captions
@@ -100,7 +102,7 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 * Argument passed by reference, so no return needed.
 	 *
-	 * @since 2.4.2
+	 * @since 1.1.1
 	 *
 	 * @param DOMDocument $doc
 	 */
@@ -108,55 +110,125 @@ class SendImagesRSS_Feed_Fixer {
 		// Now work on the images, which is why we're really here.
 		$images = $doc->getElementsByTagName( 'img' );
 		foreach ( $images as $image ) {
-			$image_url = $image->getAttribute( 'src' ); // get the image URL
-			$image_id  = $this->get_image_id( $image_url ); // use the image URL to get the image ID
-			$mailchimp = wp_get_attachment_image_src( $image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
 
 			$image->removeAttribute( 'height' );
 			$image->removeAttribute( 'style' );
 
-			// use the MailChimp size image if it exists.
-			if ( isset( $mailchimp[3] ) && $mailchimp[3] ) {
-				$image->setAttribute( 'src', $mailchimp[0] ); // use the MC size image for source
-				$image->setAttribute( 'width', $mailchimp[1] );
-				$image->setAttribute( 'align', 'center' );
-			}
-
-			/*
-			 * If there is no MailChimp sized image, check alignment.
-			 * If set to right or left, do the same in the feed for small images.
-			 * Otherwise, align images to center.
-			 * Should be OK even with authors who do funny things with images (like full width, aligned left).
-			 */
-			else {
-				$class    = $image->getAttribute( 'class' );
-				$width    = $image->getAttribute( 'width' );
-				$maxwidth = get_option( 'sendimagesrss_image_size', 560 );
-
-				// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
-				if ( empty( $width ) ) {
-					$original = wp_get_attachment_image_src( $image_id, 'original' );
-					$image->setAttribute( 'width', $original[1] );
-				}
-				// now, if it's a small image, aligned right
-				if ( ( false !== strpos( $class, 'alignright' ) ) && ( $width < $maxwidth ) ) {
-					$image->setAttribute( 'align', 'right' );
-					$image->setAttribute( 'style', 'margin:0px 0px 10px 10px;max-width:280px;' );
-				}
-				// or if it's a small image, aligned left
-				elseif ( ( false !== strpos( $class, 'alignleft' ) ) && ( $width < $maxwidth ) ) {
-					$image->setAttribute( 'align', 'left' );
-					$image->setAttribute( 'style', 'margin:0px 10px 10px 0px;max-width:280px;' );
-				}
-				// now what's left are large images which don't have a MailChimp sized image, so set a max-width
-				else {
-					$image->setAttribute( 'align', 'center' );
-					$image->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
-				}
-			}
+			$this->replace_images( $image );
 		}
 
 	}
+
+	/**
+	 * Replace large images with new email sized images.
+	 *
+	 * Argument passed by reference, so no return needed.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param $image
+	 */
+	protected function replace_images( $image ) {
+		$image_url = $image->getAttribute( 'src' ); // get the image URL
+		$image_id  = $this->get_image_id( $image_url ); // use the image URL to get the image ID
+		$mailchimp = wp_get_attachment_image_src( $image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
+
+		// use the MailChimp size image if it exists.
+		if ( isset( $mailchimp[3] ) && $mailchimp[3] ) {
+			$image->parentNode->removeAttribute( 'style' );
+			$image->setAttribute( 'src', $mailchimp[0] ); // use the MC size image for source
+			$image->setAttribute( 'width', $mailchimp[1] );
+			$image->setAttribute( 'align', 'center' );
+		}
+
+		else {
+			$this->fix_other_images( $image );
+			$this->fix_captions( $image );
+		}
+	}
+	/**
+	 * Modify images in content.
+	 *
+	 * Argument passed by reference, so no return needed.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param $image
+	 */
+	protected function fix_other_images( $image ) {
+		$class     = $image->getAttribute( 'class' );
+		$width     = $image->getAttribute( 'width' );
+		$maxwidth  = get_option( 'sendimagesrss_image_size', 560 );
+		$halfwidth = floor( $maxwidth / 2 );
+		$caption   = $image->parentNode->getAttribute( 'class' ); // to cover captions
+
+		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
+		if ( empty( $width ) ) {
+			$original = wp_get_attachment_image_src( $image_id, 'original' );
+			$image->setAttribute( 'width', $original[1] );
+		}
+		// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
+		if ( ( ( false !== strpos( $class, 'alignright' ) ) || ( false !== strpos( $caption, 'alignright' ) ) ) && ( $width < $maxwidth ) ) {
+			$image->setAttribute( 'align', 'right' );
+			$image->setAttribute( 'style', esc_attr( 'margin:0px 0px 10px 10px;max-width:' . $halfwidth . 'px;' ) );
+		}
+		// or if it's a small image, aligned left
+		elseif ( ( ( false !== strpos( $class, 'alignleft' ) ) || ( false !== strpos( $caption, 'alignleft' ) ) ) && ( $width < $maxwidth ) ) {
+			$image->setAttribute( 'align', 'left' );
+			$image->setAttribute( 'style', esc_attr( 'margin:0px 10px 10px 0px;max-width:' . $halfwidth . 'px;' ) );
+		}
+		// now what's left are large images which don't have a MailChimp sized image, so set a max-width
+		else {
+			$image->setAttribute( 'align', 'center' );
+			$image->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
+		}
+
+	}
+
+	/**
+	 * Modify captions in content.
+	 *
+	 * Argument passed by reference, so no return needed.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param $image
+	 */
+	protected function fix_captions( $image ) {
+		$width        = $image->getAttribute( 'width' );
+		$maxwidth     = get_option( 'sendimagesrss_image_size', 560 );
+		$halfwidth    = floor( $maxwidth / 2 );
+		$caption      = $image->parentNode->getAttribute( 'class' ); // to cover captions
+		$captionwidth = $image->parentNode->getAttribute( 'width' );
+
+		// now one last check if there are captions O.o
+		if ( false === strpos( $caption, 'wp-caption' ) ) {
+			return; // theoretically, no caption, so skip forward and finish up.
+		}
+		else { // we has captions and have to deal with their mess.
+			$image->parentNode->removeAttribute( 'style' );
+			$image->parentNode->setAttribute( 'width', $width ); // sets caption width to same as image, which might be too large.
+
+			// if it's a small image with a caption, aligned right
+			if ( false !== strpos( $caption, 'alignright' ) && $captionwidth < $maxwidth ) {
+				$image->parentNode->setAttribute( 'style', esc_attr( 'float:right;max-width:' . $halfwidth . 'px;' ) );
+			}
+			// or if it's a small image with a caption, aligned left
+			elseif ( false !== strpos( $caption, 'alignleft' ) && $captionwidth < $maxwidth ) {
+				$image->parentNode->setAttribute( 'style', esc_attr( 'float:left;max-width:' . $halfwidth . 'px;' ) );
+			}
+			// larger images with captions, aligned center
+			elseif ( false !== strpos( $caption, 'aligncenter' ) ) {
+				$image->parentNode->setAttribute( 'align', 'center' );
+				$image->parentNode->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
+			}
+			// larger images with alignment that doesn't make sense to me would be what's left.
+			else {
+				$image->parentNode->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
+			}
+		}
+	}
+
 
 	/**
 	 * Get the ID of each image dynamically.
