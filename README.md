@@ -1,6 +1,6 @@
 # Send Images to RSS
 
-__NOTE: this plugin is totally a work in progress, and it is up to you to check that your feed output is still working, especially in your email system of choice, once it's installed.__ I've attempted to set it up to handle XHTML or HTML5, and function even if your feed is wonky, but __please__ double check, and let me know if you have issues, and if so, what specifically they are.
+__NOTE: it is up to you to check that your feed output is still working, especially in your email system of choice, once it's installed.__ I've attempted to set it up to handle XHTML or HTML5, and function even if your feed is wonky, but __please__ double check, and let me know if you have issues, and if so, what specifically they are.
 
 WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, even if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
 
@@ -9,7 +9,7 @@ WordPress plugin that replaces images with an email friendly size image in RSS f
 The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
-* WordPress 3.8, tested up to 4.0RC1
+* WordPress 3.8, tested up to 4.0
 
 ## Installation
 
@@ -84,6 +84,11 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 * Inspired by [Erik Teichmann](http://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
 
 ## Changelog
+
+###2.5.0
+* added new function to deal with captions and alignment.
+* deprecated original caption function since we have a whole new wonderland of caption action.
+* refactoring due to a lot more things being processed.
 
 ###2.4.2
 * updated for new WordPress version.
