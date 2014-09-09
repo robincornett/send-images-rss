@@ -145,7 +145,9 @@ class SendImagesRSS_Feed_Fixer {
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
 		if ( empty( $width ) ) {
-			$original = wp_get_attachment_image_src( $image_id, 'original' );
+			$image_url = $image->getAttribute( 'src' );
+			$image_id  = $this->get_image_id( $item->image_url ); // use the image URL to get the image ID
+			$original  = wp_get_attachment_image_src( $image_id, 'original' );
 			$image->setAttribute( 'width', $original[1] );
 		}
 		// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
