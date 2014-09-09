@@ -32,8 +32,6 @@ class SendImagesRSS_Feed_Fixer {
 
 		$doc = $this->load_html( $content );
 
-		//$this->remove_caption_style( $doc ); // deprecated as of 2.5.0
-
 		$this->modify_images( $doc );
 
 		// Strip extra div added by new DOMDocument
@@ -73,31 +71,6 @@ class SendImagesRSS_Feed_Fixer {
 
 
 	/**
-	 * Remove caption styles.
-	 *
-	 * Argument passed by reference, so no return needed.
-	 *
-	 * @since 1.1.1
-	 *
-	 * @param DOMDocument $doc
-	 *
-	 * deprecated as of 2.5.0 ?
-	 */
-	protected function remove_caption_style( DOMDocument &$doc ) {
-		// remove inline style (width) from XHTML captions
-		$captions = $doc->getElementsByTagName( 'div' );
-		foreach ( $captions as $caption ) {
-			$caption->removeAttribute( 'style' );
-		}
-		// remove inline style (width) from HTML5 captions
-		$figures = $doc->getElementsByTagName( 'figure' );
-		foreach ( $figures as $figure ) {
-			$figure->removeAttribute( 'style' );
-		}
-	}
-
-
-	/**
 	 * Modify images in content.
 	 *
 	 * Argument passed by reference, so no return needed.
@@ -107,8 +80,10 @@ class SendImagesRSS_Feed_Fixer {
 	 * @param DOMDocument $doc
 	 */
 	protected function modify_images( DOMDocument &$doc ) {
+
 		// Now work on the images, which is why we're really here.
 		$images = $doc->getElementsByTagName( 'img' );
+
 		foreach ( $images as $image ) {
 
 			$image->removeAttribute( 'height' );
@@ -118,6 +93,7 @@ class SendImagesRSS_Feed_Fixer {
 		}
 
 	}
+
 
 	/**
 	 * Replace large images with new email sized images.
@@ -132,10 +108,13 @@ class SendImagesRSS_Feed_Fixer {
 		$image_url = $image->getAttribute( 'src' ); // get the image URL
 		$image_id  = $this->get_image_id( $image_url ); // use the image URL to get the image ID
 		$mailchimp = wp_get_attachment_image_src( $image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
+		$caption   = $image->parentNode->getAttribute( 'class' ); // to cover captions
 
 		// use the MailChimp size image if it exists.
 		if ( isset( $mailchimp[3] ) && $mailchimp[3] ) {
-			$image->parentNode->removeAttribute( 'style' );
+			if ( false !== strpos( $caption, 'wp-caption' ) ) {
+				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
+			}
 			$image->setAttribute( 'src', $mailchimp[0] ); // use the MC size image for source
 			$image->setAttribute( 'width', $mailchimp[1] );
 			$image->setAttribute( 'align', 'center' );
@@ -146,6 +125,8 @@ class SendImagesRSS_Feed_Fixer {
 			$this->fix_captions( $image );
 		}
 	}
+
+
 	/**
 	 * Modify images in content.
 	 *
@@ -185,6 +166,7 @@ class SendImagesRSS_Feed_Fixer {
 
 	}
 
+
 	/**
 	 * Modify captions in content.
 	 *
@@ -217,13 +199,10 @@ class SendImagesRSS_Feed_Fixer {
 			elseif ( false !== strpos( $caption, 'alignleft' ) && $captionwidth < $maxwidth ) {
 				$image->parentNode->setAttribute( 'style', esc_attr( 'float:left;max-width:' . $halfwidth . 'px;' ) );
 			}
-			// larger images with captions, aligned center
-			elseif ( false !== strpos( $caption, 'aligncenter' ) ) {
-				$image->parentNode->setAttribute( 'align', 'center' );
-				$image->parentNode->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
-			}
-			// larger images with alignment that doesn't make sense to me would be what's left.
+			// at this point, we have left large images, and smaller images with alignnone or center.
+			// and if someone used aligncenter/none with a small image, they deserve what they get.
 			else {
+				$image->parentNode->setAttribute( 'align', 'center' );
 				$image->parentNode->setAttribute( 'style', esc_attr( 'max-width:' . $maxwidth . 'px;' ) );
 			}
 		}
