@@ -139,6 +139,7 @@ class SendImagesRSS_Feed_Fixer {
 			}
 			$image->setAttribute( 'src', $item->mailchimp[0] ); // use the MC size image for source
 			$image->setAttribute( 'width', $item->mailchimp[1] );
+			$image->setAttribute( 'style', 'display:block;margin:10px auto;' );
 		}
 
 		else {
@@ -177,7 +178,7 @@ class SendImagesRSS_Feed_Fixer {
 		}
 		// now what's left are large images which don't have a MailChimp sized image, so set a max-width
 		else {
-			$image->setAttribute( 'style', esc_attr( 'max-width:' . $item->maxwidth . 'px;' ) );
+			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;max-width:' . $item->maxwidth . 'px;' ) );
 		}
 
 	}
@@ -214,7 +215,7 @@ class SendImagesRSS_Feed_Fixer {
 			// at this point, we have left large images, and smaller images with alignnone or center.
 			// and if someone used aligncenter/none with a small image, they deserve what they get.
 			else {
-				$image->parentNode->setAttribute( 'style', esc_attr( 'max-width:' . $item->maxwidth . 'px;margin:0 auto;' ) );
+				$image->parentNode->setAttribute( 'style', esc_attr( 'margin:0 auto;max-width:' . $item->maxwidth . 'px;' ) );
 			}
 		}
 	}
