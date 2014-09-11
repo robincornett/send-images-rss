@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: email, RSS, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 2.4.1
+Stable tag: 2.5.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -65,10 +65,19 @@ If you use native WordPress galleries in your posts, they're sent to your feed a
 
 == Upgrade Notice ==
 
+= 2.5.0 =
+Completely renovated caption processing.
+
 = 2.4.2 =
 Prepared for WordPress 4.0 release.
 
 == Changelog ==
+
+= 2.5.0 =
+* added new function to deal with captions and alignment.
+* deprecated original caption function since we have a whole new wonderland of caption action.
+* refactoring due to a lot more things being processed.
+* also set small image width to be max of 1/2 the max-width set in Media Settings.
 
 = 2.4.2 =
 * updated for new WordPress version.
