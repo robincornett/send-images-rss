@@ -82,9 +82,17 @@ class SendImagesRSS_Feed_Fixer {
 	protected function modify_images( DOMDocument &$doc ) {
 
 		// Now work on the images, which is why we're really here.
-		$images = $doc->getElementsByTagName( 'img' );
+		$images  = $doc->getElementsByTagName( 'img' );
+		$siteurl = get_bloginfo( 'url' );
 
 		foreach ( $images as $image ) {
+
+			$item         = $this->get_image_variables( $image );
+			$searchstring = strpos( $item->image_url, $siteurl );
+
+			if ( $searchstring === false ) {
+				return;
+			}
 
 			$image->removeAttribute( 'height' );
 			$image->removeAttribute( 'style' );
@@ -137,9 +145,9 @@ class SendImagesRSS_Feed_Fixer {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
 				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
 			}
-			$image->setAttribute( 'src', $item->mailchimp[0] ); // use the MC size image for source
-			$image->setAttribute( 'width', $item->mailchimp[1] );
-			$image->setAttribute( 'style', 'display:block;margin:10px auto;' );
+			$image->setAttribute( 'src', esc_url( $item->mailchimp[0] ) ); // use the MC size image for source
+			$image->setAttribute( 'width', absint( $item->mailchimp[1] ) );
+			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;' ) );
 		}
 
 		else {
@@ -164,7 +172,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
 		if ( empty( $item->width ) ) {
-			$image->setAttribute( 'width', $item->original[1] );
+			$image->setAttribute( 'width', esc_attr( $item->original[1] ) );
 		}
 		// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
 		if ( ( ( false !== strpos( $item->class, 'alignright' ) ) || ( false !== strpos( $item->caption, 'alignright' ) ) ) && ( $item->width < $item->maxwidth ) ) {

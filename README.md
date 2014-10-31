@@ -85,6 +85,10 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 
 ## Changelog
 
+###2.5.1
+* bugfix: if images are external, they are not processed by the plugin
+* escaped things
+
 ###2.5.0
 * added new function to deal with captions and alignment.
 * deprecated original caption function since we have a whole new wonderland of caption action.
