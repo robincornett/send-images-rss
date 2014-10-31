@@ -84,7 +84,7 @@ class SendImagesRSS_Feed_Fixer {
 		// Now work on the images, which is why we're really here.
 		$images  = $doc->getElementsByTagName( 'img' );
 		$siteurl = get_bloginfo( 'url' );
-		$clean   = preg_replace( '(http[s]?://|w{3}.)', '', $siteurl );
+		$clean   = preg_replace( '^http(s)?://|(www\.)?^', '', $siteurl );
 
 		foreach ( $images as $image ) {
 
