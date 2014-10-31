@@ -35,7 +35,7 @@ class SendImagesRSS_Feed_Fixer {
 		$this->modify_images( $doc );
 
 		// Strip extra div added by new DOMDocument
-		$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
+		$content = substr( $doc->saveHTML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 
 		return $content;
 	}
