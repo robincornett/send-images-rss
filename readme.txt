@@ -66,7 +66,9 @@ If you use native WordPress galleries in your posts, they're sent to your feed a
 == Upgrade Notice ==
 
 = 2.5.1 =
-bugfix so external images are not processed.
+* bugfix so external images are not processed.
+* content is loaded more efficiently
+* encoding tweaks
 
 == Changelog ==
 

@@ -87,6 +87,8 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 
 ###2.5.1
 * bugfix: if images are external, they are not processed by the plugin
+* content is loaded more efficiently
+* encoding tweaks
 * escaped things
 
 ###2.5.0
