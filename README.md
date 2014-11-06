@@ -6,7 +6,7 @@ WordPress plugin that replaces images with an email friendly size image in RSS f
 
 ## Description
 
-The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
+The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is an email friendly size. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
 * WordPress 3.8, tested up to 4.0
@@ -84,6 +84,12 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 * Inspired by [Erik Teichmann](http://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
 
 ## Changelog
+
+###2.5.1
+* bugfix: if images are external, they are not processed by the plugin
+* content is loaded more efficiently
+* encoding tweaks
+* escaped things
 
 ###2.5.0
 * added new function to deal with captions and alignment.

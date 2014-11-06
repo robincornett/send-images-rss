@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: email, RSS, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -15,7 +15,7 @@ Makes your RSS emails look more like your website by converting large images/gal
 
 WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, even if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
 
-The plugin optionally adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is 560 pixels wide. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
+The plugin optionally adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is an email friendly size. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 == Installation ==
 
@@ -65,13 +65,16 @@ If you use native WordPress galleries in your posts, they're sent to your feed a
 
 == Upgrade Notice ==
 
-= 2.5.0 =
-Completely renovated caption processing.
-
-= 2.4.2 =
-Prepared for WordPress 4.0 release.
+= 2.5.1 =
+* bugfix so external images are not processed.
+* content is loaded more efficiently
+* encoding tweaks
 
 == Changelog ==
+
+= 2.5.1 =
+* bugfix: if images are external, they are not processed by the plugin
+* escaped things
 
 = 2.5.0 =
 * added new function to deal with captions and alignment.

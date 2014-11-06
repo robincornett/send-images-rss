@@ -35,7 +35,7 @@ class SendImagesRSS_Feed_Fixer {
 		$this->modify_images( $doc );
 
 		// Strip extra div added by new DOMDocument
-		$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
+		$content = substr( $doc->saveHTML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 
 		return $content;
 	}
@@ -55,15 +55,17 @@ class SendImagesRSS_Feed_Fixer {
 
 		// Populate the document, hopefully cleanly, but otherwise, still load.
 		libxml_use_internal_errors( true ); // turn off errors for HTML5
+		// best option due to special character handling
 		if ( function_exists( 'mb_convert_encoding' ) ) {
-			$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' ) ); // convert the feed from XML to HTML
+			$currentencoding = mb_internal_encoding();
+			$content = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding );/*, LIBXML_HTML_NOIMPLIED*/ // convert the feed from XML to HTML
 		}
+		// not sure this is an improvement over straight load (for special characters)
 		elseif ( function_exists( 'iconv' ) ) {
-			$doc->LoadHTML( iconv( 'UTF-8', 'ISO-8859-1//IGNORE', $content ) );
+			$currentencoding = iconv_get_encoding( 'internal_encoding' );
+			$content = iconv( $currentencoding, 'ISO-8859-1//IGNORE', $content );
 		}
-		else {
-			$doc->LoadHTML( $content );
-		}
+		$doc->LoadHTML( $content );
 		libxml_clear_errors(); // now that it's loaded, go ahead
 
 		return $doc;
@@ -82,9 +84,15 @@ class SendImagesRSS_Feed_Fixer {
 	protected function modify_images( DOMDocument &$doc ) {
 
 		// Now work on the images, which is why we're really here.
-		$images = $doc->getElementsByTagName( 'img' );
+		$images  = $doc->getElementsByTagName( 'img' );
 
 		foreach ( $images as $image ) {
+
+			$item = $this->get_image_variables( $image );
+
+			if ( false === $item->image_id ) {
+				return;
+			}
 
 			$image->removeAttribute( 'height' );
 			$image->removeAttribute( 'style' );
@@ -137,9 +145,9 @@ class SendImagesRSS_Feed_Fixer {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
 				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
 			}
-			$image->setAttribute( 'src', $item->mailchimp[0] ); // use the MC size image for source
-			$image->setAttribute( 'width', $item->mailchimp[1] );
-			$image->setAttribute( 'style', 'display:block;margin:10px auto;' );
+			$image->setAttribute( 'src', esc_url( $item->mailchimp[0] ) ); // use the MC size image for source
+			$image->setAttribute( 'width', absint( $item->mailchimp[1] ) );
+			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;' ) );
 		}
 
 		else {
@@ -164,7 +172,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
 		if ( empty( $item->width ) ) {
-			$image->setAttribute( 'width', $item->original[1] );
+			$image->setAttribute( 'width', esc_attr( $item->original[1] ) );
 		}
 		// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
 		if ( ( ( false !== strpos( $item->class, 'alignright' ) ) || ( false !== strpos( $item->caption, 'alignright' ) ) ) && ( $item->width < $item->maxwidth ) ) {
