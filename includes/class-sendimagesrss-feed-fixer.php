@@ -55,11 +55,15 @@ class SendImagesRSS_Feed_Fixer {
 
 		// Populate the document, hopefully cleanly, but otherwise, still load.
 		libxml_use_internal_errors( true ); // turn off errors for HTML5
+		// best option due to special character handling
 		if ( function_exists( 'mb_convert_encoding' ) ) {
-			$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' ) ); // convert the feed from XML to HTML
+			$currentencoding = mb_internal_encoding();
+			$doc->LoadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding ) ); // convert the feed from XML to HTML
 		}
+		// not sure this is an improvement over straight load (for special characters)
 		elseif ( function_exists( 'iconv' ) ) {
-			$doc->LoadHTML( iconv( 'UTF-8', 'ISO-8859-1//IGNORE', $content ) );
+			$currentencoding = iconv_get_encoding( 'internal_encoding' );
+			$doc->LoadHTML( iconv( $currentencoding, 'ISO-8859-1//IGNORE', $content ) );
 		}
 		else {
 			$doc->LoadHTML( $content );
