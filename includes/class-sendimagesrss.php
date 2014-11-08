@@ -61,8 +61,8 @@ class SendImagesRSS {
 	 * @since 2.0.0
 	 */
 	public function init() {
-		$simplify = get_option( 'sendimagesrss_simplify_feed' );
-		$image_width = esc_attr( get_option( 'sendimagesrss_image_size', '560' ) );
+		$simplify    = get_option( 'sendimagesrss_simplify_feed' );
+		$image_width = esc_attr( get_option( 'sendimagesrss_image_size', 560 ) );
 
 		if ( ! $simplify ) {
 			add_image_size( 'mailchimp', intval( $image_width ) );
@@ -89,15 +89,13 @@ class SendImagesRSS {
 			return;
 		}
 
-		elseif ( is_feed() ) {
-			add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
+		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
 
-			$simplify = get_option( 'sendimagesrss_simplify_feed' );
-			$alt_feed = get_option( 'sendimagesrss_alternate_feed' );
+		$simplify = get_option( 'sendimagesrss_simplify_feed' );
+		$alt_feed = get_option( 'sendimagesrss_alternate_feed' );
 
-			if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
-				add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
-			}
+		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
+			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
 		}
 	}
 }

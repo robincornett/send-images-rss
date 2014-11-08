@@ -19,7 +19,7 @@ class SendImagesRSS_Feed_Fixer {
 	/**
 	 * Fix parts of a feed.
 	 *
-	 * This function is applied as a callback to the_content_filter.
+	 * This function is applied as a callback to the_content filter.
 	 *
 	 * @since 1.0.0
 	 *
@@ -42,7 +42,7 @@ class SendImagesRSS_Feed_Fixer {
 
 
 	/**
-	 * Try and load HTML as an XML document.
+	 * Try and load HTML as an HTML document with special characters, etc. intact.
 	 *
 	 * @since 1.0.0
 	 *
@@ -58,7 +58,7 @@ class SendImagesRSS_Feed_Fixer {
 		// best option due to special character handling
 		if ( function_exists( 'mb_convert_encoding' ) ) {
 			$currentencoding = mb_internal_encoding();
-			$content = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding );/*, LIBXML_HTML_NOIMPLIED*/ // convert the feed from XML to HTML
+			$content = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding ); // convert the feed from XML to HTML
 		}
 		// not sure this is an improvement over straight load (for special characters)
 		elseif ( function_exists( 'iconv' ) ) {
@@ -91,7 +91,7 @@ class SendImagesRSS_Feed_Fixer {
 			$item = $this->get_image_variables( $image );
 
 			if ( false === $item->image_id ) {
-				return;
+				return; // bail early if the image is not part of our WP site
 			}
 
 			$image->removeAttribute( 'height' );
