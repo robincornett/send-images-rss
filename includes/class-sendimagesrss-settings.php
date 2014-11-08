@@ -81,7 +81,7 @@ class SendImagesRSS_Settings {
 	function media_value( $new_value ) {
 		$new_value = absint( $new_value );
 		if ( ! $new_value || $new_value < 200 || $new_value > 900 ) {
-			return get_option( 'sendimagesrss_image_size', '560' );
+			return get_option( 'sendimagesrss_image_size', 560 );
 		}
 		return $new_value;
 	}
@@ -116,7 +116,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.2.0
 	 */
 	public function field_image_size() {
-		$value = get_option( 'sendimagesrss_image_size', '560' );
+		$value = get_option( 'sendimagesrss_image_size', 560 );
 
 		echo '<label for="sendimagesrss_image_size">' . __( 'Max Width', 'send-images-rss' ) . '</label>';
 		echo '<input type="number" step="1" min="200" max="900" id="sendimagesrss_image_size" name="sendimagesrss_image_size" value="' . esc_attr( $value ) . '" class="small-text" />';

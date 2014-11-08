@@ -61,8 +61,8 @@ class SendImagesRSS {
 	 * @since 2.0.0
 	 */
 	public function init() {
-		$simplify = get_option( 'sendimagesrss_simplify_feed' );
-		$image_width = esc_attr( get_option( 'sendimagesrss_image_size', '560' ) );
+		$simplify    = get_option( 'sendimagesrss_simplify_feed' );
+		$image_width = esc_attr( get_option( 'sendimagesrss_image_size', 560 ) );
 
 		if ( ! $simplify ) {
 			add_image_size( 'mailchimp', intval( $image_width ) );
