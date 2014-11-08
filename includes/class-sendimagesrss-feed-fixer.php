@@ -19,7 +19,7 @@ class SendImagesRSS_Feed_Fixer {
 	/**
 	 * Fix parts of a feed.
 	 *
-	 * This function is applied as a callback to the_content_filter.
+	 * This function is applied as a callback to the_content filter.
 	 *
 	 * @since 1.0.0
 	 *
@@ -42,7 +42,7 @@ class SendImagesRSS_Feed_Fixer {
 
 
 	/**
-	 * Try and load HTML as an XML document.
+	 * Try and load HTML as an HTML document with special characters, etc. intact.
 	 *
 	 * @since 1.0.0
 	 *
@@ -91,7 +91,7 @@ class SendImagesRSS_Feed_Fixer {
 			$item = $this->get_image_variables( $image );
 
 			if ( false === $item->image_id ) {
-				return;
+				return; // bail early if the image is not part of our WP site
 			}
 
 			$image->removeAttribute( 'height' );
