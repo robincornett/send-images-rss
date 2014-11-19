@@ -97,5 +97,9 @@ class SendImagesRSS {
 		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
 		}
+
+		if ( $photon_removed ) {
+			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
+		}
 	}
 }

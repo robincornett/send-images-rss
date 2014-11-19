@@ -33,6 +33,12 @@ class SendImagesRSS_Strip_Gallery {
 	public function strip( $content ) {
 		global $post;
 
+		$photon_removed = '';
+		if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
+			add_filter( 'jetpack_photon_skip_image', '__return_true' ); // because Photon refuses to use our new image size.
+			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+		}
+
 		if ( has_shortcode( $post->post_content, 'gallery' ) ) {
 			$content = preg_replace( '(-\d{3,4}x\d{3,4}.)', '.', $content );
 			$content = preg_replace( '(width="\d{2,3}")', '', $content );
