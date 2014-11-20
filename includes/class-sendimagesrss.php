@@ -89,6 +89,8 @@ class SendImagesRSS {
 			return;
 		}
 
+		add_filter( 'jetpack_photon_skip_image', '__return_true' ); // because Photon refuses to use our new image size.
+
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
 
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );

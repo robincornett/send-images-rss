@@ -35,7 +35,6 @@ class SendImagesRSS_Strip_Gallery {
 
 		$photon_removed = '';
 		if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
-			add_filter( 'jetpack_photon_skip_image', '__return_true' ); // because Photon refuses to use our new image size.
 			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 		}
 
