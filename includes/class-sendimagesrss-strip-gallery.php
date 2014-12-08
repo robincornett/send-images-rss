@@ -33,6 +33,7 @@ class SendImagesRSS_Strip_Gallery {
 	public function strip( $content ) {
 		global $post;
 
+		//* have to remove the photon filter twice as it's really aggressive
 		$photon_removed = '';
 		if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
 			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
