@@ -52,7 +52,7 @@ class SendImagesRSS {
 	 * @since 2.4.0
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'send-images-rss', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'send-images-rss', false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/' );
 	}
 
 	/**
