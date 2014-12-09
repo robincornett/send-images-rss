@@ -1,0 +1,165 @@
+# Copyright (C) 2014
+# This file is distributed under the GPL-2.0+.
+# Robin Cornett <hello@robincornett.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Send Images to RSS 2.4.0\n"
+"Report-Msgid-Bugs-To: Robin Cornett <hello@robincornett.com>\n"
+"POT-Creation-Date: 2014-08-06 08:33-0500\n"
+"PO-Revision-Date: 2014-12-09 09:28-0500\n"
+"Last-Translator: Robin Cornett <hello@robincornett.com>\n"
+"Language-Team: Robin Cornett <hello@robincornett.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
+"esc_html_x:1,2c\n"
+"X-Textdomain-Support: yes\n"
+"Language: en_US\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: ../includes/class-sendimagesrss-settings.php:31
+msgid "RSS Feeds"
+msgstr "Transmisiones RSS"
+
+#: ../includes/class-sendimagesrss-settings.php:38
+msgid "Simplify feed?"
+msgstr "¿Simplificar transmisión?"
+
+#: ../includes/class-sendimagesrss-settings.php:46
+msgid "RSS image size:"
+msgstr "Tamaño de la imagen RSS:"
+
+#: ../includes/class-sendimagesrss-settings.php:54
+msgid "Alternate feed?"
+msgstr "¿Alimentación alternativa?."
+
+#: ../includes/class-sendimagesrss-settings.php:81
+msgid ""
+"The <i>Send Images to RSS</i> plugin works out of the box without changing "
+"any settings. However, if you want to customize your image size and do not "
+"want to change the default feed, change those items here."
+msgstr ""
+"El plugin <i> Enviar imágenes a RSS </i>  funciona fuera de la caja sin "
+"cambiar ninguna configuración. Sin embargo, si desea personalizar el tamaño "
+"de su imagen y no quiere cambiar la alimentación por defecto, cambie esos "
+"artículos aquí"
+
+#: ../includes/class-sendimagesrss-settings.php:92
+msgid "Convert galleries only; do not fix feeds for email."
+msgstr ""
+"Convertir sólo galerías; no arreglar alimentaciones para el correo "
+"electrónico."
+
+#: ../includes/class-sendimagesrss-settings.php:95
+msgid ""
+"The only part of your feed which will be modified are your galleries. Email "
+"sized images will not be created."
+msgstr ""
+"La única parte de su alimentación que será modificado son sus galerías. No "
+"se crearán imágenes de tamaño Email."
+
+#: ../includes/class-sendimagesrss-settings.php:110
+msgid "Max Width"
+msgstr "Ancho Máximo"
+
+#: ../includes/class-sendimagesrss-settings.php:112
+msgid ""
+"Most users should <strong>should not</strong> need to change this number."
+msgstr ""
+"La mayoría de los usuarios <strong> no deberían </strong>  tener que cambiar "
+"este número."
+
+#: ../includes/class-sendimagesrss-settings.php:126
+msgid "Create a custom feed and use that for sending emails."
+msgstr ""
+"Crear una transmisión personalizada y usarla que para el envío de mensajes "
+"de correo electrónico."
+
+#: ../includes/class-sendimagesrss-settings.php:131
+#: ../includes/class-sendimagesrss-settings.php:137
+#, php-format
+msgid "Hey! Your new feed is at <a href=\"%1$s\" target=\"_blank\">%1$s</a>."
+msgstr ""
+"¡Hey! Su nueva transmisión se encuentra en <a href=\"%1$s\" target=\"_blank"
+"\">%1$s</a>."
+
+#: ../includes/class-sendimagesrss-settings.php:154
+msgid ""
+"Warning! You have the Simplify Feed option checked! Your Alternate Feed "
+"setting will be ignored."
+msgstr ""
+"¡Advertencia! ¡Usted tiene la opción Simplificar Alimentación marcada! Su "
+"ajuste de alimentación alternativa será ignorado."
+
+#: ../includes/class-sendimagesrss-settings.php:168
+msgid "Simplify Feed"
+msgstr "Simplificar Alimentación"
+
+#: ../includes/class-sendimagesrss-settings.php:169
+msgid ""
+"If you are not concerned about sending your feed out over email and want "
+"only your galleries changed from thumbnails to large images, select Simplify "
+"Feed."
+msgstr ""
+"Si no está preocupado por el envío de su alimentación por correo electrónico "
+"y desea que sólo sus galerías sean cambiadas desde miniaturas hasta grandes "
+"imágenes, seleccionar Simplificar Feed."
+
+#: ../includes/class-sendimagesrss-settings.php:171
+msgid "RSS Image Size"
+msgstr "Tamaño de imagen RSS"
+
+#: ../includes/class-sendimagesrss-settings.php:172
+msgid ""
+"If you have customized your emails to be a nonstandard width, or you are "
+"using a template with a sidebar, you will want to change your RSS Image size "
+"(width). The default is 560 pixels, which is the content width of a standard "
+"single column email (600 pixels wide with 20 pixels padding on the content)."
+msgstr ""
+"Si ha personalizado sus correos electrónicos a una anchura no estándar, o si "
+"está utilizando una plantilla con una barra lateral, tendrá que cambiar su "
+"tamaño RSS de imagen (anchura). El valor predeterminado es 560 píxeles, que "
+"es el ancho del contenido de un correo electrónico de una sola columna "
+"estándar (600 píxeles de ancho con 20 píxeles relleno en el contenido)."
+
+#: ../includes/class-sendimagesrss-settings.php:173
+msgid ""
+"Note: Changing the width here will not affect previously uploaded images, "
+"but it will affect the max-width applied to images&rsquo; style."
+msgstr ""
+"Nota: Al cambiar el ancho aquí no afectará a las imágenes subidas "
+"previamente, pero afectará al max Ancho de aplicar a las imágenes y &rsquo; "
+"estilo."
+
+#: ../includes/class-sendimagesrss-settings.php:175
+msgid "Alternate Feed"
+msgstr "RSS alternativo"
+
+#: ../includes/class-sendimagesrss-settings.php:176
+msgid ""
+"By default, the Send Images to RSS plugin modifies every feed from your "
+"site. If you want to leave your main feed untouched and set up a totally "
+"separate feed for emails only, select this option."
+msgstr ""
+"Por defecto, el plugin enviar imágenes a RSS modifica cada alimentación de "
+"su sitio. Si quiere dejar su alimentación principal intacta y establecer una "
+"alimentación totalmente independiente para mensajes de correo electrónico "
+"solamente, seleccione esta opción."
+
+#: ../includes/class-sendimagesrss-settings.php:177
+msgid ""
+"If you use custom post types with their own feeds, the alternate feed method "
+"will work even with them."
+msgstr ""
+"Si utiliza tipos de correos personalizados con sus propias alimentaciones, "
+"el método de alimentación alternativo funcionará incluso con ellos."
+
+#: ../includes/class-sendimagesrss-settings.php:181
+msgid "Send Images to RSS"
+msgstr "Enviar imágenes a RSS"
