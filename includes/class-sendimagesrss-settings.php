@@ -130,8 +130,8 @@ class SendImagesRSS_Settings {
 	 * @since 2.3.0
 	 */
 	public function field_alternate_feed() {
-		$value = get_option( 'sendimagesrss_alternate_feed' );
-		$simplify = get_option( 'sendimagesrss_simplify_feed' );
+		$value             = get_option( 'sendimagesrss_alternate_feed' );
+		$simplify          = get_option( 'sendimagesrss_simplify_feed' );
 		$pretty_permalinks = get_option( 'permalink_structure' );
 
 		echo '<input type="checkbox" name="sendimagesrss_alternate_feed" id="sendimagesrss_alternate_feed" value="1"' . checked( 1, $value, false ) . ' class="code" /> <label for="sendimagesrss_alternate_feed">' . __( 'Create a custom feed and use that for sending emails.', 'send-images-rss' ) . '</label>';
@@ -139,13 +139,13 @@ class SendImagesRSS_Settings {
 		if ( $value && ! $simplify ) {
 			if ( $pretty_permalinks ){
 				echo '<p>' . sprintf(
-					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
+					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 					esc_url( trailingslashit( home_url() ) . 'feed/email' )
 				) . '</p>';
 			}
 			else {
 				echo '<p>' . sprintf(
-					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
+					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 					esc_url( trailingslashit( home_url() ) . '?feed=email' )
 				) . '</p>';
 			}
@@ -158,7 +158,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.4.0
 	 */
 	public function error_message() {
-		$value = get_option( 'sendimagesrss_alternate_feed' );
+		$value    = get_option( 'sendimagesrss_alternate_feed' );
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );
 
 		if ( $value && $simplify ) {
