@@ -95,8 +95,9 @@ class SendImagesRSS_Feed_Fixer {
 
 			$item = $this->get_image_variables( $image );
 
+			//* bail early if the image is not part of our WP site
 			if ( false === $item->image_id ) {
-				return; // bail early if the image is not part of our WP site
+				return;
 			}
 
 			$image->removeAttribute( 'height' );
@@ -145,12 +146,14 @@ class SendImagesRSS_Feed_Fixer {
 
 		$item = $this->get_image_variables( $image );
 
-		// use the MailChimp size image if it exists.
+		//* use the MailChimp size image if it exists.
 		if ( isset( $item->mailchimp[3] ) && $item->mailchimp[3] ) {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
 				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
 			}
-			$image->setAttribute( 'src', esc_url( $item->mailchimp[0] ) ); // use the MC size image for source
+
+			//* use the MC size image for source
+			$image->setAttribute( 'src', esc_url( $item->mailchimp[0] ) );
 			$image->setAttribute( 'width', absint( $item->mailchimp[1] ) );
 			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;' ) );
 		}
