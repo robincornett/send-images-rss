@@ -175,23 +175,23 @@ class SendImagesRSS_Feed_Fixer {
 
 		$item = $this->get_image_variables( $image );
 
-		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out
-		if ( empty( $item->width ) ) {
-			$image->setAttribute( 'width', esc_attr( $item->original[1] ) );
-		}
-		// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
-		if ( ( ( false !== strpos( $item->class, 'alignright' ) ) || ( false !== strpos( $item->caption, 'alignright' ) ) ) && ( $item->width < $item->maxwidth ) ) {
-			$image->setAttribute( 'align', 'right' );
-			$image->setAttribute( 'style', esc_attr( 'margin:0px 0px 10px 10px;max-width:' . $item->halfwidth . 'px;' ) );
-		}
-		// or if it's a small image, aligned left
-		elseif ( ( ( false !== strpos( $item->class, 'alignleft' ) ) || ( false !== strpos( $item->caption, 'alignleft' ) ) ) && ( $item->width < $item->maxwidth ) ) {
-			$image->setAttribute( 'align', 'left' );
-			$image->setAttribute( 'style', esc_attr( 'margin:0px 10px 10px 0px;max-width:' . $item->halfwidth . 'px;' ) );
-		}
-		// now what's left are large images which don't have a MailChimp sized image, so set a max-width
-		else {
-			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;max-width:' . $item->maxwidth . 'px;' ) );
+		//* guard clause: set everything to be centered
+		$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;max-width:' . $item->maxwidth . 'px;' ) );
+
+		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out,
+		// but some plugins or users may remove the width on their own. Opting not to add the width in
+		// because it complicates things.
+		if ( ! empty( $item->width ) ) {
+			//* now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
+			if ( ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption, 'alignright' ) ) && $item->width < $item->maxwidth ) {
+				$image->setAttribute( 'align', 'right' );
+				$image->setAttribute( 'style', esc_attr( 'margin:0px 0px 10px 10px;max-width:' . $item->halfwidth . 'px;' ) );
+			}
+			//* or if it's a small image, aligned left
+			elseif ( ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption, 'alignleft' ) ) && $item->width < $item->maxwidth ) {
+				$image->setAttribute( 'align', 'left' );
+				$image->setAttribute( 'style', esc_attr( 'margin:0px 10px 10px 0px;max-width:' . $item->halfwidth . 'px;' ) );
+			}
 		}
 
 	}
@@ -210,25 +210,25 @@ class SendImagesRSS_Feed_Fixer {
 
 		$item = $this->get_image_variables( $image );
 
-		// now one last check if there are captions O.o
+		//* now one last check if there are captions O.o
 		if ( false === strpos( $item->caption, 'wp-caption' ) ) {
 			return; // theoretically, no caption, so skip forward and finish up.
 		}
-		else { // we has captions and have to deal with their mess.
-			$image->parentNode->removeAttribute( 'style' );
+		//* we has captions and have to deal with their mess.
+		$image->parentNode->removeAttribute( 'style' );
 
-			// if it's a small image with a caption, aligned right
+		//* guard clause: set the caption style to full width and center
+		$image->parentNode->setAttribute( 'style', esc_attr( 'margin:0 auto;max-width:' . $item->maxwidth . 'px;' ) );
+
+		//* if a width is set, then let's adjust for alignment
+		if ( ! empty( $item->width ) ) {
+			//* if it's a small image with a caption, aligned right
 			if ( false !== strpos( $item->caption, 'alignright' ) && $item->width < $item->maxwidth ) {
 				$image->parentNode->setAttribute( 'style', esc_attr( 'float:right;max-width:' . $item->halfwidth . 'px;' ) );
 			}
-			// or if it's a small image with a caption, aligned left
+			//* or if it's a small image with a caption, aligned left
 			elseif ( false !== strpos( $item->caption, 'alignleft' ) && $item->width < $item->maxwidth ) {
 				$image->parentNode->setAttribute( 'style', esc_attr( 'float:left;max-width:' . $item->halfwidth . 'px;' ) );
-			}
-			// at this point, we have left large images, and smaller images with alignnone or center.
-			// and if someone used aligncenter/none with a small image, they deserve what they get.
-			else {
-				$image->parentNode->setAttribute( 'style', esc_attr( 'margin:0 auto;max-width:' . $item->maxwidth . 'px;' ) );
 			}
 		}
 	}
