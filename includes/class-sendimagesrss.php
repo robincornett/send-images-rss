@@ -89,13 +89,27 @@ class SendImagesRSS {
 			return;
 		}
 
+		//* because Photon refuses to use our new image size.
+		add_filter( 'jetpack_photon_skip_image', '__return_true' );
+
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
+
+		//* have to remove the photon filter twice as it's really aggressive
+		$photon_removed = '';
+		if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
+			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+		}
 
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );
 		$alt_feed = get_option( 'sendimagesrss_alternate_feed' );
 
 		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
+		}
+
+		//* re-enable photon, although since we're in the feed, not sure it's relevant
+		if ( $photon_removed ) {
+			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
 	}
 }
