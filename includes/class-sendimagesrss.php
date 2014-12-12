@@ -82,10 +82,12 @@ class SendImagesRSS {
 	 *
 	 * @since 2.3.0
 	 *
-	 * @return null Return early if not a feed.
+	 * @return null Return early if not a feed, or if the feed is set to send excerpts.
 	 */
 	public function fix_feed() {
-		if ( ! is_feed() ) {
+
+		$rss_option = get_option( 'rss_use_excerpt' );
+		if ( ! is_feed() || '1' === $rss_option ) {
 			return;
 		}
 
