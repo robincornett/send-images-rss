@@ -9,7 +9,7 @@ WordPress plugin that replaces images with an email friendly size image in RSS f
 The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is an email friendly size. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
-* WordPress 3.8, tested up to 4.0
+* WordPress 3.8, tested up to 4.1
 
 ## Installation
 
@@ -85,53 +85,60 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 
 ## Changelog
 
-###2.5.1
+### 2.5.2
+* added filter to process images correctly if user has Photon (Jetpack) enabled
+* added Spanish translation, provided by [Web Hosting Hub](http://www.webhostinghub.com/)
+* added error message for users who have their feed set to Summary instead of Full text
+* changed error messages to be less invasive
+* fixed feed output if user has older PHP (pre 5.3.6)
+
+### 2.5.1
 * bugfix: if images are external, they are not processed by the plugin
 * content is loaded more efficiently
 * encoding tweaks
 * escaped things
 
-###2.5.0
+### 2.5.0
 * added new function to deal with captions and alignment.
 * deprecated original caption function since we have a whole new wonderland of caption action.
 * refactoring due to a lot more things being processed.
 * also set small image width to be max of 1/2 the max-width set in Media Settings. Less arbitrary than 280px.
 
-###2.4.2
+### 2.4.2
 * updated for new WordPress version.
 * added plugin icon.
 * moved, but did not change, main image function.
 
-###2.4.1
+### 2.4.1
 * Sanitization bug fix.
 
-###2.4.0
+### 2.4.0
 * Added a simplify feed method, which allows user to clean up galleries only, without creating an email friendly feed.
 * Many much refactoring and input and tail kicking from the incomparable [Gary Jones](http://gamajo.com)
 * Help tab added to media settings page.
 
-###2.3.0
+### 2.3.0
 * Added an alternate feed method so that original feed could serve up full sized images while alternate feed would be used for email.
 
-###2.2.0
+### 2.2.0
 * Added a image width setting to the Settings > Media screen so that the MailChimp size image can be changed.
 
-###2.1.1
+### 2.1.1
 * Revised for class
 * integrated gallery scan into main function
 
-###2.1.0
+### 2.1.0
 * Much revising--set conditional to use MailChimp size image if exists
 * Updated function to retrieve image URL to not use guid
 * Changed filter to the_content instead of the_content_rss due to shortcode explosions
 * If an image is smaller than MailChimp size, left/right alignment will be honored; otherwise, alignment will be set to center.
 * If a post has a gallery, an additional scan occurs to pull full size images and use those (if a MailChimp size image exists, it will still be used).
 
-###2.0.0beta
+### 2.0.0beta
 * Total rewrite
 * Adds a new image size called 'mailchimp' to WordPress so that it can be used instead of trying to shoehorn the large images.
 * strips out GravityForm shortcodes, but if others exist, that could be problematic.
 
-###1.1.1
+### 1.1.1
 * simplified immensely. Dropped need for user to edit plugin files.
 * deals with captions.

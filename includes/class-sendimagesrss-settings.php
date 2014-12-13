@@ -130,8 +130,8 @@ class SendImagesRSS_Settings {
 	 * @since 2.3.0
 	 */
 	public function field_alternate_feed() {
-		$value = get_option( 'sendimagesrss_alternate_feed' );
-		$simplify = get_option( 'sendimagesrss_simplify_feed' );
+		$value             = get_option( 'sendimagesrss_alternate_feed' );
+		$simplify          = get_option( 'sendimagesrss_simplify_feed' );
 		$pretty_permalinks = get_option( 'permalink_structure' );
 
 		echo '<input type="checkbox" name="sendimagesrss_alternate_feed" id="sendimagesrss_alternate_feed" value="1"' . checked( 1, $value, false ) . ' class="code" /> <label for="sendimagesrss_alternate_feed">' . __( 'Create a custom feed and use that for sending emails.', 'send-images-rss' ) . '</label>';
@@ -139,13 +139,13 @@ class SendImagesRSS_Settings {
 		if ( $value && ! $simplify ) {
 			if ( $pretty_permalinks ){
 				echo '<p>' . sprintf(
-					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
+					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 					esc_url( trailingslashit( home_url() ) . 'feed/email' )
 				) . '</p>';
 			}
 			else {
 				echo '<p>' . sprintf(
-					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.' ),
+					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 					esc_url( trailingslashit( home_url() ) . '?feed=email' )
 				) . '</p>';
 			}
@@ -156,14 +156,32 @@ class SendImagesRSS_Settings {
 	 * Error message if both Simplify Feed and Alternate Feed are checked.
 	 *
 	 * @since 2.4.0
+	 *
+	 * Error message if feed is set to summary instead of full text.
+	 *
+	 * @since 2.5.2
 	 */
 	public function error_message() {
-		$value = get_option( 'sendimagesrss_alternate_feed' );
-		$simplify = get_option( 'sendimagesrss_simplify_feed' );
 
-		if ( $value && $simplify ) {
+		$screen     = get_current_screen();
+		$value      = get_option( 'sendimagesrss_alternate_feed' );
+		$simplify   = get_option( 'sendimagesrss_simplify_feed' );
+		$rss_option = get_option( 'rss_use_excerpt' );
+
+		if ( '1' === $rss_option && in_array( $screen->id, array( 'options-media', 'options-reading', 'plugins' ) ) ) {
+			echo '<div class="error"><p><strong>' . __( 'Your RSS feed is set to send excerpts instead of full text, so your images will not be processed by the Send Image to RSS plugin. ', 'send-images-rss' );
+			if ( 'options-reading' !== $screen->id ) {
+				printf( __( 'You can change this on the <a href="%1$s">Settings > Reading page</a>.', 'send-images-rss' ),
+					get_admin_url() . 'options-reading.php'
+				);
+			}
+			echo '</strong></p></div>';
+		}
+
+		if ( $value && $simplify && 'options-media' === $screen->id ) {
 			echo '<div class="error"><p><strong>' . __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' ) . '</strong></p></div>';
 		}
+
 	}
 
 	/**

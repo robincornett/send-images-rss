@@ -52,7 +52,7 @@ class SendImagesRSS {
 	 * @since 2.4.0
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'send-images-rss', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'send-images-rss', false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/' );
 	}
 
 	/**
@@ -65,7 +65,7 @@ class SendImagesRSS {
 		$image_width = esc_attr( get_option( 'sendimagesrss_image_size', 560 ) );
 
 		if ( ! $simplify ) {
-			add_image_size( 'mailchimp', intval( $image_width ) );
+			add_image_size( 'mailchimp', absint( $image_width ), floor( $image_width * 2 ) );
 		}
 
 		// Add a new feed, but tell WP to treat it as a standard RSS2 feed
@@ -82,20 +82,36 @@ class SendImagesRSS {
 	 *
 	 * @since 2.3.0
 	 *
-	 * @return null Return early if not a feed.
+	 * @return null Return early if not a feed, or if the feed is set to send excerpts.
 	 */
 	public function fix_feed() {
-		if ( ! is_feed() ) {
+
+		$rss_option = get_option( 'rss_use_excerpt' );
+		if ( ! is_feed() || '1' === $rss_option ) {
 			return;
 		}
 
+		//* because Photon refuses to use our new image size.
+		add_filter( 'jetpack_photon_skip_image', '__return_true' );
+
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
+
+		//* have to remove the photon filter twice as it's really aggressive
+		$photon_removed = '';
+		if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
+			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+		}
 
 		$simplify = get_option( 'sendimagesrss_simplify_feed' );
 		$alt_feed = get_option( 'sendimagesrss_alternate_feed' );
 
 		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
+		}
+
+		//* re-enable photon, although since we're in the feed, not sure it's relevant
+		if ( $photon_removed ) {
+			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
 	}
 }
