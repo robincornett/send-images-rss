@@ -159,7 +159,7 @@ class SendImagesRSS_Settings {
 	 *
 	 * Error message if feed is set to summary instead of full text.
 	 *
-	 * @since x.y.z
+	 * @since 2.5.2
 	 */
 	public function error_message() {
 

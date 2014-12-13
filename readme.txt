@@ -4,8 +4,8 @@ Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
 Requires at least: 3.8
-Tested up to: 4.0
-Stable tag: 2.5.1
+Tested up to: 4.1
+Stable tag: 2.5.2
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -16,6 +16,8 @@ Makes your RSS emails look more like your website by converting large images/gal
 WordPress plugin that replaces images with an email friendly size image in RSS feeds. I like this for sending images from a WordPress gallery, for example--instead of sending thumbnails to the RSS readers, they get the full size images. Also, even if you like to upload large images to your site, this plugin will hopefully prevent you from blowing up people's email accounts.
 
 The plugin optionally adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is an email friendly size. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
+
+Spanish tranlation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 == Installation ==
 
@@ -65,12 +67,18 @@ If you use native WordPress galleries in your posts, they're sent to your feed a
 
 == Upgrade Notice ==
 
-= 2.5.1 =
-* bugfix so external images are not processed.
-* content is loaded more efficiently
-* encoding tweaks
+= 2.5.2 =
+* important update for users with PHP version less than 5.3.6
+* now works even if user has Jetpack's Photon module enabled
 
 == Changelog ==
+
+### 2.5.2
+* added filter to process images correctly if user has Photon (Jetpack) enabled
+* added Spanish translation, provided by [Web Hosting Hub](http://www.webhostinghub.com/)
+* added error message for users who have their feed set to Summary instead of Full text
+* changed error messages to be less invasive
+* fixed feed output if user has older PHP (pre 5.3.6)
 
 = 2.5.1 =
 * bugfix: if images are external, they are not processed by the plugin

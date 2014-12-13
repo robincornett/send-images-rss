@@ -85,7 +85,7 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 
 ## Changelog
 
-### x.y.z
+### 2.5.2
 * added filter to process images correctly if user has Photon (Jetpack) enabled
 * added Spanish translation, provided by [Web Hosting Hub](http://www.webhostinghub.com/)
 * added error message for users who have their feed set to Summary instead of Full text
