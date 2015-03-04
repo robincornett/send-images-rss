@@ -147,7 +147,7 @@ class SendImagesRSS_Feed_Fixer {
 		$item = $this->get_image_variables( $image );
 
 		//* use the MailChimp size image if it exists.
-		if ( isset( $item->mailchimp[3] ) && $item->mailchimp[3] ) {
+		if ( isset( $item->mailchimp[3] ) && $item->mailchimp[3] && ( ! $item->width || $item->width >= $item->maxwidth ) ) {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
 				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
 			}
