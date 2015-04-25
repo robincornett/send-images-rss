@@ -95,15 +95,13 @@ class SendImagesRSS_Feed_Fixer {
 
 			$item = $this->get_image_variables( $image );
 
-			//* bail early if the image is not part of our WP site
-			if ( false === $item->image_id ) {
-				return;
+			// if the image is not part of WP, we cannot use it
+			if ( false !== $item->image_id ) {
+				$image->removeAttribute( 'height' );
+				$image->removeAttribute( 'style' );
+
+				$this->replace_images( $image );
 			}
-
-			$image->removeAttribute( 'height' );
-			$image->removeAttribute( 'style' );
-
-			$this->replace_images( $image );
 		}
 
 	}
