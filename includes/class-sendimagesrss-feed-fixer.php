@@ -178,18 +178,20 @@ class SendImagesRSS_Feed_Fixer {
 
 		// guard clause: set everything to be centered
 		$style = 'display:block;margin:10px auto;max-width:' . $item->maxwidth . 'px;';
+		$image->setAttribute( 'vspace', esc_attr( 10 ) );
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out,
 		// but some plugins or users may remove the width on their own. Opting not to add the width in
 		// because it complicates things.
-		if ( ! empty( $item->width ) ) {
+		if ( ! empty( $item->width ) && $item->width < $item->maxwidth ) {
+			$image->setAttribute( 'hspace', esc_attr( 10 ) );
 			// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
-			if ( ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption, 'alignright' ) ) && $item->width < $item->maxwidth ) {
+			if ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption, 'alignright' ) ) {
 				$image->setAttribute( 'align', 'right' );
 				$style = 'margin:0px 0px 10px 10px;max-width:' . $item->halfwidth . 'px;';
 			}
 			// or if it's a small image, aligned left
-			elseif ( ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption, 'alignleft' ) ) && $item->width < $item->maxwidth ) {
+			elseif ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption, 'alignleft' ) ) {
 				$image->setAttribute( 'align', 'left' );
 				$style = 'margin:0px 10px 10px 0px;max-width:' . $item->halfwidth . 'px;';
 			}
@@ -222,15 +224,17 @@ class SendImagesRSS_Feed_Fixer {
 
 		// guard clause: set the caption style to full width and center
 		$style = 'margin:0 auto;max-width:' . $item->maxwidth . 'px;';
+		$image->parentNode->setAttribute( 'vspace', esc_attr( 10 ) );
 
 		// if a width is set, then let's adjust for alignment
-		if ( ! empty( $item->width ) ) {
+		if ( ! empty( $item->width ) && $item->width < $item->maxwidth ) {
+			$image->parentNode->setAttribute( 'hspace', esc_attr( 10 ) );
 			// if it's a small image with a caption, aligned right
-			if ( false !== strpos( $item->caption, 'alignright' ) && $item->width < $item->maxwidth ) {
+			if ( false !== strpos( $item->caption, 'alignright' ) ) {
 				$style = 'float:right;max-width:' . $item->halfwidth . 'px;';
 			}
 			// or if it's a small image with a caption, aligned left
-			elseif ( false !== strpos( $item->caption, 'alignleft' ) && $item->width < $item->maxwidth ) {
+			elseif ( false !== strpos( $item->caption, 'alignleft' ) ) {
 				$style = 'float:left;max-width:' . $item->halfwidth . 'px;';
 			}
 		}
