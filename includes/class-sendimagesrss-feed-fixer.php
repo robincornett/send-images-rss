@@ -121,7 +121,7 @@ class SendImagesRSS_Feed_Fixer {
 		$item->image_url = $image->getAttribute( 'src' );
 		$item->image_id  = $this->get_image_id( $item->image_url ); // use the image URL to get the image ID
 		$item->mailchimp = wp_get_attachment_image_src( $item->image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
-		$item->original  = wp_get_attachment_image_src( $item->image_id, 'original' ); // retrieve the original image size
+		$item->large     = wp_get_attachment_image_src( $item->image_id, 'large' ); // retrieve the large image size
 		$item->caption   = $image->parentNode->getAttribute( 'class' ); // to cover captions
 		$item->class     = $image->getAttribute( 'class' );
 		$item->width     = $image->getAttribute( 'width' );
@@ -142,18 +142,36 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function replace_images( $image ) {
 
-		$item = $this->get_image_variables( $image );
+		$item            = $this->get_image_variables( $image );
+		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
+		$large_check     = isset( $item->large[3] ) && $item->large[3];
 
-		//* use the MailChimp size image if it exists.
-		if ( isset( $item->mailchimp[3] ) && $item->mailchimp[3] && ( ! $item->width || $item->width >= $item->maxwidth ) ) {
+		/**
+		 * add a filter to optionally skip smaller images, even if a larger version exists.
+		 * @var boolean
+		 *
+		 * @since 2.6.0
+		 *
+		 */
+		$process_small_images = apply_filters( 'send_images_rss_filter_small_images', $process_small_images, ( ! $item->width || $item->width >= $item->maxwidth ) );
+		$process_small_images = false === $process_small_images ? false : true;
+
+		if ( ( $mailchimp_check || $large_check ) && $process_small_images ) {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
 				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
 			}
 
-			//* use the MC size image for source
-			$image->setAttribute( 'src', esc_url( $item->mailchimp[0] ) );
-			$image->setAttribute( 'width', absint( $item->mailchimp[1] ) );
+			$size_to_use = $item->large;
+			if ( $mailchimp_check ) {
+				$size_to_use = $item->mailchimp;
+			}
+
+			// use the MC size image, or the large image if there is no MC, for source
+			$image->setAttribute( 'src', esc_url( $size_to_use[0] ) );
+			$image->setAttribute( 'width', absint( $size_to_use[1] ) );
 			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;' ) );
+			$image->setAttribute( 'vspace', esc_attr( 10 ) ); // for outlook
+
 		}
 
 		else {
