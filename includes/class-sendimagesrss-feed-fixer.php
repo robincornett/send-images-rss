@@ -147,15 +147,16 @@ class SendImagesRSS_Feed_Fixer {
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
 
 		/**
-		 * add a filter to optionally skip smaller images, even if a larger version exists.
+		 * add a filter to optionally not change smaller images, even if a larger version exists.
 		 * @var boolean
 		 *
 		 * @since 2.6.0
 		 *
 		 */
-		$process_small_images = apply_filters( 'send_images_rss_filter_small_images', true, ( ! $item->width || $item->width >= $item->maxwidth ) );
+		$change_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $item->maxwidth ) );
+		$change_small_images = false === $change_small_images ? $change_small_images : true;
 
-		if ( ( $mailchimp_check || $large_check ) && $process_small_images ) {
+		if ( ( $mailchimp_check || $large_check ) && $change_small_images ) {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
 				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
 			}
