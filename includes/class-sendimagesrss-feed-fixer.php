@@ -153,8 +153,7 @@ class SendImagesRSS_Feed_Fixer {
 		 * @since 2.6.0
 		 *
 		 */
-		$process_small_images = apply_filters( 'send_images_rss_filter_small_images', $process_small_images, ( ! $item->width || $item->width >= $item->maxwidth ) );
-		$process_small_images = false === $process_small_images ? false : true;
+		$process_small_images = apply_filters( 'send_images_rss_filter_small_images', true, ( ! $item->width || $item->width >= $item->maxwidth ) );
 
 		if ( ( $mailchimp_check || $large_check ) && $process_small_images ) {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
