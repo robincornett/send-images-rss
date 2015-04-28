@@ -145,18 +145,23 @@ class SendImagesRSS_Feed_Fixer {
 		$item            = $this->get_image_variables( $image );
 		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
+		$php_check       = getimagesize( $item->image_url )[0];
 
 		/**
-		 * add a filter to optionally not change smaller images, even if a larger version exists.
+		 * add a filter to optionally not replace smaller images, even if a larger version exists.
 		 * @var boolean
 		 *
 		 * @since 2.6.0
 		 *
 		 */
-		$change_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $item->maxwidth ) );
-		$change_small_images = false === $change_small_images ? $change_small_images : true;
+		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $item->maxwidth ) );
+		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
 
-		if ( ( $mailchimp_check || $large_check ) && $change_small_images ) {
+		if ( ( ! empty( $item->width ) && absint( $item->width ) !== absint( $php_check ) ) || $php_check >= $item->maxwidth ) {
+			$replace_small_images = true;
+		}
+
+		if ( ( $mailchimp_check || $large_check ) && $replace_small_images ) {
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
 				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
 			}
@@ -170,7 +175,6 @@ class SendImagesRSS_Feed_Fixer {
 			$image->setAttribute( 'src', esc_url( $size_to_use[0] ) );
 			$image->setAttribute( 'width', absint( $size_to_use[1] ) );
 			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;' ) );
-			$image->setAttribute( 'vspace', esc_attr( 10 ) ); // for outlook
 
 		}
 
@@ -192,17 +196,19 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function fix_other_images( $image ) {
 
-		$item = $this->get_image_variables( $image );
+		$item  = $this->get_image_variables( $image );
+		$width = $item->width;
+		if ( empty( $item->width ) ) {
+			$width = getimagesize( $item->image_url )[0];
+		}
 
 		// guard clause: set everything to be centered
 		$style = 'display:block;margin:10px auto;max-width:' . $item->maxwidth . 'px;';
-		$image->setAttribute( 'vspace', esc_attr( 10 ) );
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out,
 		// but some plugins or users may remove the width on their own. Opting not to add the width in
 		// because it complicates things.
-		if ( ! empty( $item->width ) && $item->width < $item->maxwidth ) {
-			$image->setAttribute( 'hspace', esc_attr( 10 ) );
+		if ( ! empty( $width ) && $width < $item->maxwidth ) {
 			// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
 			if ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption, 'alignright' ) ) {
 				$image->setAttribute( 'align', 'right' );
@@ -242,11 +248,9 @@ class SendImagesRSS_Feed_Fixer {
 
 		// guard clause: set the caption style to full width and center
 		$style = 'margin:0 auto;max-width:' . $item->maxwidth . 'px;';
-		$image->parentNode->setAttribute( 'vspace', esc_attr( 10 ) );
 
 		// if a width is set, then let's adjust for alignment
 		if ( ! empty( $item->width ) && $item->width < $item->maxwidth ) {
-			$image->parentNode->setAttribute( 'hspace', esc_attr( 10 ) );
 			// if it's a small image with a caption, aligned right
 			if ( false !== strpos( $item->caption, 'alignright' ) ) {
 				$style = 'float:right;max-width:' . $item->halfwidth . 'px;';
