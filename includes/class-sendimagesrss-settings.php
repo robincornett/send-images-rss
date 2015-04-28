@@ -29,7 +29,7 @@ class SendImagesRSS_Settings {
 		add_settings_section(
 			'send_rss_section',
 			__( 'RSS Feeds', 'send-images-rss' ),
-			array( $this, 'section_description'),
+			array( $this, 'section_description' ),
 			'media'
 		);
 
@@ -43,7 +43,7 @@ class SendImagesRSS_Settings {
 
 		add_settings_field(
 			'sendimagesrss_image_size_setting',
-			'<label for="sendimagesrss_image_size">' . __( 'RSS image size:' , 'send-images-rss' ) . '</label>',
+			'<label for="sendimagesrss_image_size">' . __( 'RSS Image Size' , 'send-images-rss' ) . '</label>',
 			array( $this, 'field_image_size' ),
 			'media',
 			'send_rss_section'
