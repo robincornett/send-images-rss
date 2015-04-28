@@ -9,7 +9,7 @@ WordPress plugin that replaces images with an email friendly size image in RSS f
 The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is an email friendly size. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
-* WordPress 3.8, tested up to 4.1
+* WordPress 3.8, tested up to 4.2
 
 ## Installation
 
@@ -73,6 +73,14 @@ If this happens, your permalink for the new feed may not have been updated. Visi
 
 If you use native WordPress galleries in your posts, they're sent to your feed as thumbnails. Even if you do not use an RSS/email service, you can still use this plugin to sort out your galleries for subscribers who use an RSS reader. If you select Simplify Feed, your galleries will be converted, but there will not be an email sized image created, and no alternate feed will be created.
 
+### I uploaded a large image to my post, but inserted a smaller version of it. The feed output a large version instead of the small. Can I change that?
+
+Yes, now you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, add this filter to your site, either in your functions.php file or a functionality plugin:
+
+```php
+add_filter( 'send_images_rss_change_small_images', '__return_false' );
+```
+
 ## Screenshots ##
 ![Screenshot of the optional plugin settings in Settings > Media.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
 __Screenshot of the optional plugin settings in Settings > Media.__
@@ -84,6 +92,10 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 * Inspired by [Erik Teichmann](http://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
 
 ## Changelog
+
+### 2.6.0
+* added a filter to optionally not replace small images in post content.
+* bugfix: if images are external, they no longer completely stop the presses.
 
 ### 2.5.2
 * added filter to process images correctly if user has Photon (Jetpack) enabled

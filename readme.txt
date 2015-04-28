@@ -4,8 +4,8 @@ Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
 Requires at least: 3.8
-Tested up to: 4.1
-Stable tag: 2.5.2
+Tested up to: 4.2
+Stable tag: 2.6.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -61,19 +61,26 @@ If this happens, your permalink for the new feed may not have been updated. Visi
 
 If you use native WordPress galleries in your posts, they're sent to your feed as thumbnails. Even if you do not use an RSS/email service, you can still use this plugin to sort out your galleries for subscribers who use an RSS reader. If you select Simplify Feed, your galleries will be converted, but there will not be an email sized image created, and no alternate feed will be created.
 
+= I uploaded a large image to my post, but inserted a smaller version of it. The feed output a large version instead of the small. Can I change that? =
+
+Yes, now you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, add this filter to your site, either in your functions.php file or a functionality plugin:
+
 == Screenshots ==
 
 1. Screenshot of the optional plugin settings in Settings > Media.
 
 == Upgrade Notice ==
 
-= 2.5.2 =
-* important update for users with PHP version less than 5.3.6
-* now works even if user has Jetpack's Photon module enabled
+= 2.6.0 =
+new optional filter to not replace small images in post content
 
 == Changelog ==
 
-### 2.5.2
+= 2.6.0 =
+* added a filter to optionally not replace small images in post content.
+* bugfix: if images are external, they no longer completely stop the presses.
+
+= 2.5.2 =
 * added filter to process images correctly if user has Photon (Jetpack) enabled
 * added Spanish translation, provided by [Web Hosting Hub](http://www.webhostinghub.com/)
 * added error message for users who have their feed set to Summary instead of Full text
