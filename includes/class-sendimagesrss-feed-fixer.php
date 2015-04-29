@@ -273,9 +273,14 @@ class SendImagesRSS_Feed_Fixer {
 	 * @author Philip Newcomer
 	 * @link   http://philipnewcomer.net/2012/11/get-the-attachment-id-from-an-image-url-in-wordpress/
 	 */
-	protected function get_image_id( $attachment_url ) {
+	protected function get_image_id( $attachment_url = '' ) {
 		global $wpdb;
 		$attachment_id = false;
+
+		// If there is no url, return.
+		if ( '' == $attachment_url ) {
+			return;
+		}
 
 		// Get the upload directory paths
 		$upload_dir_paths = wp_upload_dir();
@@ -284,7 +289,7 @@ class SendImagesRSS_Feed_Fixer {
 		if ( false !== strpos( $attachment_url, $upload_dir_paths['baseurl'] ) ) {
 
 			// If this is the URL of an auto-generated thumbnail, get the URL of the original image
-			$attachment_url = preg_replace( '(-\d{3,4}x\d{3,4}.)', '.', $attachment_url );
+			$attachment_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
 
 			// Remove the upload path base directory from the attachment URL
 			$attachment_url = str_replace( $upload_dir_paths['baseurl'] . '/', '', $attachment_url );
