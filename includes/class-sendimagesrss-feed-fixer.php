@@ -308,7 +308,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @param  var $attachment_url image url
 	 * @return int (image id)                 image ID, or false
 	 *
-	 * @since 2.2.0
+	 * @since 2.6.0
 	 *
 	 * @author hellofromtonya
 	 */
