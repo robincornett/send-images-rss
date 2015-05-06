@@ -9,7 +9,7 @@ WordPress plugin that replaces images with an email friendly size image in RSS f
 The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is an email friendly size. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
-* WordPress 3.8, tested up to 4.2
+* WordPress 3.8, tested up to 4.2.1
 
 ## Installation
 
@@ -81,6 +81,37 @@ Yes, now you can change that. By default, the plugin simply looks to see if an e
 add_filter( 'send_images_rss_change_small_images', '__return_false' );
 ```
 
+### Is there a way to change the styling on the images in my feed?
+
+Yes, there sure is. To modify large/email size images, use a filter like this:
+
+```php
+add_filter( 'send_images_rss_email_image_style', 'rgc_email_images', 10, 2 );
+function rgc_email_images( $style, $maxwidth ) {
+    $style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+
+    return $style;
+}
+```
+
+You can also filter styling for images with captions, or images which do not have an email size version generated for some reason. I would look into `/includes/class-sendimagesrss-feed-fixer.php` to really examine the filters, but here's a quick example for the images:
+
+```php
+add_filter( 'send_images_rss_other_image_style', 'rgc_change_other_images', 10, 6 );
+function rgc_change_other_images( $style, $width, $maxwidth, $halfwidth, $alignright, $alignleft ) {
+
+    $style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+
+    if ( $width < $maxwidth ) {
+        $style = sprintf( 'maxwidth:%spx;', $halfwidth );
+    }
+
+    return $style;
+}
+```
+
+The filter for captions is `send_images_rss_caption_style`, but takes the same arguments as above.
+
 ## Screenshots ##
 ![Screenshot of the optional plugin settings in Settings > Media.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
 __Screenshot of the optional plugin settings in Settings > Media.__
@@ -95,6 +126,7 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 
 ### 2.6.0
 * added a filter to optionally not replace small images in post content.
+* added filters for granular control over image/caption styling.
 * bugfix: if images are external, they no longer completely stop the presses.
 
 ### 2.5.2

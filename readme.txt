@@ -65,6 +65,35 @@ If you use native WordPress galleries in your posts, they're sent to your feed a
 
 Yes, now you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, add this filter to your site, either in your functions.php file or a functionality plugin:
 
+    add_filter( 'send_images_rss_change_small_images', '__return_false' );
+
+= Is there a way to change the styling on the images in my feed? =
+
+Yes, there sure is. To modify large/email size images, use a filter like this:
+
+    add_filter( 'send_images_rss_email_image_style', 'rgc_email_images', 10, 2 );
+    function rgc_email_images( $style, $maxwidth ) {
+        $style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+
+        return $style;
+    }
+
+You can also filter styling for images with captions, or images which do not have an email size version generated for some reason. I would look into `/includes/class-sendimagesrss-feed-fixer.php` to really examine the filters, but here's a quick example for the images:
+
+    add_filter( 'send_images_rss_other_image_style', 'rgc_change_other_images', 10, 6 );
+    function rgc_change_other_images( $style, $width, $maxwidth, $halfwidth, $alignright, $alignleft ) {
+
+        $style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+
+        if ( $width < $maxwidth ) {
+            $style = sprintf( 'maxwidth:%spx;', $halfwidth );
+        }
+
+        return $style;
+    }
+
+The filter for captions is `send_images_rss_caption_style`, but takes the same arguments as above.
+
 == Screenshots ==
 
 1. Screenshot of the optional plugin settings in Settings > Media.
@@ -72,12 +101,13 @@ Yes, now you can change that. By default, the plugin simply looks to see if an e
 == Upgrade Notice ==
 
 = 2.6.0 =
-new optional filter to not replace small images in post content
+new optional filters for images!
 
 == Changelog ==
 
 = 2.6.0 =
 * added a filter to optionally not replace small images in post content.
+* added filters for granular control over image/caption styling.
 * bugfix: if images are external, they no longer completely stop the presses.
 
 = 2.5.2 =
