@@ -125,8 +125,6 @@ class SendImagesRSS_Feed_Fixer {
 		$item->caption   = $image->parentNode->getAttribute( 'class' ); // to cover captions
 		$item->class     = $image->getAttribute( 'class' );
 		$item->width     = $image->getAttribute( 'width' );
-		$item->maxwidth  = get_option( 'sendimagesrss_image_size', 560 );
-		$item->halfwidth = floor( $item->maxwidth / 2 );
 
 		return $item;
 	}
@@ -146,6 +144,7 @@ class SendImagesRSS_Feed_Fixer {
 		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
 		$php_check       = getimagesize( $item->image_url )[0];
+		$maxwidth        = get_option( 'sendimagesrss_image_size', 560 );
 
 		/**
 		 * add a filter to optionally not replace smaller images, even if a larger version exists.
@@ -154,27 +153,37 @@ class SendImagesRSS_Feed_Fixer {
 		 * @since 2.6.0
 		 *
 		 */
-		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $item->maxwidth ) );
+		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
 		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
 
-		if ( ( ! empty( $item->width ) && absint( $item->width ) !== absint( $php_check ) ) || $php_check >= $item->maxwidth ) {
+		if ( ( ! empty( $item->width ) && absint( $item->width ) !== absint( $php_check ) ) || $php_check >= $maxwidth ) {
 			$replace_small_images = true;
 		}
 
 		if ( ( $mailchimp_check || $large_check ) && $replace_small_images ) {
+
+			// remove the style from parentNode, only if it's a caption.
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
-				$image->parentNode->removeAttribute( 'style' ); // remove the style from parentNode, only if it's a caption.
+				$image->parentNode->removeAttribute( 'style' );
 			}
 
 			$size_to_use = $item->large;
+			$style       = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
 			if ( $mailchimp_check ) {
 				$size_to_use = $item->mailchimp;
+				$style       = 'display:block;margin:10px auto;';
 			}
+
+			/**
+			 * filter the image style
+			 * @since 2.6.0
+			 */
+			$style = apply_filters( 'send_images_rss_email_image_style', $style, $maxwidth );
 
 			// use the MC size image, or the large image if there is no MC, for source
 			$image->setAttribute( 'src', esc_url( $size_to_use[0] ) );
 			$image->setAttribute( 'width', absint( $size_to_use[1] ) );
-			$image->setAttribute( 'style', esc_attr( 'display:block;margin:10px auto;' ) );
+			$image->setAttribute( 'style', esc_attr( $style ) );
 
 		}
 
@@ -201,25 +210,36 @@ class SendImagesRSS_Feed_Fixer {
 		if ( empty( $item->width ) ) {
 			$width = getimagesize( $item->image_url )[0];
 		}
+		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
+		$halfwidth  = floor( $maxwidth / 2 );
+		$alignright = false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption, 'alignright' );
+		$alignleft  = false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption, 'alignleft' );
 
 		// guard clause: set everything to be centered
-		$style = 'display:block;margin:10px auto;max-width:' . $item->maxwidth . 'px;';
+		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out,
 		// but some plugins or users may remove the width on their own. Opting not to add the width in
 		// because it complicates things.
-		if ( ! empty( $width ) && $width < $item->maxwidth ) {
+		if ( ! empty( $width ) && $width < $maxwidth ) {
 			// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
-			if ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption, 'alignright' ) ) {
+			if ( $alignright ) {
 				$image->setAttribute( 'align', 'right' );
-				$style = 'margin:0px 0px 10px 10px;max-width:' . $item->halfwidth . 'px;';
+				$style = sprintf( 'margin:0px 0px 10px 10px;max-width:%spx;', $halfwidth );
 			}
 			// or if it's a small image, aligned left
-			elseif ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption, 'alignleft' ) ) {
+			elseif ( $alignleft ) {
 				$image->setAttribute( 'align', 'left' );
-				$style = 'margin:0px 10px 10px 0px;max-width:' . $item->halfwidth . 'px;';
+				$style = sprintf( 'margin:0px 10px 10px 0px;max-width:%spx;', $halfwidth );
 			}
 		}
+
+		/**
+		 * filter the image style
+		 *
+		 * @since 2.6.0
+		 */
+		$style = apply_filters( 'send_images_rss_other_image_style', $style, $width, $maxwidth, $halfwidth, $alignright, $alignleft );
 
 		$image->setAttribute( 'style', esc_attr( $style ) );
 
@@ -237,7 +257,12 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function fix_captions( $image ) {
 
-		$item = $this->get_image_variables( $image );
+		$item       = $this->get_image_variables( $image );
+		$width      = $item->width;
+		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
+		$halfwidth  = floor( $maxwidth / 2 );
+		$alignright = false !== strpos( $item->caption, 'alignright' );
+		$alignleft  = false !== strpos( $item->caption, 'alignleft' );
 
 		// now one last check if there are captions O.o
 		if ( false === strpos( $item->caption, 'wp-caption' ) ) {
@@ -247,19 +272,26 @@ class SendImagesRSS_Feed_Fixer {
 		$image->parentNode->removeAttribute( 'style' );
 
 		// guard clause: set the caption style to full width and center
-		$style = 'margin:0 auto;max-width:' . $item->maxwidth . 'px;';
+		$style = sprintf( 'margin:0 auto;max-width:%spx;', $maxwidth );
 
 		// if a width is set, then let's adjust for alignment
-		if ( ! empty( $item->width ) && $item->width < $item->maxwidth ) {
+		if ( ! empty( $width ) && $width < $maxwidth ) {
 			// if it's a small image with a caption, aligned right
-			if ( false !== strpos( $item->caption, 'alignright' ) ) {
-				$style = 'float:right;max-width:' . $item->halfwidth . 'px;';
+			if ( $alignright ) {
+				$style = sprintf( 'float:right;max-width:%spx;', $halfwidth );
 			}
 			// or if it's a small image with a caption, aligned left
-			elseif ( false !== strpos( $item->caption, 'alignleft' ) ) {
-				$style = 'float:left;max-width:' . $item->halfwidth . 'px;';
+			elseif ( $alignleft ) {
+				$style = sprintf( 'float:left;max-width:%spx;', $halfwidth );
 			}
 		}
+
+		/**
+		 * filter the caption style
+		 *
+		 * @since 2.6.0
+		 */
+		$style = apply_filters( 'send_images_rss_caption_style', $style, $width, $maxwidth, $halfwidth, $alignright, $alignleft );
 
 		$image->parentNode->setAttribute( 'style', esc_attr( $style ) );
 	}
