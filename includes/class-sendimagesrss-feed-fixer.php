@@ -113,6 +113,12 @@ class SendImagesRSS_Feed_Fixer {
 			$image->removeAttribute( 'height' );
 			$image->removeAttribute( 'style' );
 
+			if ( false === $id && true === $process_external_images ) {
+				$this->fix_other_images( $image );
+				$this->fix_captions( $image );
+				continue;
+			}
+
 			$this->replace_images( $image );
 
 		}
