@@ -93,12 +93,20 @@ class SendImagesRSS_Feed_Fixer {
 
 		foreach ( $images as $image ) {
 
-			// do not use get_image_variables for speed
 			$url = $image->getAttribute( 'src' );
 			$id  = $this->get_image_id( $url );
 
-			// if the image is not part of WP, we cannot use it
-			if ( false === $id ) {
+			/**
+			 * Add filter to optionally process external images as best we can.
+			 * @var boolean
+			 *
+			 * @since 2.6.0
+			 */
+			$process_external_images = apply_filters( 'send_images_rss_process_external_images', false );
+			$process_external_images = true === $process_external_images ? $process_external_images : false;
+
+			// if the image is not part of WP, we cannot use it, although we'll provide a filter to try anyway
+			if ( false === $id && false === $process_external_images ) {
 				continue;
 			}
 
@@ -165,7 +173,7 @@ class SendImagesRSS_Feed_Fixer {
 			$replace_small_images = true;
 		}
 
-		if ( ( $mailchimp_check || $large_check ) && $replace_small_images ) {
+		if ( ( $mailchimp_check || $large_check ) && true === $replace_small_images ) {
 
 			// remove the style from parentNode, only if it's a caption.
 			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
