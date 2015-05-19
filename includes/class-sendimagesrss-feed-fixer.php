@@ -93,15 +93,20 @@ class SendImagesRSS_Feed_Fixer {
 
 		foreach ( $images as $image ) {
 
-			$item = $this->get_image_variables( $image );
+			// do not use get_image_variables for speed
+			$url = $image->getAttribute( 'src' );
+			$id  = $this->get_image_id( $url );
 
 			// if the image is not part of WP, we cannot use it
-			if ( false !== $item->image_id ) {
-				$image->removeAttribute( 'height' );
-				$image->removeAttribute( 'style' );
-
-				$this->replace_images( $image );
+			if ( false === $id ) {
+				continue;
 			}
+
+			$image->removeAttribute( 'height' );
+			$image->removeAttribute( 'style' );
+
+			$this->replace_images( $image );
+
 		}
 
 	}
