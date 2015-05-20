@@ -139,11 +139,15 @@ class SendImagesRSS_Feed_Fixer {
 		$item            = new stdClass();
 		$item->image_url = $image->getAttribute( 'src' );
 		$item->image_id  = $this->get_image_id( $item->image_url ); // use the image URL to get the image ID
-		$item->mailchimp = wp_get_attachment_image_src( $item->image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
-		$item->large     = wp_get_attachment_image_src( $item->image_id, 'large' ); // retrieve the large image size
 		$item->caption   = $image->parentNode->getAttribute( 'class' ); // to cover captions
 		$item->class     = $image->getAttribute( 'class' );
 		$item->width     = $image->getAttribute( 'width' );
+
+		if ( false === $item->image_id ) {
+			return $item;
+		}
+		$item->mailchimp = wp_get_attachment_image_src( $item->image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
+		$item->large     = wp_get_attachment_image_src( $item->image_id, 'large' ); // retrieve the large image size
 
 		return $item;
 	}
