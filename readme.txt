@@ -67,6 +67,12 @@ Yes, now you can change that. By default, the plugin simply looks to see if an e
 
     add_filter( 'send_images_rss_change_small_images', '__return_false' );
 
+= What if I upload my images to [flickr] or use images hosted somewhere other than my website? =
+
+_Send Images to RSS_ works best with images uploaded through your WordPress website, because WordPress automatically creates the correct size images needed. Because there isn't really much we can do with images hosted elsewhere, the plugin ignores them by default. If, however, you want the plugin to at least _try_ to work with images hosted outside of your site (YMMV), you can add this filter to your site, either in your theme's functions.php file or a functionality plugin:
+
+    add_filter( 'send_images_rss_process_external_images', '__return_true' );
+
 = Is there a way to change the styling on the images in my feed? =
 
 Yes, there sure is. To modify large/email size images, use a filter like this:
@@ -106,6 +112,7 @@ new optional filters for images!
 == Changelog ==
 
 = 2.6.0 =
+* added a filter to optionally attempt to process external images.
 * added a filter to optionally not replace small images in post content.
 * added filters for granular control over image/caption styling.
 * bugfix: if images are external, they no longer completely stop the presses.
