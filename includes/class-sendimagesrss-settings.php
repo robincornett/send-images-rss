@@ -25,10 +25,24 @@ class SendImagesRSS_Settings {
 
 		$page    = 'media';
 		$section = 'send_rss_section';
+		$settings = array(
+			array(
+				'name'     => 'sendimagesrss_simplify_feed',
+				'callback' => 'one_zero',
+			),
+			array(
+				'name'     => 'sendimagesrss_image_size',
+				'callback' => 'media_value',
+			),
+			array(
+				'name'     => 'sendimagesrss_alternate_feed',
+				'callback' => 'one_zero',
+			),
+		);
 
-		register_setting( $page, 'sendimagesrss_simplify_feed', array( $this, 'one_zero' ) );
-		register_setting( $page, 'sendimagesrss_image_size', array( $this, 'media_value' ) );
-		register_setting( $page, 'sendimagesrss_alternate_feed', array( $this, 'one_zero' ) );
+		foreach ( $settings as $setting ) {
+			register_setting( $page, $setting['name'], array( $this, $setting['callback'] ) );
+		}
 
 		add_settings_section(
 			$section,
@@ -37,29 +51,33 @@ class SendImagesRSS_Settings {
 			$page
 		);
 
-		add_settings_field(
-			'sendimagesrss_simplify',
-			'<label for "sendimagesrss_simplify_feed">' . __( 'Simplify Feed', 'send-images-rss' ) . '</label>',
-			array( $this, 'field_simplify' ),
-			$page,
-			$section
+		$fields = array(
+			array(
+				'id'       => 'sendimagesrss_simplify',
+				'title'    => __( 'Simplify Feed', 'send-images-rss' ),
+				'callback' => 'field_simplify',
+			),
+			array(
+				'id'       => 'sendimagesrss_image_size_setting',
+				'title'    => __( 'RSS Image Size', 'send-images-rss' ),
+				'callback' => 'field_image_size',
+			),
+			array(
+				'id'       => 'sendimagesrss_alternate_rss_feed',
+				'title'    => __( 'Alternate Feed', 'send-images-rss' ),
+				'callback' => 'field_alternate_feed',
+			),
 		);
 
-		add_settings_field(
-			'sendimagesrss_image_size_setting',
-			'<label for="sendimagesrss_image_size">' . __( 'RSS Image Size' , 'send-images-rss' ) . '</label>',
-			array( $this, 'field_image_size' ),
-			$page,
-			$section
-		);
-
-		add_settings_field(
-			'sendimagesrss_alternate_rss_feed',
-			'<label for="sendimagesrss_alternate_feed">' . __( 'Alternate Feed' , 'send-images-rss' ) . '</label>',
-			array( $this, 'field_alternate_feed' ),
-			$page,
-			$section
-		);
+		foreach ( $fields as $field ) {
+			add_settings_field(
+				$field['id'],
+				'<label for="' . $field['id'] . '">' . $field['title'] . '</label>',
+				array( $this, $field['callback'] ),
+				$page,
+				$section
+			);
+		}
 	}
 
 	/**
@@ -147,16 +165,14 @@ class SendImagesRSS_Settings {
 		);
 
 		if ( $value && ! $simplify ) {
+			$url = '?feed=email';
+			if ( $pretty_permalinks ) {
+				$url = 'feed/email';
+			}
 			$message = sprintf(
 				__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
-				esc_url( trailingslashit( home_url() ) . '?feed=email' )
+				esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 			);
-			if ( $pretty_permalinks ) {
-				$message = sprintf(
-					__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
-					esc_url( trailingslashit( home_url() ) . 'feed/email' )
-				);
-			}
 
 			printf( '<p class="description">%s</p>', $message );
 
@@ -206,17 +222,16 @@ class SendImagesRSS_Settings {
 	public function help() {
 		$screen = get_current_screen();
 
-		$sendimages_rss_help =
-			'<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>' .
-			'<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'send-images-rss' ) . '</p>' .
+		$sendimages_rss_help  = '<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>';
+		$sendimages_rss_help .= '<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'send-images-rss' ) . '</p>';
 
-			'<h3>' . __( 'RSS Image Size', 'send-images-rss' ) . '</h3>' .
-			'<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS Image size (width). The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>' .
-			'<p>' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>' .
+		$sendimages_rss_help .= '<h3>' . __( 'RSS Image Size', 'send-images-rss' ) . '</h3>';
+		$sendimages_rss_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS Image size (width). The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>';
+		$sendimages_rss_help .= '<p>' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>';
 
-			'<h3>' . __( 'Alternate Feed', 'send-images-rss' ) . '</h3>' .
-			'<p>' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'send-images-rss' ) . '</p>' .
-			'<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'send-images-rss' ) . '</p>';
+		$sendimages_rss_help .= '<h3>' . __( 'Alternate Feed', 'send-images-rss' ) . '</h3>';
+		$sendimages_rss_help .= '<p>' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'send-images-rss' ) . '</p>';
+		$sendimages_rss_help .= '<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'send-images-rss' ) . '</p>';
 
 		$screen->add_help_tab( array(
 			'id'      => 'sendimagesrss-help',
