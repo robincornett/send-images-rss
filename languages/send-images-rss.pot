@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Send Images to RSS 2.6.0\n"
 "Report-Msgid-Bugs-To: Robin Cornett <hello@robincornett.com>\n"
-"POT-Creation-Date: 2015-05-20 07:53-0500\n"
+"POT-Creation-Date: 2015-06-02 08:20-0500\n"
 "PO-Revision-Date: 2015-04-28 14:01-0500\n"
 "Last-Translator: Robin Cornett Creative, LLC <hello@robincornett.com>\n"
 "Language-Team: Robin Cornett <hello@robincornett.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8\n"
+"X-Generator: Poedit 1.8.1\n"
 "X-Poedit-Basepath: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
@@ -24,87 +24,86 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../includes/class-sendimagesrss-settings.php:35
+#: ../includes/class-sendimagesrss-settings.php:49
 msgid "RSS Feeds"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:42
-#: ../includes/class-sendimagesrss-settings.php:210
+#: ../includes/class-sendimagesrss-settings.php:57
+#: ../includes/class-sendimagesrss-settings.php:225
 msgid "Simplify Feed"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:50
-#: ../includes/class-sendimagesrss-settings.php:213
+#: ../includes/class-sendimagesrss-settings.php:62
+#: ../includes/class-sendimagesrss-settings.php:228
 msgid "RSS Image Size"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:58
-#: ../includes/class-sendimagesrss-settings.php:217
+#: ../includes/class-sendimagesrss-settings.php:67
+#: ../includes/class-sendimagesrss-settings.php:232
 msgid "Alternate Feed"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:99
+#: ../includes/class-sendimagesrss-settings.php:117
 msgid ""
 "The <i>Send Images to RSS</i> plugin works out of the box without changing "
 "any settings. However, if you want to customize your image size and do not "
 "want to change the default feed, change those items here."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:112
+#: ../includes/class-sendimagesrss-settings.php:130
 msgid "Convert galleries only; do not fix feeds for email."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:116
+#: ../includes/class-sendimagesrss-settings.php:134
 msgid ""
 "The only part of your feed which will be modified are your galleries. Email "
 "sized images will not be created."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:128
+#: ../includes/class-sendimagesrss-settings.php:146
 msgid "Max Width"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:130
+#: ../includes/class-sendimagesrss-settings.php:148
 msgid ""
 "Most users should <strong>should not</strong> need to change this number."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:146
+#: ../includes/class-sendimagesrss-settings.php:164
 msgid "Create a custom feed and use that for sending emails."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:151
-#: ../includes/class-sendimagesrss-settings.php:156
+#: ../includes/class-sendimagesrss-settings.php:173
 #, php-format
 msgid "Hey! Your new feed is at <a href=\"%1$s\" target=\"_blank\">%1$s</a>."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:183
+#: ../includes/class-sendimagesrss-settings.php:199
 msgid ""
 "Your RSS feed is set to send excerpts instead of full text, so your images "
 "will not be processed by the Send Image to RSS plugin. "
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:185
+#: ../includes/class-sendimagesrss-settings.php:201
 #, php-format
 msgid ""
 "You can change this on the <a href=\"%1$s\">Settings > Reading page</a>."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:194
+#: ../includes/class-sendimagesrss-settings.php:210
 msgid ""
 "Warning! You have the Simplify Feed option checked! Your Alternate Feed "
 "setting will be ignored."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:211
+#: ../includes/class-sendimagesrss-settings.php:226
 msgid ""
 "If you are not concerned about sending your feed out over email and want "
 "only your galleries changed from thumbnails to large images, select Simplify "
 "Feed."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:214
+#: ../includes/class-sendimagesrss-settings.php:229
 msgid ""
 "If you have customized your emails to be a nonstandard width, or you are "
 "using a template with a sidebar, you will want to change your RSS Image size "
@@ -112,25 +111,25 @@ msgid ""
 "single column email (600 pixels wide with 20 pixels padding on the content)."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:215
+#: ../includes/class-sendimagesrss-settings.php:230
 msgid ""
 "Note: Changing the width here will not affect previously uploaded images, "
 "but it will affect the max-width applied to images&rsquo; style."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:218
+#: ../includes/class-sendimagesrss-settings.php:233
 msgid ""
 "By default, the Send Images to RSS plugin modifies every feed from your "
 "site. If you want to leave your main feed untouched and set up a totally "
 "separate feed for emails only, select this option."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:219
+#: ../includes/class-sendimagesrss-settings.php:234
 msgid ""
 "If you use custom post types with their own feeds, the alternate feed method "
 "will work even with them."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:223
+#: ../includes/class-sendimagesrss-settings.php:238
 msgid "Send Images to RSS"
 msgstr ""
