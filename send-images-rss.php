@@ -6,14 +6,14 @@
  * @author            Robin Cornett
  * @author            Gary Jones <gary@garyjones.co.uk>
  * @link              https://github.com/robincornett/send-images-rss
- * @copyright         2014 Robin Cornett
+ * @copyright         2015 Robin Cornett
  * @license           GPL-2.0+
  *
  * @wordpress-plugin
  * Plugin Name:       Send Images to RSS
- * Plugin URI:        https://github.com/robincornett/send-images-rss
+ * Plugin URI:        https://wordpress.org/plugins/send-images-rss
  * Description:       Makes your RSS emails look more like your website by converting overly large images and galleries to an email friendly format. Built with MailChimp in mind.
- * Version:           2.5.2
+ * Version:           2.6.0
  * Author:            Robin Cornett
  * Author URI:        http://robincornett.com
  * Text Domain:       send-images-rss
@@ -30,10 +30,19 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Include classes
-require plugin_dir_path( __FILE__ ) . 'includes/class-sendimagesrss.php';
-require plugin_dir_path( __FILE__ ) . 'includes/class-sendimagesrss-feed-fixer.php';
-require plugin_dir_path( __FILE__ ) . 'includes/class-sendimagesrss-strip-gallery.php';
-require plugin_dir_path( __FILE__ ) . 'includes/class-sendimagesrss-settings.php';
+function send_images_rss_require() {
+	$files = array(
+		'class-sendimagesrss',
+		'class-sendimagesrss-feed-fixer',
+		'class-sendimagesrss-strip-gallery',
+		'class-sendimagesrss-settings',
+	);
+
+	foreach ( $files as $file ) {
+		require plugin_dir_path( __FILE__ ) . 'includes/' . $file . '.php';
+	}
+}
+send_images_rss_require();
 
 // Instantiate dependent classes
 $sendimagesrss_strip_gallery = new SendImagesRSS_Strip_Gallery;

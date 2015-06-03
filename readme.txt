@@ -4,8 +4,8 @@ Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
 Requires at least: 3.8
-Tested up to: 4.1
-Stable tag: 2.5.2
+Tested up to: 4.2.2
+Stable tag: 2.6.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -61,19 +61,63 @@ If this happens, your permalink for the new feed may not have been updated. Visi
 
 If you use native WordPress galleries in your posts, they're sent to your feed as thumbnails. Even if you do not use an RSS/email service, you can still use this plugin to sort out your galleries for subscribers who use an RSS reader. If you select Simplify Feed, your galleries will be converted, but there will not be an email sized image created, and no alternate feed will be created.
 
+= I uploaded a large image to my post, but inserted a smaller version of it. The feed output a large version instead of the small. Can I change that? =
+
+Yes, now you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, add this filter to your site, either in your functions.php file or a functionality plugin:
+
+    add_filter( 'send_images_rss_change_small_images', '__return_false' );
+
+= What if I upload my images to [flickr] or use images hosted somewhere other than my website? =
+
+_Send Images to RSS_ works best with images uploaded through your WordPress website, because WordPress automatically creates the correct size images needed. Because there isn't really much we can do with images hosted elsewhere, the plugin ignores them by default. If, however, you want the plugin to at least _try_ to work with images hosted outside of your site (YMMV), you can add this filter to your site, either in your theme's functions.php file or a functionality plugin:
+
+    add_filter( 'send_images_rss_process_external_images', '__return_true' );
+
+= Is there a way to change the styling on the images in my feed? =
+
+Yes, there sure is. To modify large/email size images, use a filter like this:
+
+    add_filter( 'send_images_rss_email_image_style', 'rgc_email_images', 10, 2 );
+    function rgc_email_images( $style, $maxwidth ) {
+        $style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+
+        return $style;
+    }
+
+You can also filter styling for images with captions, or images which do not have an email size version generated for some reason. I would look into `/includes/class-sendimagesrss-feed-fixer.php` to really examine the filters, but here's a quick example for the images:
+
+    add_filter( 'send_images_rss_other_image_style', 'rgc_change_other_images', 10, 6 );
+    function rgc_change_other_images( $style, $width, $maxwidth, $halfwidth, $alignright, $alignleft ) {
+
+        $style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+
+        if ( $width < $maxwidth ) {
+            $style = sprintf( 'maxwidth:%spx;', $halfwidth );
+        }
+
+        return $style;
+    }
+
+The filter for captions is `send_images_rss_caption_style`, but takes the same arguments as above.
+
 == Screenshots ==
 
 1. Screenshot of the optional plugin settings in Settings > Media.
 
 == Upgrade Notice ==
 
-= 2.5.2 =
-* important update for users with PHP version less than 5.3.6
-* now works even if user has Jetpack's Photon module enabled
+= 2.6.0 =
+new optional filters for images!
 
 == Changelog ==
 
-### 2.5.2
+= 2.6.0 =
+* added a filter to optionally attempt to process external images.
+* added a filter to optionally not replace small images in post content.
+* added filters for granular control over image/caption styling.
+* bugfix: if images are external, they no longer completely stop the presses.
+
+= 2.5.2 =
 * added filter to process images correctly if user has Photon (Jetpack) enabled
 * added Spanish translation, provided by [Web Hosting Hub](http://www.webhostinghub.com/)
 * added error message for users who have their feed set to Summary instead of Full text
