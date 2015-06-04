@@ -112,7 +112,8 @@ bugfix: activation error for some users FIXED. from 2.6.0: new optional filters 
 == Changelog ==
 
 = 2.6.1 =
-bugfix: activation error for some users FIXED.
+* bugfix: correctly handles with captions wrapped around a linked image.
+* bugfix: activation error for some users FIXED.
 
 = 2.6.0 =
 * added a filter to optionally attempt to process external images.
