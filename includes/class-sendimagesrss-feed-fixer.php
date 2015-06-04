@@ -289,8 +289,8 @@ class SendImagesRSS_Feed_Fixer {
 		$width      = $item->width;
 		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = false !== strpos( $item->caption, 'alignright' );
-		$alignleft  = false !== strpos( $item->caption, 'alignleft' );
+		$alignright = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
+		$alignleft  = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
 
 		// now one last check if there are captions O.o
 		if ( false === strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
