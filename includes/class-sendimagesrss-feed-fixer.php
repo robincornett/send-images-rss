@@ -171,7 +171,8 @@ class SendImagesRSS_Feed_Fixer {
 		$item            = $this->get_image_variables( $image );
 		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
-		$php_check       = getimagesize( $item->image_url )[0];
+		$image_data      = $item->image_url ? getimagesize( $item->image_url ) : false;
+		$php_check       = false === $image_data ? $item->width : $image_data[0];
 		$maxwidth        = get_option( 'sendimagesrss_image_size', 560 );
 
 		/**
@@ -184,7 +185,7 @@ class SendImagesRSS_Feed_Fixer {
 		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
 		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
 
-		if ( ( ! empty( $item->width ) && absint( $item->width ) !== absint( $php_check ) ) || $php_check >= $maxwidth ) {
+		if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
 			$replace_small_images = true;
 		}
 
@@ -236,7 +237,8 @@ class SendImagesRSS_Feed_Fixer {
 		$item  = $this->get_image_variables( $image );
 		$width = $item->width;
 		if ( empty( $item->width ) ) {
-			$width = getimagesize( $item->image_url )[0];
+			$image_data = $item->image_url ? getimagesize( $item->image_url ) : false;
+			$width      = false === $image_data ? $item->width : $image_data[0];
 		}
 		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
 		$halfwidth  = floor( $maxwidth / 2 );
