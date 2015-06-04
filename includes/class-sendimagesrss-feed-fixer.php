@@ -139,9 +139,14 @@ class SendImagesRSS_Feed_Fixer {
 		$item            = new stdClass();
 		$item->image_url = $image->getAttribute( 'src' );
 		$item->image_id  = $this->get_image_id( $item->image_url ); // use the image URL to get the image ID
-		$item->caption   = $image->parentNode->getAttribute( 'class' ); // to cover captions
 		$item->class     = $image->getAttribute( 'class' );
 		$item->width     = $image->getAttribute( 'width' );
+		// this may or may not be a caption
+		$item->caption = $image->parentNode;
+		if ( false === strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
+			// this would kick in if the image inside the caption is linked.
+			$item->caption = $image->parentNode->parentNode;
+		}
 
 		if ( false === $item->image_id ) {
 			return $item;
@@ -166,7 +171,8 @@ class SendImagesRSS_Feed_Fixer {
 		$item            = $this->get_image_variables( $image );
 		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
-		$php_check       = getimagesize( $item->image_url )[0];
+		$image_data      = $item->image_url ? getimagesize( $item->image_url ) : false;
+		$php_check       = false === $image_data ? $item->width : $image_data[0];
 		$maxwidth        = get_option( 'sendimagesrss_image_size', 560 );
 
 		/**
@@ -179,15 +185,15 @@ class SendImagesRSS_Feed_Fixer {
 		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
 		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
 
-		if ( ( ! empty( $item->width ) && absint( $item->width ) !== absint( $php_check ) ) || $php_check >= $maxwidth ) {
+		if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
 			$replace_small_images = true;
 		}
 
 		if ( ( $mailchimp_check || $large_check ) && true === $replace_small_images ) {
 
 			// remove the style from parentNode, only if it's a caption.
-			if ( false !== strpos( $item->caption, 'wp-caption' ) ) {
-				$image->parentNode->removeAttribute( 'style' );
+			if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
+				$item->caption->removeAttribute( 'style' );
 			}
 
 			$size_to_use = $item->large;
@@ -231,12 +237,13 @@ class SendImagesRSS_Feed_Fixer {
 		$item  = $this->get_image_variables( $image );
 		$width = $item->width;
 		if ( empty( $item->width ) ) {
-			$width = getimagesize( $item->image_url )[0];
+			$image_data = $item->image_url ? getimagesize( $item->image_url ) : false;
+			$width      = false === $image_data ? $item->width : $image_data[0];
 		}
 		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption, 'alignright' );
-		$alignleft  = false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption, 'alignleft' );
+		$alignright = false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
+		$alignleft  = false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
 
 		// guard clause: set everything to be centered
 		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
@@ -284,15 +291,15 @@ class SendImagesRSS_Feed_Fixer {
 		$width      = $item->width;
 		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = false !== strpos( $item->caption, 'alignright' );
-		$alignleft  = false !== strpos( $item->caption, 'alignleft' );
+		$alignright = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
+		$alignleft  = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
 
 		// now one last check if there are captions O.o
-		if ( false === strpos( $item->caption, 'wp-caption' ) ) {
+		if ( false === strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
 			return; // theoretically, no caption, so skip forward and finish up.
 		}
 		// we has captions and have to deal with their mess.
-		$image->parentNode->removeAttribute( 'style' );
+		$item->caption->removeAttribute( 'style' );
 
 		// guard clause: set the caption style to full width and center
 		$style = sprintf( 'margin:0 auto;max-width:%spx;', $maxwidth );
@@ -316,7 +323,7 @@ class SendImagesRSS_Feed_Fixer {
 		 */
 		$style = apply_filters( 'send_images_rss_caption_style', $style, $width, $maxwidth, $halfwidth, $alignright, $alignleft );
 
-		$image->parentNode->setAttribute( 'style', esc_attr( $style ) );
+		$item->caption->setAttribute( 'style', esc_attr( $style ) );
 	}
 
 

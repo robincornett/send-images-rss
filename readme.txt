@@ -5,7 +5,7 @@ Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 2.6.0
+Stable tag: 2.6.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -106,10 +106,14 @@ The filter for captions is `send_images_rss_caption_style`, but takes the same a
 
 == Upgrade Notice ==
 
-= 2.6.0 =
-new optional filters for images!
+= 2.6.1 =
+bugfix: activation error for some users FIXED. from 2.6.0: new optional filters for images!
 
 == Changelog ==
+
+= 2.6.1 =
+* bugfix: correctly handles with captions wrapped around a linked image.
+* bugfix: activation error for some users FIXED.
 
 = 2.6.0 =
 * added a filter to optionally attempt to process external images.
