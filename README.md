@@ -132,6 +132,9 @@ __Screenshot of the optional plugin settings in Settings > Media.__
 
 ## Changelog
 
+### 2.6.1
+bugfix: activation error for some users FIXED.
+
 ### 2.6.0
 * added a filter to optionally attempt to process external images.
 * added a filter to optionally not replace small images in post content.
