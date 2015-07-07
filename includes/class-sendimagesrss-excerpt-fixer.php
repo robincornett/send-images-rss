@@ -83,6 +83,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 			$excerpt     = trim( force_balance_tags( $excerpt_output ) );
 			$read_more   = sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), get_the_title(), get_bloginfo( 'name' ) );
+			$read_more   = apply_filters( 'sendimagesrss_excerpt_read_more', $read_more );
 			$excerpt_end = sprintf( '<a href="%s">%s</a>', esc_url( get_permalink() ), $read_more );
 			$excerpt    .= $excerpt_end;
 
