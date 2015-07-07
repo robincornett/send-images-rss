@@ -87,10 +87,10 @@ class SendImagesRSS_Settings {
 				'id'       => 'general',
 				'title'    => __( 'General Plugin Settings', 'send-images-rss' ),
 			),
-			// 'full' => array(
-			// 	'id'       => 'full',
-			// 	'title'    => __( 'Full Text Settings', 'send-images-rss' ),
-			// ),
+			'full' => array(
+				'id'       => 'full',
+				'title'    => __( 'Full Text Settings', 'send-images-rss' ),
+			),
 			'summary' => array(
 				'id'       => 'summary',
 				'title'    => __( 'Summary Settings', 'send-images-rss' ),
@@ -102,7 +102,7 @@ class SendImagesRSS_Settings {
 				'id'       => 'simplify_feed',
 				'title'    => __( 'Simplify Feed', 'send-images-rss' ),
 				'callback' => 'do_checkbox',
-				'section'  => 'general',
+				'section'  => 'full',
 				'args'     => array( 'setting' => 'simplify_feed', 'label' => __( 'Convert galleries only; do not fix feeds for email.', 'send-images-rss' ) ),
 			),
 			array(
