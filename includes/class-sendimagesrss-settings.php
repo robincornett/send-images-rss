@@ -116,7 +116,7 @@ class SendImagesRSS_Settings {
 				'id'       => 'alternate_feed',
 				'title'    => __( 'Alternate Feed', 'send-images-rss' ),
 				'callback' => 'do_checkbox',
-				'section'  => 'general',
+				'section'  => 'full',
 				'args'     => array( 'setting' => 'alternate_feed', 'label' => __( 'Create a custom feed and use that for sending emails.', 'send-images-rss' ) ),
 			),
 			array(
