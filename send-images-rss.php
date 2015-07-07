@@ -33,6 +33,7 @@ if ( ! defined( 'WPINC' ) ) {
 function send_images_rss_require() {
 	$files = array(
 		'class-sendimagesrss',
+		'class-sendimagesrss-excerpt-fixer',
 		'class-sendimagesrss-feed-fixer',
 		'class-sendimagesrss-strip-gallery',
 		'class-sendimagesrss-settings',
@@ -46,12 +47,14 @@ send_images_rss_require();
 
 // Instantiate dependent classes
 $sendimagesrss_strip_gallery = new SendImagesRSS_Strip_Gallery;
-$sendimagesrss_feed_fixer = new SendImagesRSS_Feed_Fixer;
-$sendimagesrss_settings = new SendImagesRSS_Settings;
+$sendimagesrss_excerpt_fixer = new SendImagesRSS_Excerpt_Fixer;
+$sendimagesrss_feed_fixer    = new SendImagesRSS_Feed_Fixer;
+$sendimagesrss_settings      = new SendImagesRSS_Settings;
 
 // Instantiate main class and pass in dependencies
 $sendimagesrss = new SendImagesRSS(
 	$sendimagesrss_strip_gallery,
+	$sendimagesrss_excerpt_fixer,
 	$sendimagesrss_feed_fixer,
 	$sendimagesrss_settings
 );
