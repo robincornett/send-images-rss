@@ -12,19 +12,28 @@
 
 class SendImagesRSS_Excerpt_Fixer {
 
-	protected $rss_setting;
+	/**
+	 * Send Images RSS option from database
+	 * @var option
+	 */
+	protected $setting;
 
-	public function __construct() {
-		$this->rss_setting = get_option( 'sendimagesrss' );
-	}
-
+	/**
+	 * Add post's featured image to beginning of excerpt
+	 * @since x.y.z
+	 */
 	public function set_featured_image( $content ) {
+
+		$this->setting = get_option( 'sendimagesrss' );
 
 		if ( ! has_post_thumbnail( get_the_ID() ) ) {
 			return $content;
 		}
 
-		switch ( $this->rss_setting['alignment'] ) {
+		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
+		$alignment      = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
+
+		switch ( $alignment ) {
 			case 'right':
 				$style = 'margin: 0 0 10px 10px;';
 				break;
@@ -42,66 +51,105 @@ class SendImagesRSS_Excerpt_Fixer {
 				break;
 		}
 
-		$image = sprintf( '<a href="%s">%s</a>', get_the_permalink(), get_the_post_thumbnail( get_the_ID(), $this->rss_setting['thumbnail_size'], array( 'align' => $this->rss_setting['alignment'], 'style' => apply_filters( 'sendimagesrss_excerpt_image_style', $style ) ) ) );
+		$image = sprintf( '<a href="%s">%s</a>', get_the_permalink(), get_the_post_thumbnail( get_the_ID(), $thumbnail_size, array( 'align' => $alignment, 'style' => apply_filters( 'sendimagesrss_excerpt_image_style', $style ) ) ) );
 
 		return $image . $content;
 
 	}
 
-	function trim_excerpt( $excerpt ) {
-		$raw_excerpt = $excerpt;
-		if ( ! $excerpt ) {
+	/**
+	 * Trim excerpt to word count, but to the end of a sentence.
+	 * @return trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
+	 *
+	 * @since x.y.z
+	 */
+	public function trim_excerpt( $text ) {
 
-			$excerpt = get_the_content( '' );
-			$excerpt = strip_shortcodes( $excerpt );
-			$excerpt = str_replace( ']]>', ']]&gt;', $excerpt );
-			$excerpt = strip_tags( $excerpt, $this->allowed_tags() );
-
-			// Set the excerpt word count and only break after sentence is complete.
-			$excerpt_length = $this->settings['excerpt_length'];
-			$tokens         = array();
-			$excerpt_output = '';
-			$count          = 0;
-
-			// Divide the string into tokens; HTML tags, or words, followed by any whitespace
-			preg_match_all( '/(<[^>]+>|[^<>\s]+)\s*/u', $excerpt, $tokens );
-
-			foreach ( $tokens[0] as $token ) {
-
-				if ( $count >= $excerpt_length && preg_match( '/[\?\.\!]\s*$/uS', $token ) ) {
-					// Limit reached, continue until ? . or ! occur at the end
-					$excerpt_output .= trim( $token );
-					break;
-				}
-
-				// Add words to complete sentence
-				$count++;
-
-				// Append what's left of the token
-				$excerpt_output .= $token;
-			}
-
-			$excerpt     = trim( force_balance_tags( $excerpt_output ) );
-			$read_more   = sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), get_the_title(), get_bloginfo( 'name' ) );
-			$read_more   = apply_filters( 'sendimagesrss_excerpt_read_more', $read_more );
-			$excerpt_end = sprintf( '<a href="%s">%s</a>', esc_url( get_permalink() ), $read_more );
-			$excerpt    .= $excerpt_end;
-			$read_more = $this->read_more();
-
+		$raw_excerpt = $text;
+		if ( $text ) {
+			return $text . $this->read_more();
 		}
 
-		return apply_filters( 'sendimagesrss_trim_excerpt', $excerpt, $raw_excerpt );
+		$text = get_the_content( '' );
+		$text = strip_shortcodes( $text );
+		$text = str_replace( ']]>', ']]&gt;', $text );
+		$text = strip_tags( $text, $this->allowed_tags() );
+		$text = $this->count_excerpt( $text );
+		$text = trim( force_balance_tags( $text ) );
+
+		/**
+		 * Filter to modify trimmed excerpt.
+		 *
+		 * @since x.y.z
+		 */
+		$text = apply_filters( 'sendimagesrss_trim_excerpt', $text, $raw_excerpt );
+
+		return $text . $this->read_more();
 
 	}
 
+	/**
+	 * Modify read more link.
+	 * @return link to original post
+	 *
+	 * @since x.y.z
+	 */
 	protected function read_more() {
-		$read_more = sprintf( __( '<a href="%s">Continue reading %s at %s.</a>', 'send-images-rss' ), get_permalink(), get_the_title(), get_bloginfo( 'name' ) );
-		return apply_filters( 'sendimagesrss_excerpt_read_more', $read_more );
+		$permalink = get_permalink();
+		$title     = get_the_title();
+		$blog_name = get_bloginfo( 'name' );
+		$read_more = sprintf( __( '<a href="%s">Continue reading %s at %s.</a>', 'send-images-rss' ), $permalink, $title, $blog_name );
+
+		/**
+		 * Filter to modify link back to original post.
+		 *
+		 * @since x.y.z
+		 */
+		return apply_filters( 'sendimagesrss_excerpt_read_more', $read_more, $permalink, $title, $blog_name );
 	}
 
+	/**
+	 * Tags to allow in excerpt
+	 * @return string allowed tags
+	 *
+	 * @since x.y.z
+	 */
 	protected function allowed_tags() {
 		$tags = '<style>,<br>,<em>,<i>,<ul>,<ol>,<li>,<strong>,<b>,<p>';
 		return apply_filters( 'sendimagesrss_allowed_tags', $tags );
+	}
+
+	/**
+	 * Trim excerpt to word count, but to the end of a sentence.
+	 * @param  excerpt $text original excerpt
+	 * @return trimmed excerpt       ends in a complete sentence.
+	 *
+	 * @since x.y.z
+	 */
+	protected function count_excerpt( $text ) {
+		$excerpt_length = $this->setting['excerpt_length'] ? $this->setting['excerpt_length'] : 75;
+		$tokens         = array();
+		$count          = 0;
+
+		// Divide the string into tokens; HTML tags, or words, followed by any whitespace
+		preg_match_all( '/(<[^>]+>|[^<>\s]+)\s*/u', $text, $tokens );
+
+		foreach ( $tokens[0] as $token ) {
+
+			if ( $count >= $excerpt_length && preg_match( '/[\?\.\!]\s*$/uS', $token ) ) {
+				// Limit reached, continue until ? . or ! occur at the end
+				$text .= trim( $token );
+				break;
+			}
+
+			// Add words to complete sentence
+			$count++;
+
+			// Append what's left of the token
+			$text .= $token;
+		}
+
+		return $text;
 	}
 
 }
