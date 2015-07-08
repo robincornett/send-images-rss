@@ -321,11 +321,10 @@ class SendImagesRSS_Settings {
 	 * @return string            New or previous value, depending on allowed image size.
 	 */
 	function media_value( $new_value ) {
-		$new_value = absint( $new_value );
 		if ( ! $new_value || $new_value < 200 || $new_value > 900 ) {
 			return $this->setting['image_size'];
 		}
-		return $new_value;
+		return (int) $new_value;
 	}
 
 	/**
@@ -333,9 +332,6 @@ class SendImagesRSS_Settings {
 	 *
 	 * @since 2.4.0
 	 *
-	 * Error message if feed is set to summary instead of full text.
-	 *
-	 * @since 2.5.2
 	 */
 	public function do_error_message( $new_value ) {
 
