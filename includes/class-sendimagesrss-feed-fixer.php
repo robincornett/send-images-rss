@@ -16,6 +16,8 @@
  * @package SendImagesRSS
  */
 class SendImagesRSS_Feed_Fixer {
+
+	protected $image_size;
 	/**
 	 * Fix parts of a feed.
 	 *
@@ -90,6 +92,12 @@ class SendImagesRSS_Feed_Fixer {
 
 		// Now work on the images, which is why we're really here.
 		$images  = $doc->getElementsByTagName( 'img' );
+
+		$setting = get_option( 'sendimagesrss' );
+		if ( ! $setting ) {
+			$setting = get_option( 'sendimagesrss_image_size', 560 );
+		}
+		$this->image_size = $setting['image_size'] ? $setting['image_size'] : $setting;
 
 		foreach ( $images as $image ) {
 
@@ -173,7 +181,7 @@ class SendImagesRSS_Feed_Fixer {
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
 		$image_data      = $item->image_url ? getimagesize( $item->image_url ) : false;
 		$php_check       = false === $image_data ? $item->width : $image_data[0];
-		$maxwidth        = get_option( 'sendimagesrss_image_size', 560 );
+		$maxwidth        = $this->image_size;
 
 		/**
 		 * add a filter to optionally not replace smaller images, even if a larger version exists.
@@ -240,7 +248,7 @@ class SendImagesRSS_Feed_Fixer {
 			$image_data = $item->image_url ? getimagesize( $item->image_url ) : false;
 			$width      = false === $image_data ? $item->width : $image_data[0];
 		}
-		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
+		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
 		$alignright = false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
 		$alignleft  = false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
@@ -289,7 +297,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		$item       = $this->get_image_variables( $image );
 		$width      = $item->width;
-		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
+		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
 		$alignright = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
 		$alignleft  = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
