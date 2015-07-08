@@ -51,7 +51,6 @@ class SendImagesRSS_Settings {
 				do_settings_sections( 'sendimagesrss' );
 				wp_nonce_field( 'sendimagesrss_save-settings', 'sendimagesrss_nonce', false );
 				submit_button();
-				settings_errors();
 			echo '</form>';
 		echo '</div>';
 	}
@@ -110,7 +109,7 @@ class SendImagesRSS_Settings {
 				'title'    => __( 'RSS Image Size', 'send-images-rss' ),
 				'callback' => 'do_number',
 				'section'  => 'general',
-				'args'     => array( 'setting' => 'image_size', 'min' => 200, 'max' => 900, 'label' => __( 'Max Width', 'send-images-rss' ), 'description' => __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' ) ),
+				'args'     => array( 'setting' => 'image_size', 'min' => 200, 'max' => 900, 'label' => __( 'Max Width', 'send-images-rss' ) ),
 			),
 			array(
 				'id'       => 'alternate_feed',
@@ -138,7 +137,7 @@ class SendImagesRSS_Settings {
 				'title'    => __( 'Excerpt Length', 'send-images-rss' ),
 				'callback' => 'do_number',
 				'section'  => 'summary',
-				'args'     => array( 'setting' => 'excerpt_length', 'min' => 1, 'max' => 200, 'label' => __( 'Number of Words', 'send-images-rss' ), 'description' => __( 'Set the minimum number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' ) ),
+				'args'     => array( 'setting' => 'excerpt_length', 'min' => 1, 'max' => 200, 'label' => __( 'Number of Words', 'send-images-rss' ) ),
 			),
 		);
 
@@ -187,8 +186,9 @@ class SendImagesRSS_Settings {
 			checked( 1, esc_attr( $this->setting[ $args['setting'] ] ), false ),
 			esc_attr( $args['label'] )
 		);
-		if ( 'alternate_feed' === $args['setting'] ) {
-			$this->field_alternate_feed();
+		$function = $args['setting'] . '_description';
+		if ( method_exists( $this, $function ) ) {
+			$this->$function();
 		}
 	}
 
@@ -196,7 +196,10 @@ class SendImagesRSS_Settings {
 
 		printf( '<label for="sendimagesrss[%s]">%s</label>', esc_attr( $args['setting'] ), esc_attr( $args['label'] ) );
 		printf( '<input type="number" step="1" min="%1$s" max="%2$s" id="sendimagesrss[%3$s]" name="sendimagesrss[%3$s]" value="%4$s" class="small-text" />', (int) $args['min'], (int) $args['max'], esc_attr( $args['setting'] ), esc_attr( $this->setting[ $args['setting'] ] ) );
-		printf( '<p class="description">%s</p>', wp_kses_post( $args['description'] ) );
+		$function = $args['setting'] . '_description';
+		if ( method_exists( $this, $function ) ) {
+			$this->$function();
+		}
 
 	}
 
@@ -237,27 +240,36 @@ class SendImagesRSS_Settings {
 		return $options;
 	}
 
+	public function image_size_description() {
+		$description = __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
+		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+	}
+
+	public function excerpt_length_description() {
+		$description = __( 'Set the minimum number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
+		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+	}
 	/**
 	 * Callback for alternate feed setting.
 	 *
 	 * @since 2.3.0
 	 */
-	public function field_alternate_feed() {
+	public function alternate_feed_description() {
 
-		if ( $this->setting['alternate_feed'] && ! $this->setting['simplify_feed'] ) {
-			$url               = '?feed=email';
-			$pretty_permalinks = get_option( 'permalink_structure' );
-			if ( $pretty_permalinks ) {
-				$url = 'feed/email';
-			}
-			$message = sprintf(
-				__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
-				esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
-			);
-
-			printf( '<p class="description">%s</p>', wp_kses_post( $message ) );
-
+		if ( ! $this->setting['alternate_feed'] || $this->setting['simplify_feed'] ) {
+			return;
 		}
+		$url               = '?feed=email';
+		$pretty_permalinks = get_option( 'permalink_structure' );
+		if ( $pretty_permalinks ) {
+			$url = 'feed/email';
+		}
+		$message = sprintf(
+			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
+			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
+		);
+
+		printf( '<p class="description">%s</p>', wp_kses_post( $message ) );
 	}
 
 	public function do_validation_things( $new_value ) {
@@ -271,8 +283,7 @@ class SendImagesRSS_Settings {
 		foreach ( $this->fields as $field ) {
 			if ( 'do_checkbox' === $field['callback'] ) {
 				$new_value[ $field['id'] ] = $this->one_zero( $new_value[ $field['id'] ] );
-			}
-			if ( 'do_select' === $field['callback'] ) {
+			} elseif ( 'do_select' === $field['callback'] ) {
 				$new_value[ $field['id'] ] = esc_attr( $new_value[ $field['id'] ] );
 			}
 		}
@@ -282,6 +293,8 @@ class SendImagesRSS_Settings {
 		$new_value['thumbnail_size'] = esc_attr( $new_value['thumbnail_size'] );
 
 		$new_value['excerpt_length'] = (int) $new_value['excerpt_length'];
+
+		$this->do_error_message( $new_value );
 
 		return $new_value;
 
@@ -324,28 +337,23 @@ class SendImagesRSS_Settings {
 	 *
 	 * @since 2.5.2
 	 */
-	public function error_message() {
+	public function do_error_message( $new_value ) {
 
-		$screen     = get_current_screen();
-		$value      = $this->setting['alternate_feed'];
-		$simplify   = $this->setting['simplify_feed'];
-		$rss_option = get_option( 'rss_use_excerpt' );
+		$alternate = $new_value['alternate_feed'];
+		$simplify  = $new_value['simplify_feed'];
 
-		if ( '1' === $rss_option && in_array( $screen->id, array( 'settings_page_sendimagesrss', 'options-reading', 'plugins' ) ) ) {
-			$message = __( 'Your RSS feed is set to send excerpts instead of full text, so your images will not be processed by the Send Image to RSS plugin. ', 'send-images-rss' );
-			if ( 'options-reading' !== $screen->id ) {
-				$message .= sprintf( __( 'You can change this on the <a href="%1$s">Settings > Reading page</a>.', 'send-images-rss' ),
-					get_admin_url() . 'options-reading.php'
-				);
-			}
-			printf( '<div class="error"><p><strong>%s</strong></p></div>', wp_kses_post( $message ) );
+		if ( ! $alternate || ! $simplify ) {
+			return;
 		}
+		$class   = 'error';
+		$message = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
 
-		if ( $value && $simplify && 'options-media' === $screen->id ) {
-			printf( '<div class="error"><p><strong>%s</strong></p></div>',
-				esc_attr__( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' )
-			);
-		}
+		add_settings_error(
+			$this->page,
+			$this->page,
+			esc_attr( $message ),
+			esc_attr( $class )
+		);
 
 	}
 
