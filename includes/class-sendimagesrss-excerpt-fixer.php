@@ -86,11 +86,17 @@ class SendImagesRSS_Excerpt_Fixer {
 			$read_more   = apply_filters( 'sendimagesrss_excerpt_read_more', $read_more );
 			$excerpt_end = sprintf( '<a href="%s">%s</a>', esc_url( get_permalink() ), $read_more );
 			$excerpt    .= $excerpt_end;
+			$read_more = $this->read_more();
 
 		}
 
 		return apply_filters( 'sendimagesrss_trim_excerpt', $excerpt, $raw_excerpt );
 
+	}
+
+	protected function read_more() {
+		$read_more = sprintf( __( '<a href="%s">Continue reading %s at %s.</a>', 'send-images-rss' ), get_permalink(), get_the_title(), get_bloginfo( 'name' ) );
+		return apply_filters( 'sendimagesrss_excerpt_read_more', $read_more );
 	}
 
 	protected function allowed_tags() {
