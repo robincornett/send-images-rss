@@ -73,23 +73,23 @@ class SendImagesRSS_Excerpt_Fixer {
 	public function trim_excerpt( $text ) {
 
 		$raw_excerpt = $text;
-		if ( $text ) {
-			return $text . $this->read_more();
+		if ( '' === $text ) {
+
+			$text = get_the_content( '' );
+			$text = strip_shortcodes( $text );
+			$text = str_replace( ']]>', ']]&gt;', $text );
+			$text = strip_tags( $text, $this->allowed_tags() );
+			$text = $this->count_excerpt( $text );
+			$text = trim( force_balance_tags( $text ) );
+
+			/**
+			 * Filter to modify trimmed excerpt.
+			 *
+			 * @since x.y.z
+			 */
+			$text = apply_filters( 'sendimagesrss_trim_excerpt', $text, $raw_excerpt );
+
 		}
-
-		$text = get_the_content( '' );
-		$text = strip_shortcodes( $text );
-		$text = str_replace( ']]>', ']]&gt;', $text );
-		$text = strip_tags( $text, $this->allowed_tags() );
-		$text = $this->count_excerpt( $text );
-		$text = trim( force_balance_tags( $text ) );
-
-		/**
-		 * Filter to modify trimmed excerpt.
-		 *
-		 * @since x.y.z
-		 */
-		$text = apply_filters( 'sendimagesrss_trim_excerpt', $text, $raw_excerpt );
 
 		return $text . $this->read_more();
 
@@ -121,8 +121,8 @@ class SendImagesRSS_Excerpt_Fixer {
 	 *
 	 * @since x.y.z
 	 */
-	protected function allowed_tags() {
-		$tags = '<style>,<br>,<em>,<i>,<ul>,<ol>,<li>,<strong>,<b>,<p>';
+	protected function allowed_tags( $tags = '' ) {
+		$tags = '<style>,<br>,<br/>,<em>,<i>,<ul>,<ol>,<li>,<strong>,<b>,<p>';
 		return apply_filters( 'sendimagesrss_allowed_tags', $tags );
 	}
 
