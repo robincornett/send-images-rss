@@ -22,16 +22,13 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Add post's featured image to beginning of excerpt
 	 * @since x.y.z
 	 */
-	public function set_featured_image( $content ) {
+	public function set_featured_image( $content, $image = '' ) {
 
-		$this->setting = get_option( 'sendimagesrss' );
-
-		if ( ! has_post_thumbnail( get_the_ID() ) ) {
-			return $content;
-		}
-
+		$this->setting  = get_option( 'sendimagesrss' );
+		$post_id        = get_the_ID();
 		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
 		$alignment      = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
+		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );
 
 		switch ( $alignment ) {
 			case 'right':
@@ -51,7 +48,17 @@ class SendImagesRSS_Excerpt_Fixer {
 				break;
 		}
 
-		$image = sprintf( '<a href="%s">%s</a>', get_the_permalink(), get_the_post_thumbnail( get_the_ID(), $thumbnail_size, array( 'align' => $alignment, 'style' => apply_filters( 'sendimagesrss_excerpt_image_style', $style ) ) ) );
+		if ( $image_source ) {
+			$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
+				get_the_permalink(),
+				$image_source[1],
+				$image_source[2],
+				$image_source[0],
+				the_title_attribute( 'echo=0' ),
+				$alignment,
+				$style
+			);
+		}
 
 		return $image . $content;
 
@@ -150,6 +157,52 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		return $text;
+	}
+
+	/**
+	 * Get the post's featured image id. Uses get_fallback_image_id if there is no featured image.
+	 * @param  int  $post_id current post ID
+	 * @param  boolean $id      image ID
+	 * @return ID           ID of featured image, fallback image if no featured image, or false if no image exists.
+	 *
+	 * Since x.y.z
+	 */
+	protected function get_image_id( $post_id, $id = false ) {
+
+		if ( has_post_thumbnail() ) {
+			$id = get_post_thumbnail_id( $post_id );
+		} else {
+			$id = $this->get_fallback_image_id( $post_id );
+		}
+		return apply_filters( 'sendimagesrss_featured_image_id', $id );
+
+	}
+
+	/**
+	 * Get the ID of the first image in the post
+	 * @param  int $post_id first image in post ID
+	 * @return ID          ID of the first image attached to the post
+	 *
+	 * @since x.y.z
+	 */
+	protected function get_fallback_image_id( $post_id = null ) {
+		$image_ids = array_keys(
+			get_children(
+				array(
+					'post_parent'    => $post_id ? $post_id : get_the_ID(),
+					'post_type'	     => 'attachment',
+					'post_mime_type' => 'image',
+					'orderby'        => 'menu_order',
+					'order'	         => 'ASC',
+				)
+			)
+		);
+
+		if ( isset( $image_ids[0] ) ) {
+			return $image_ids[0];
+		}
+
+		return false;
 	}
 
 }
