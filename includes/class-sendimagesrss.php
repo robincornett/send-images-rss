@@ -133,12 +133,25 @@ class SendImagesRSS {
 	}
 
 	public function do_admin_notice() {
+		$class       = 'update-nag';
+		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
 		$old_setting = get_option( 'sendimagesrss_image_size' );
-		if ( ! $old_setting ) {
+		$new_setting = get_option( 'sendimagesrss' );
+		$rss_option  = get_option( 'rss_use_excerpt' );
+
+		if ( $new_setting && ( ! $this->settings->rss_setting['simplify_feed'] || ! $this->settings->rss_setting['alternate_feed'] ) ) {
 			return;
+		} elseif ( ! $old_setting && ! $new_setting ) {
+			$class   = 'updated';
+			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
+		} elseif ( $this->settings->rss_setting['simplify_feed'] && $this->settings->rss_setting['alternate_feed'] && '0' === $rss_option ) {
+			$current_screen = get_current_screen();
+			if ( ! in_array( $current_screen->id, array( 'settings_page_sendimagesrss', 'options-reading' ) ) ) {
+				return;
+			}
+			$class   = 'error';
+			$message = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
 		}
-		$message = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit the new page to verify and resave your settings.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
-		$class   = 'update-nag';
 		printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
 	}
 }
