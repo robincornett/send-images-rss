@@ -41,8 +41,8 @@ class SendImagesRSS {
 	 * @since 2.4.0
 	 */
 	public function run() {
-		$this->rss_setting = get_option( 'sendimagesrss' );
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+		add_action( 'init', array( $this, 'check_settings' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
 		add_action( 'load-options-media.php', array( $this->settings, 'help' ) );
@@ -56,6 +56,22 @@ class SendImagesRSS {
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain( 'send-images-rss', false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/' );
+	}
+
+	public function check_settings() {
+
+		$this->rss_setting = get_option( 'sendimagesrss' );
+		if ( $this->rss_setting ) {
+			return;
+		}
+		$old_settings = array(
+			'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
+			'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
+			'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
+		);
+		$this->rss_setting = get_option( 'sendimagesrss', $old_settings );
+		add_action( 'admin_notices', array( $this, 'do_admin_notice' ) );
+
 	}
 
 	/**
@@ -124,5 +140,15 @@ class SendImagesRSS {
 		if ( $photon_removed ) {
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
+	}
+
+	public function do_admin_notice() {
+		$old_setting = get_option( 'sendimagesrss_image_size' );
+		if ( ! $old_setting ) {
+			return;
+		}
+		$message = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit the new page to verify and resave your settings.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
+		$class   = 'update-nag';
+		printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
 	}
 }
