@@ -167,8 +167,8 @@ class SendImagesRSS {
 			$class   = 'updated';
 			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
 		} elseif ( $this->settings->rss_setting['simplify_feed'] && $this->settings->rss_setting['alternate_feed'] && '0' === $rss_option ) {
-			$current_screen = get_current_screen();
-			if ( ! in_array( $current_screen->id, array( 'settings_page_sendimagesrss', 'options-reading' ) ) ) {
+			$screen = get_current_screen();
+			if ( ! in_array( $screen->id, array( 'settings_page_sendimagesrss', 'options-reading' ) ) ) {
 				return;
 			}
 			$class   = 'error';
