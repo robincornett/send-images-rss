@@ -18,7 +18,15 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected $setting;
 
+	/**
+	 * Build RSS excerpt
+	 * @param  excerpt $content default excerpt
+	 * @return new excerpt          Returns newly built excerpt
+	 */
 	public function do_excerpt( $content ) {
+		if ( ! is_feed() ) {
+			return;
+		}
 		$before  = $this->set_featured_image();
 		$content = $this->trim_excerpt( $content );
 		$after   = $this->read_more();
@@ -29,7 +37,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Add post's featured image to beginning of excerpt
 	 * @since x.y.z
 	 */
-	public function set_featured_image( $content, $image = '' ) {
+	protected function set_featured_image( $content, $image = '' ) {
 
 		$this->setting  = get_option( 'sendimagesrss' );
 		$post_id        = get_the_ID();
@@ -77,7 +85,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 *
 	 * @since x.y.z
 	 */
-	public function trim_excerpt( $text ) {
+	protected function trim_excerpt( $text ) {
 
 		$raw_excerpt = $text;
 		if ( '' === $text ) {
