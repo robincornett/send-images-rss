@@ -354,33 +354,7 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
-	 * Error message if both Simplify Feed and Alternate Feed are checked.
-	 *
-	 * @since 2.4.0
-	 *
-	 */
-	public function do_error_message( $new_value ) {
-
-		$alternate = $new_value['alternate_feed'];
-		$simplify  = $new_value['simplify_feed'];
-
-		if ( ! $alternate || ! $simplify ) {
-			return;
-		}
-		$class   = 'error';
-		$message = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
-
-		add_settings_error(
-			$this->page,
-			$this->page,
-			esc_attr( $message ),
-			esc_attr( $class )
-		);
-
-	}
-
-	/**
-	 * Help tab for media screen
+	 * Help tab for settings screen
 	 * @return help tab with verbose information for plugin
 	 *
 	 * @since 2.4.0
@@ -388,22 +362,47 @@ class SendImagesRSS_Settings {
 	public function help() {
 		$screen = get_current_screen();
 
-		$sendimages_rss_help  = '<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>';
-		$sendimages_rss_help .= '<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'send-images-rss' ) . '</p>';
+		$general_help  = '<h3>' . __( 'RSS Image Size', 'send-images-rss' ) . '</h3>';
+		$general_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS Image size (width). The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>';
+		$general_help .= '<p>' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>';
 
-		$sendimages_rss_help .= '<h3>' . __( 'RSS Image Size', 'send-images-rss' ) . '</h3>';
-		$sendimages_rss_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS Image size (width). The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>';
-		$sendimages_rss_help .= '<p>' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>';
+		$full_text_help  = '<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>';
+		$full_text_help .= '<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'send-images-rss' ) . '</p>';
 
-		$sendimages_rss_help .= '<h3>' . __( 'Alternate Feed', 'send-images-rss' ) . '</h3>';
-		$sendimages_rss_help .= '<p>' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'send-images-rss' ) . '</p>';
-		$sendimages_rss_help .= '<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'send-images-rss' ) . '</p>';
+		$full_text_help .= '<h3>' . __( 'Alternate Feed', 'send-images-rss' ) . '</h3>';
+		$full_text_help .= '<p>' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'send-images-rss' ) . '</p>';
+		$full_text_help .= '<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'send-images-rss' ) . '</p>';
 
-		$screen->add_help_tab( array(
-			'id'      => 'sendimagesrss-help',
-			'title'   => __( 'Send Images to RSS', 'send-images-rss' ),
-			'content' => $sendimages_rss_help,
-		) );
+		$summary_help  = '<h3>' . __( 'Featured Image Size', 'send-images-rss' ) . '</h3>';
+		$summary_help .= '<p>' . __( 'Select which size image you would like to use in your excerpt/summary.', 'send-images-rss' ) . '</p>';
+
+		$summary_help .= '<h3>' . __( 'Featured Image Alignment', 'send-images-rss' ) . '</h3>';
+		$summary_help .= '<p>' . __( 'Set the alignment for your post\'s featured image.', 'send-images-rss' ) . '</p>';
+
+		$summary_help .= '<h3>' . __( 'Excerpt Length', 'send-images-rss' ) . '</h3>';
+		$summary_help .= '<p>' . __( 'Set the number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';
+
+		$help_tabs = array(
+			array(
+				'id'      => 'sendimagesrss_general-help',
+				'title'   => __( 'General Settings', 'send-images-rss' ),
+				'content' => $general_help,
+			),
+			array(
+				'id'      => 'sendimagesrss_full_text-help',
+				'title'   => __( 'Full Text Settings', 'send-images-rss' ),
+				'content' => $full_text_help,
+			),
+			array(
+				'id'      => 'sendimagesrss_summary-help',
+				'title'   => __( 'Summary Settings', 'send-images-rss' ),
+				'content' => $summary_help,
+			),
+		);
+
+		foreach ( $help_tabs as $tab ) {
+			$screen->add_help_tab( $tab );
+		}
 
 	}
 
