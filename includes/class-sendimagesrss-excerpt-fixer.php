@@ -18,6 +18,13 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected $setting;
 
+	public function do_excerpt( $content ) {
+		$before  = $this->set_featured_image();
+		$content = $this->trim_excerpt( $content );
+		$after   = $this->read_more();
+		return wpautop( $before . $content ) . wpautop( $after );
+	}
+
 	/**
 	 * Add post's featured image to beginning of excerpt
 	 * @since x.y.z
@@ -56,11 +63,11 @@ class SendImagesRSS_Excerpt_Fixer {
 				$image_source[0],
 				the_title_attribute( 'echo=0' ),
 				$alignment,
-				$style
+				apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment )
 			);
 		}
 
-		return $image . $content;
+		return $image;
 
 	}
 
@@ -87,11 +94,11 @@ class SendImagesRSS_Excerpt_Fixer {
 			 *
 			 * @since x.y.z
 			 */
-			$text = apply_filters( 'sendimagesrss_trim_excerpt', $text, $raw_excerpt );
+			$text = apply_filters( 'send_images_rss_trim_excerpt', $text, $raw_excerpt );
 
 		}
 
-		return $text . $this->read_more();
+		return $text;
 
 	}
 
@@ -114,7 +121,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		 *
 		 * @since x.y.z
 		 */
-		return apply_filters( 'sendimagesrss_excerpt_read_more', $read_more, $permalink, $title, $blog_name );
+		return apply_filters( 'send_images_rss_excerpt_read_more', $read_more, $permalink, $title, $blog_name );
 	}
 
 	/**
@@ -125,7 +132,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected function allowed_tags( $tags = '' ) {
 		$tags = '<style>,<br>,<br/>,<em>,<i>,<ul>,<ol>,<li>,<strong>,<b>,<p>';
-		return apply_filters( 'sendimagesrss_allowed_tags', $tags );
+		return apply_filters( 'send_images_rss_allowed_tags', $tags );
 	}
 
 	/**
@@ -176,7 +183,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		} else {
 			$id = $this->get_fallback_image_id( $post_id );
 		}
-		return apply_filters( 'sendimagesrss_featured_image_id', $id );
+		return apply_filters( 'send_images_rss_featured_image_id', $id );
 
 	}
 

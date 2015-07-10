@@ -97,15 +97,14 @@ class SendImagesRSS {
 	 */
 	public function fix_feed() {
 
-		$rss_option = get_option( 'rss_use_excerpt' );
 		if ( ! is_feed() ) {
 			return;
 		}
 
+		$rss_option = get_option( 'rss_use_excerpt' );
 		if ( '1' === $rss_option ) {
 			remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
-			add_filter( 'get_the_excerpt', array( $this->excerpt_fixer, 'trim_excerpt' ), 50 );
-			add_filter( 'the_excerpt_rss', array( $this->excerpt_fixer, 'set_featured_image' ) );
+			add_filter( 'get_the_excerpt', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
 			return;
 		}
 
