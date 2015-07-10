@@ -102,11 +102,32 @@ class SendImagesRSS {
 		}
 
 		$rss_option = get_option( 'rss_use_excerpt' );
-		if ( '1' === $rss_option ) {
-			remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
-			add_filter( 'get_the_excerpt', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
-			return;
+		/**
+		 * add a filter to work on the excerpt even if the feed is set to full text
+		 * @var boolean
+		 *
+		 * @since x.y.z
+		 */
+		$damn_the_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
+		$damn_the_consequences = true === $damn_the_consequences ? $damn_the_consequences : false;
+
+		if ( '1' === $rss_option || true === $damn_the_consequences ) {
+			$this->do_excerpt_things();
 		}
+
+		$this->do_full_text_things();
+
+
+	}
+
+	public function do_excerpt_things() {
+
+		remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
+		add_filter( 'get_the_excerpt', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
+
+	}
+
+	public function do_full_text_things() {
 
 		// because Photon refuses to use our new image size.
 		add_filter( 'jetpack_photon_skip_image', '__return_true' );
@@ -130,6 +151,7 @@ class SendImagesRSS {
 		if ( $photon_removed ) {
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
+
 	}
 
 	public function do_admin_notice() {
