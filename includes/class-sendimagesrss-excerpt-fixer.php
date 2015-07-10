@@ -107,6 +107,8 @@ class SendImagesRSS_Excerpt_Fixer {
 		$blog_name = get_bloginfo( 'name' );
 		$read_more = sprintf( __( '<a href="%s">Continue reading %s at %s.</a>', 'send-images-rss' ), $permalink, $title, $blog_name );
 
+		// remove the Yoast RSS footer
+		add_filter( 'wpseo_include_rss_footer', '__return_false' );
 		/**
 		 * Filter to modify link back to original post.
 		 *
@@ -133,7 +135,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 *
 	 * @since x.y.z
 	 */
-	protected function count_excerpt( $text ) {
+	protected function count_excerpt( $text, $output = '' ) {
 		$excerpt_length = $this->setting['excerpt_length'] ? $this->setting['excerpt_length'] : 75;
 		$tokens         = array();
 		$count          = 0;
@@ -145,7 +147,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 			if ( $count >= $excerpt_length && preg_match( '/[\?\.\!]\s*$/uS', $token ) ) {
 				// Limit reached, continue until ? . or ! occur at the end
-				$text .= trim( $token );
+				$output .= trim( $token );
 				break;
 			}
 
@@ -153,10 +155,10 @@ class SendImagesRSS_Excerpt_Fixer {
 			$count++;
 
 			// Append what's left of the token
-			$text .= $token;
+			$output .= $token;
 		}
 
-		return $text;
+		return $output;
 	}
 
 	/**
@@ -194,6 +196,7 @@ class SendImagesRSS_Excerpt_Fixer {
 					'post_mime_type' => 'image',
 					'orderby'        => 'menu_order',
 					'order'	         => 'ASC',
+					'numberposts'    => 1,
 				)
 			)
 		);
