@@ -285,10 +285,21 @@ class SendImagesRSS_Settings {
 			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 		);
+		if ( '1' === $this->rss_option ) {
+			$message = __( 'Sorry, your feed is set to show summaries, so no alternate feed can be created.', 'send-images-rss' );
+		}
 
 		printf( '<p class="description">%s</p>', wp_kses_post( $message ) );
+
 	}
 
+	/**
+	 * Validate all settings.
+	 * @param  array $new_value new values from settings page
+	 * @return array            validated values
+	 *
+	 * @since x.y.z
+	 */
 	public function do_validation_things( $new_value ) {
 
 		if ( empty( $_POST['sendimagesrss_nonce'] ) ) {
