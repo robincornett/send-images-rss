@@ -236,7 +236,8 @@ class SendImagesRSS_Settings {
 	protected function pick_sizes() {
 		$intermediate_sizes = get_intermediate_image_sizes();
 		foreach ( $intermediate_sizes as $_size ) {
-			if ( in_array( $_size, array( 'thumbnail', 'medium' ) ) ) {
+			$default_sizes = apply_filters( 'send_images_rss_thumbnail_size_list', array( 'thumbnail', 'medium' ) );
+			if ( in_array( $_size, $default_sizes ) ) {
 				$width  = get_option( $_size . '_size_w' );
 				$height = get_option( $_size . '_size_h' );
 				$options[ $_size ] = sprintf( '%s ( %sx%s )', $_size, $width, $height );
