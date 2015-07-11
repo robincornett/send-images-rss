@@ -63,8 +63,6 @@ class SendImagesRSS {
 	 */
 	public function init() {
 
-		add_action( 'admin_notices', array( $this, 'do_admin_notice' ) );
-
 		$simplify    = $this->settings->rss_setting['simplify_feed'];
 		$image_width = $this->settings->rss_setting['image_size'];
 
@@ -150,26 +148,4 @@ class SendImagesRSS {
 
 	}
 
-	public function do_admin_notice() {
-		$class       = 'update-nag';
-		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
-		$old_setting = get_option( 'sendimagesrss_image_size' );
-		$new_setting = get_option( 'sendimagesrss' );
-		$rss_option  = (int) get_option( 'rss_use_excerpt' );
-
-		if ( $new_setting && ( ! $this->settings->rss_setting['simplify_feed'] || ! $this->settings->rss_setting['alternate_feed'] ) ) {
-			return;
-		} elseif ( ! $old_setting && ! $new_setting ) {
-			$class   = 'updated';
-			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
-		} elseif ( $this->settings->rss_setting['simplify_feed'] && $this->settings->rss_setting['alternate_feed'] && 0 === $rss_option ) {
-			$screen = get_current_screen();
-			if ( ! in_array( $screen->id, array( 'settings_page_sendimagesrss', 'options-reading' ) ) ) {
-				return;
-			}
-			$class   = 'error';
-			$message = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
-		}
-		printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
-	}
 }
