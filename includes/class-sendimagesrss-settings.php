@@ -170,7 +170,7 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
-	 * Callback for RSS Feeds section.
+	 * Callback for general plugin settings section.
 	 *
 	 * @since 2.4.0
 	 */
@@ -180,6 +180,11 @@ class SendImagesRSS_Settings {
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
+	/**
+	 * Callback for full text plugin settings section.
+	 *
+	 * @since x.y.z
+	 */
 	public function full_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the full text of each post.', 'send-images-rss' );
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
@@ -189,6 +194,11 @@ class SendImagesRSS_Settings {
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
+	/**
+	 * Callback for summary plugin settings section.
+	 *
+	 * @since x.y.z
+	 */
 	public function summary_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the summaries of each post.', 'send-images-rss' );
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
@@ -198,6 +208,11 @@ class SendImagesRSS_Settings {
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
+	/**
+	 * Generic callback to create a checkbox setting.
+	 *
+	 * @since x.y.z
+	 */
 	public function do_checkbox( $args ) {
 		printf( '<input type="hidden" name="sendimagesrss[%s]" value="0" />', esc_attr( $args['setting'] ) );
 		printf( '<label for="sendimagesrss[%1$s]"><input type="checkbox" name="sendimagesrss[%1$s]" id="sendimagesrss[%1$s]" value="1" %2$s class="code" />%3$s</label>',
@@ -211,6 +226,11 @@ class SendImagesRSS_Settings {
 		}
 	}
 
+	/**
+	 * Generic callback to create a number field setting.
+	 *
+	 * @since x.y.z
+	 */
 	public function do_number( $args ) {
 
 		printf( '<label for="sendimagesrss[%s]">%s</label>', esc_attr( $args['setting'] ), esc_attr( $args['label'] ) );
@@ -222,6 +242,11 @@ class SendImagesRSS_Settings {
 
 	}
 
+	/**
+	 * Generic callback to create a select/dropdown setting.
+	 *
+	 * @since x.y.z
+	 */
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
 		$options  = $this->$function(); ?>
@@ -233,6 +258,12 @@ class SendImagesRSS_Settings {
 		</select> <?php
 	}
 
+	/**
+	 * Callback to populate the thumbnail size dropdown with available image sizes.
+	 * @return array selected sizes with names and dimensions
+	 *
+	 * @since x.y.z
+	 */
 	protected function pick_sizes() {
 		$intermediate_sizes = get_intermediate_image_sizes();
 		foreach ( $intermediate_sizes as $_size ) {
@@ -250,6 +281,12 @@ class SendImagesRSS_Settings {
 		return $options;
 	}
 
+	/**
+	 * Callback to create a dropdown list for featured image alignment.
+	 * @return array list of alignment choices.
+	 *
+	 * @since x.y.z
+	 */
 	protected function pick_alignment() {
 		$options = array(
 			'left'   => 'Left',
@@ -260,17 +297,25 @@ class SendImagesRSS_Settings {
 		return $options;
 	}
 
+	/**
+	 * Callback for description for image size.
+	 * @since x.y.z
+	 */
 	public function image_size_description() {
 		$description = __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 
+	/**
+	 * Callback for description for number of words in excerpt.
+	 * @since x.y.z
+	 */
 	public function excerpt_length_description() {
 		$description = __( 'Set the number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 	/**
-	 * Callback for alternate feed setting.
+	 * Callback for alternate feed setting description.
 	 *
 	 * @since 2.3.0
 	 */
