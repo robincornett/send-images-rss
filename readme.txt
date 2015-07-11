@@ -2,10 +2,10 @@
 
 Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
-Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing
+Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 3.8
-Tested up to: 4.2.2
-Stable tag: 2.6.1
+Tested up to: 4.3
+Stable tag: x.y.z
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -35,7 +35,7 @@ Most users should not need to change this. The plugin is designed with a default
 
 = Does this plugin work with excerpts? =
 
-Nope. This plugin is intended for use with full content feeds only. There are several plugins which will resize and/or add your post's featured image to your feed; those work best if your feed is excerpts.
+**YES INDEEDY.** It's true, as of version x.y.z, _Send Images to RSS_ works with RSS feeds set to show excerpts/summaries! With this change, there's a new plugin settings page to handle the additional settings, which allow you to add the featured image to your excerpt, set its alignment, and set the target number of words for the excerpt. Major props to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help with this one.
 
 = What about smaller images? =
 
@@ -102,14 +102,18 @@ The filter for captions is `send_images_rss_caption_style`, but takes the same a
 
 == Screenshots ==
 
-1. Screenshot of the optional plugin settings in Settings > Media.
+1. Screenshot of the optional plugin settings in Settings > Send Images to RSS.
 
 == Upgrade Notice ==
 
-= 2.6.1 =
-bugfix: activation error for some users FIXED. from 2.6.0: new optional filters for images!
+= x.y.z =
+Huge update: now includes featured image support for excerpt only feeds.
 
 == Changelog ==
+
+= x.y.z =
+* new: optionally add your featured image to the excerpt in your feed!
+* new: settings page has been added to handle excerpt settings.
 
 = 2.6.1 =
 * bugfix: correctly handles with captions wrapped around a linked image.

@@ -9,7 +9,7 @@ WordPress plugin that replaces images with an email friendly size image in RSS f
 The plugin adds a new email friendly image size to WordPress. Any large images uploaded to your site with this plugin activated will automatically have a new copy generated which is an email friendly size. If this image exists, it will be sent to your RSS feed, so we avoid the issue of overlarge images going out in email. (Images uploaded prior to activating this plugin will not be affected unless you regenerate thumbnails on your site. But seriously, I wouldn't bother regenerating thumbnails, because you won't be sending old posts out via an RSS email.)
 
 ## Requirements
-* WordPress 3.8, tested up to 4.2.1
+* WordPress 3.8, tested up to 4.3
 
 ## Installation
 
@@ -47,7 +47,7 @@ __Note:__ If you use an email template with a sidebar, I strongly recommend that
 
 ### Does this plugin work with excerpts?
 
-Nope. This plugin is intended for use with full content feeds only. There are several plugins which will resize and/or add your post's featured image to your feed; those work best if your feed is excerpts.
+**YES INDEEDY.** It's true, as of version x.y.z, _Send Images to RSS_ works with RSS feeds set to show excerpts/summaries! With this change, there's a new plugin settings page to handle the additional settings, which allow you to add the featured image to your excerpt, set its alignment, and set the target number of words for the excerpt. Major props to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help with this one.
 
 ### What about smaller images?
 
@@ -121,16 +121,21 @@ function rgc_change_other_images( $style, $width, $maxwidth, $halfwidth, $alignr
 The filter for captions is `send_images_rss_caption_style`, but takes the same arguments as above.
 
 ## Screenshots ##
-![Screenshot of the optional plugin settings in Settings > Media.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
-__Screenshot of the optional plugin settings in Settings > Media.__
+![Screenshot of the optional plugin settings in Settings > Send Images to RSS.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
+__Screenshot of the optional plugin settings in Settings > Send Images to RSS.__
 
 ## Credits
 
 * Built by [Robin Cornett](http://robincornett.com/)
 * With major insight [Gary Jones](http://gamajo.com)
 * Inspired by [Erik Teichmann](http://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
+* Thanks to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### x.y.z
+* new: optionally add your featured image to the excerpt in your feed!
+* new: settings page has been added to handle excerpt settings.
 
 ### 2.6.1
 * bugfix: correctly handles with captions wrapped around a linked image.
