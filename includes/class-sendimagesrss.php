@@ -82,8 +82,8 @@ class SendImagesRSS {
 		// We do this so the output is the same by default, but we can use
 		// the different querystring value to conditionally apply the fixes.
 		$alt_feed   = $this->settings->rss_setting['alternate_feed'];
-		$rss_option = get_option( 'rss_use_excerpt' );
-		if ( $alt_feed && '0' === $rss_option ) {
+		$rss_option = (int) get_option( 'rss_use_excerpt' );
+		if ( $alt_feed && 0 === $rss_option ) {
 			add_feed( 'email', 'do_feed_rss2' );
 		}
 	}
@@ -101,7 +101,7 @@ class SendImagesRSS {
 			return;
 		}
 
-		$rss_option = get_option( 'rss_use_excerpt' );
+		$rss_option = (int) get_option( 'rss_use_excerpt' );
 		/**
 		 * add a filter to work on the excerpt even if the feed is set to full text
 		 * @var boolean
@@ -111,23 +111,25 @@ class SendImagesRSS {
 		$damn_the_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
 		$damn_the_consequences = true === $damn_the_consequences ? $damn_the_consequences : false;
 
-		if ( '1' === $rss_option || true === $damn_the_consequences ) {
-			$this->do_excerpt_things();
+		if ( 1 === $rss_option || true === $damn_the_consequences ) {
+			$this->fix_excerpts();
+			if ( 1 === $rss_option ) {
+				return;
+			}
 		}
 
-		$this->do_full_text_things();
-
+		$this->fix_full_text();
 
 	}
 
-	public function do_excerpt_things() {
+	public function fix_excerpts() {
 
 		remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
 		add_filter( 'get_the_excerpt', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
 
 	}
 
-	public function do_full_text_things() {
+	public function fix_full_text() {
 
 		// because Photon refuses to use our new image size.
 		add_filter( 'jetpack_photon_skip_image', '__return_true' );
@@ -159,14 +161,14 @@ class SendImagesRSS {
 		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
 		$old_setting = get_option( 'sendimagesrss_image_size' );
 		$new_setting = get_option( 'sendimagesrss' );
-		$rss_option  = get_option( 'rss_use_excerpt' );
+		$rss_option  = (int) get_option( 'rss_use_excerpt' );
 
 		if ( $new_setting && ( ! $this->settings->rss_setting['simplify_feed'] || ! $this->settings->rss_setting['alternate_feed'] ) ) {
 			return;
 		} elseif ( ! $old_setting && ! $new_setting ) {
 			$class   = 'updated';
 			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
-		} elseif ( $this->settings->rss_setting['simplify_feed'] && $this->settings->rss_setting['alternate_feed'] && '0' === $rss_option ) {
+		} elseif ( $this->settings->rss_setting['simplify_feed'] && $this->settings->rss_setting['alternate_feed'] && 0 === $rss_option ) {
 			$screen = get_current_screen();
 			if ( ! in_array( $screen->id, array( 'settings_page_sendimagesrss', 'options-reading' ) ) ) {
 				return;
