@@ -42,10 +42,8 @@ class SendImagesRSS {
 	 */
 	public function run() {
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
-		add_action( 'init', array( $this, 'check_settings' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
-		add_action( 'load-options-media.php', array( $this->settings, 'help' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
 	}
 
@@ -58,18 +56,14 @@ class SendImagesRSS {
 		load_plugin_textdomain( 'send-images-rss', false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/' );
 	}
 
-	public function check_settings() {
-
-		add_action( 'admin_notices', array( $this, 'do_admin_notice' ) );
-
-	}
-
 	/**
 	 * Add a feed-specific image size, and custom feed.
 	 *
 	 * @since 2.0.0
 	 */
 	public function init() {
+
+		add_action( 'admin_notices', array( $this, 'do_admin_notice' ) );
 
 		$simplify    = $this->settings->rss_setting['simplify_feed'];
 		$image_width = $this->settings->rss_setting['image_size'];
