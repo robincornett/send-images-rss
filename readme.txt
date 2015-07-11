@@ -35,7 +35,9 @@ Most users should not need to change this. The plugin is designed with a default
 
 = Does this plugin work with excerpts? =
 
-**YES INDEEDY.** It's true, as of version x.y.z, _Send Images to RSS_ works with RSS feeds set to show excerpts/summaries! With this change, there's a new plugin settings page to handle the additional settings, which allow you to add the featured image to your excerpt, set its alignment, and set the target number of words for the excerpt. Major props to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help with this one.
+**YES INDEEDY.** It's true, as of version x.y.z, _Send Images to RSS_ works with RSS feeds set to show excerpts/summaries! With this change, there's a new plugin settings page to handle the additional settings, which allow you to add the featured image to your excerpt, set its alignment, and set the target number of words for the excerpt. If a post has images uploaded to it (attached), but no featured image, the plugin will use the first attached image for the excerpt.
+
+Major props to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help with this one.
 
 = What about smaller images? =
 
@@ -99,6 +101,14 @@ You can also filter styling for images with captions, or images which do not hav
     }
 
 The filter for captions is `send_images_rss_caption_style`, but takes the same arguments as above.
+
+= What if I want the full feed to be processed AND have the featured image added to the excerpt? =
+
+I'm glad you asked, although this seems like an odd request to me personally. You can force the plugin to process both the excerpts and the full text of your feed with this filter:
+
+    add_filter( 'send_images_rss_process_excerpt_anyway', '__return_true' );
+
+Please note that your feed settings need to be set to **full text**.
 
 == Screenshots ==
 
