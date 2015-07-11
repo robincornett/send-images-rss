@@ -57,8 +57,8 @@ class SendImagesRSS_Settings {
 			array( $this, 'do_settings_form' )
 		);
 
-		$this->rss_option       = (int) get_option( 'rss_use_excerpt' );
-		$this->rss_option_words = 1 === $this->rss_option ? __( 'summaries', 'send-images-rss' ) : __( 'full text', 'send-images-rss' );
+		$this->rss_option       = get_option( 'rss_use_excerpt' );
+		$this->rss_option_words = '1' === $this->rss_option ? __( 'summaries', 'send-images-rss' ) : __( 'full text', 'send-images-rss' );
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'load-settings_page_sendimagesrss', array( $this, 'help' ) );
@@ -188,7 +188,7 @@ class SendImagesRSS_Settings {
 	public function full_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the full text of each post.', 'send-images-rss' );
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
-		if ( 0 === $this->rss_option ) {
+		if ( '0' === $this->rss_option ) {
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
 		}
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
@@ -202,7 +202,7 @@ class SendImagesRSS_Settings {
 	public function summary_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the summaries of each post.', 'send-images-rss' );
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
-		if ( 1 === $this->rss_option ) {
+		if ( '1' === $this->rss_option ) {
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
 		}
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
@@ -333,7 +333,7 @@ class SendImagesRSS_Settings {
 			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 		);
-		if ( 1 === $this->rss_option ) {
+		if ( '1' === $this->rss_option ) {
 			$message = __( 'Sorry, your feed is set to show summaries, so no alternate feed can be created.', 'send-images-rss' );
 		}
 

@@ -76,8 +76,8 @@ class SendImagesRSS {
 		// We do this so the output is the same by default, but we can use
 		// the different querystring value to conditionally apply the fixes.
 		$alt_feed   = $this->settings->rss_setting['alternate_feed'];
-		$rss_option = (int) get_option( 'rss_use_excerpt' );
-		if ( $alt_feed && 0 === $rss_option ) {
+		$rss_option = get_option( 'rss_use_excerpt' );
+		if ( $alt_feed && '0' === $rss_option ) {
 			add_feed( 'email', 'do_feed_rss2' );
 		}
 	}
@@ -95,7 +95,7 @@ class SendImagesRSS {
 			return;
 		}
 
-		$rss_option = (int) get_option( 'rss_use_excerpt' );
+		$rss_option = get_option( 'rss_use_excerpt' );
 		/**
 		 * add a filter to work on the excerpt even if the feed is set to full text
 		 * @var boolean
@@ -105,9 +105,9 @@ class SendImagesRSS {
 		$damn_the_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
 		$damn_the_consequences = true === $damn_the_consequences ? $damn_the_consequences : false;
 
-		if ( 1 === $rss_option || true === $damn_the_consequences ) {
+		if ( '1' === $rss_option || true === $damn_the_consequences ) {
 			$this->fix_excerpts();
-			if ( 1 === $rss_option ) {
+			if ( '1' === $rss_option ) {
 				return;
 			}
 		}
