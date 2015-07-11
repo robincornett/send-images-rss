@@ -37,9 +37,18 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Add post's featured image to beginning of excerpt
 	 * @since x.y.z
 	 */
-	protected function set_featured_image( $content, $image = '' ) {
+	protected function set_featured_image( $image = '' ) {
 
 		$this->setting  = get_option( 'sendimagesrss' );
+		if ( class_exists( 'Display_Featured_Image_Genesis_Common' ) ) {
+			$class = new Display_Featured_Image_Genesis_Common();
+			$version = $class->version;
+			$displaysetting = get_option( 'displayfeaturedimagegenesis' );
+			if ( $displaysetting['feed_image'] && $version <= '2.2.2' ) {
+				return;
+			}
+		}
+
 		$post_id        = get_the_ID();
 		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
 		$alignment      = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
