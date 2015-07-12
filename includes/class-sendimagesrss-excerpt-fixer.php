@@ -56,19 +56,19 @@ class SendImagesRSS_Excerpt_Fixer {
 
 		switch ( $alignment ) {
 			case 'right':
-				$style = 'margin: 0 0 10px 10px;';
+				$style = 'margin: 0 0 20px 20px;';
 				break;
 
 			case 'center':
-				$style = 'display: block; margin: 0 auto 10px;';
+				$style = 'display: block; margin: 0 auto 12px;';
 				break;
 
 			case 'none':
-				$style = 'margin: 0 0 0 10px;';
+				$style = 'margin: 0 0 0 20px;';
 				break;
 
 			default:
-				$style = 'margin: 0 10px 10px 0;';
+				$style = 'margin: 0 20px 20px 0;';
 				break;
 		}
 
