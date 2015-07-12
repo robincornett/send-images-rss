@@ -161,7 +161,7 @@ class SendImagesRSS_Settings {
 		foreach ( $this->fields as $field ) {
 			add_settings_field(
 				'[' . $field['id'] . ']',
-				'<label for="' . $field['id'] . '">' . $field['title'] . '</label>',
+				sprintf( '<label for="%s">%s</label>', $field['id'], $field['title'] ),
 				array( $this, $field['callback'] ),
 				$this->page,
 				$sections[ $field['section'] ]['id'],
@@ -184,7 +184,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for full text plugin settings section.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function full_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the full text of each post.', 'send-images-rss' );
@@ -198,7 +198,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for summary plugin settings section.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function summary_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the summaries of each post.', 'send-images-rss' );
@@ -212,7 +212,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Generic callback to create a checkbox setting.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function do_checkbox( $args ) {
 		printf( '<input type="hidden" name="sendimagesrss[%s]" value="0" />', esc_attr( $args['setting'] ) );
@@ -230,7 +230,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Generic callback to create a number field setting.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function do_number( $args ) {
 
@@ -246,7 +246,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Generic callback to create a select/dropdown setting.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
@@ -263,7 +263,7 @@ class SendImagesRSS_Settings {
 	 * Callback to populate the thumbnail size dropdown with available image sizes.
 	 * @return array selected sizes with names and dimensions
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function pick_sizes() {
 		$intermediate_sizes = get_intermediate_image_sizes();
@@ -286,7 +286,7 @@ class SendImagesRSS_Settings {
 	 * Callback to create a dropdown list for featured image alignment.
 	 * @return array list of alignment choices.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function pick_alignment() {
 		$options = array(
@@ -300,7 +300,7 @@ class SendImagesRSS_Settings {
 
 	/**
 	 * Callback for description for image size.
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function image_size_description() {
 		$description = __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
@@ -309,7 +309,7 @@ class SendImagesRSS_Settings {
 
 	/**
 	 * Callback for description for number of words in excerpt.
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function excerpt_length_description() {
 		$description = __( 'Set the number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
@@ -347,7 +347,7 @@ class SendImagesRSS_Settings {
 	 * @param  array $new_value new values from settings page
 	 * @return array            validated values
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function do_validation_things( $new_value ) {
 
@@ -459,7 +459,7 @@ class SendImagesRSS_Settings {
 	 * Set notices to display for settings incompatibilities/updates.
 	 * @return admin notice
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function do_admin_notice() {
 		$class       = 'update-nag';

@@ -99,7 +99,7 @@ class SendImagesRSS {
 		 * add a filter to work on the excerpt even if the feed is set to full text
 		 * @var boolean
 		 *
-		 * @since x.y.z
+		 * @since 2.7.0
 		 */
 		$damn_the_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
 		$damn_the_consequences = true === $damn_the_consequences ? $damn_the_consequences : false;

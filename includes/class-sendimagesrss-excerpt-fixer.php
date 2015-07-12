@@ -35,7 +35,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Add post's featured image to beginning of excerpt
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function set_featured_image( $image = '' ) {
 
@@ -92,7 +92,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Trim excerpt to word count, but to the end of a sentence.
 	 * @return trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function trim_excerpt( $text ) {
 
@@ -109,7 +109,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			/**
 			 * Filter to modify trimmed excerpt.
 			 *
-			 * @since x.y.z
+			 * @since 2.7.0
 			 */
 			$text = apply_filters( 'send_images_rss_trim_excerpt', $text, $raw_excerpt );
 
@@ -123,7 +123,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Modify read more link.
 	 * @return link to original post
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function read_more() {
 		$permalink = get_permalink();
@@ -136,7 +136,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		/**
 		 * Filter to modify link back to original post.
 		 *
-		 * @since x.y.z
+		 * @since 2.7.0
 		 */
 		return apply_filters( 'send_images_rss_excerpt_read_more', $read_more, $permalink, $title, $blog_name );
 	}
@@ -145,7 +145,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Tags to allow in excerpt
 	 * @return string allowed tags
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function allowed_tags( $tags = '' ) {
 		$tags = '<style>,<br>,<br/>,<em>,<i>,<ul>,<ol>,<li>,<strong>,<b>,<p>';
@@ -157,7 +157,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @param  excerpt $text original excerpt
 	 * @return trimmed excerpt       ends in a complete sentence.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function count_excerpt( $text, $output = '' ) {
 		$excerpt_length = $this->setting['excerpt_length'] ? $this->setting['excerpt_length'] : 75;
@@ -191,7 +191,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @param  boolean $id      image ID
 	 * @return ID           ID of featured image, fallback image if no featured image, or false if no image exists.
 	 *
-	 * Since x.y.z
+	 * Since 2.7.0
 	 */
 	protected function get_image_id( $post_id, $id = false ) {
 
@@ -209,7 +209,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @param  int $post_id first image in post ID
 	 * @return ID          ID of the first image attached to the post
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	protected function get_fallback_image_id( $post_id = null ) {
 		$image_ids = array_keys(
