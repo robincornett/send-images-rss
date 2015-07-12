@@ -177,7 +177,7 @@ class SendImagesRSS_Settings {
 	 */
 	public function general_section_description() {
 		$description      = sprintf( __( 'The <em>Send Images to RSS</em> plugin works out of the box without changing any settings. However, depending on your RSS settings, you may want to tweak some things.', 'send-images-rss' ) );
-		$description     .= sprintf( __( ' Your feed is currently set to show the <strong>%s</strong> for each post. You can change that on the <a href="%s">Settings > Reading page</a>.', 'send-images-rss' ), $this->rss_option_words, admin_url() . 'options-reading.php' );
+		$description     .= sprintf( __( ' Your feed is currently set to show the <strong>%s</strong> for each post. You can change that on the <a href="%s">Settings > Reading page</a>.', 'send-images-rss' ), $this->rss_option_words, admin_url( 'options-reading.php' ) );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
@@ -463,7 +463,7 @@ class SendImagesRSS_Settings {
 	 */
 	public function do_admin_notice() {
 		$class       = 'update-nag';
-		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
+		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
 		$old_setting = get_option( 'sendimagesrss_image_size' );
 		$new_setting = get_option( 'sendimagesrss' );
 
@@ -471,7 +471,7 @@ class SendImagesRSS_Settings {
 			return;
 		} elseif ( ! $old_setting && ! $new_setting ) {
 			$class   = 'updated';
-			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url() . 'options-general.php?page=sendimagesrss' );
+			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
 		} elseif ( $this->rss_setting['simplify_feed'] && $this->rss_setting['alternate_feed'] ) {
 			if ( '1' === $this->rss_option ) {
 				return;
