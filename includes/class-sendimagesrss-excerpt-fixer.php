@@ -41,9 +41,9 @@ class SendImagesRSS_Excerpt_Fixer {
 
 		$this->setting  = get_option( 'sendimagesrss' );
 		if ( class_exists( 'Display_Featured_Image_Genesis_Common' ) ) {
-			$class = new Display_Featured_Image_Genesis_Common();
-			$version = $class->version;
-			$displaysetting = get_option( 'displayfeaturedimagegenesis' );
+			$displayfeaturedimagegenesis_common = new Display_Featured_Image_Genesis_Common();
+			$version                            = $displayfeaturedimagegenesis_common->version ? $displayfeaturedimagegenesis_common->version : $displayfeaturedimagegenesis_common::$version;
+			$displaysetting                     = get_option( 'displayfeaturedimagegenesis' );
 			if ( $displaysetting['feed_image'] && $version <= '2.2.2' ) {
 				return;
 			}
