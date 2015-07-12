@@ -29,6 +29,10 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+if ( ! defined( 'SENDIMAGESRSS_BASENAME' ) ) {
+	define( 'SENDIMAGESRSS_BASENAME', plugin_basename( __FILE__ ) );
+}
+
 // Include classes
 function send_images_rss_require() {
 	$files = array(

@@ -45,6 +45,7 @@ class SendImagesRSS {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
+		add_filter( 'plugin_action_links_' . SENDIMAGESRSS_BASENAME, array( $this, 'add_settings_link' ) );
 	}
 
 	/**
@@ -146,6 +147,17 @@ class SendImagesRSS {
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
 
+	}
+
+	/**
+	 * Add link to plugin settings page in plugin table
+	 * @param $links link to settings page
+	 *
+	 * @since 2.7.0
+	 */
+	public function add_settings_link( $links ) {
+		$links[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'options-general.php?page=sendimagesrss' ) ), esc_attr__( 'Settings', 'send-images-rss' ) );
+		return $links;
 	}
 
 }
