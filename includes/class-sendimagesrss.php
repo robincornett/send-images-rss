@@ -118,7 +118,7 @@ class SendImagesRSS {
 	public function fix_excerpts() {
 
 		remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
-		add_filter( 'get_the_excerpt', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
+		add_filter( 'the_excerpt_rss', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
 
 	}
 
