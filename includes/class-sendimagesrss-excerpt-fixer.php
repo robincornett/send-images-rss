@@ -126,10 +126,13 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 2.7.0
 	 */
 	protected function read_more() {
+		$read_more = $this->setting['read_more'];
+		$post_name = get_the_title();
 		$permalink = get_permalink();
-		$title     = get_the_title();
 		$blog_name = get_bloginfo( 'name' );
-		$read_more = sprintf( __( '<a href="%s">Continue reading %s at %s.</a>', 'send-images-rss' ), $permalink, $title, $blog_name );
+
+		$read_more = str_replace( '%%POSTNAME%%', $post_name, $read_more );
+		$read_more = str_replace( '%%BLOGNAME%%', $blog_name, $read_more );
 
 		// remove the Yoast RSS footer
 		add_filter( 'wpseo_include_rss_footer', '__return_false' );
@@ -138,7 +141,8 @@ class SendImagesRSS_Excerpt_Fixer {
 		 *
 		 * @since 2.7.0
 		 */
-		return apply_filters( 'send_images_rss_excerpt_read_more', $read_more, $permalink, $title, $blog_name );
+		$output = sprintf( '<a href="%s">%s</a>', esc_url( $permalink ), $read_more );
+		return apply_filters( 'send_images_rss_excerpt_read_more', $output, $read_more, $blog_name, $post_name );
 	}
 
 	/**

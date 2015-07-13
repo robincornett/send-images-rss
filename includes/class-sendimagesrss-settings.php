@@ -36,6 +36,7 @@ class SendImagesRSS_Settings {
 			'thumbnail_size' => 'thumbnail',
 			'alignment'      => 'left',
 			'excerpt_length' => 75,
+			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
 		);
 
 		$this->rss_setting = get_option( 'sendimagesrss', $defaults );
@@ -44,7 +45,7 @@ class SendImagesRSS_Settings {
 
 	/**
 	 * add a submenu page under Appearance
-	 * @return submenu Display Featured image settings page
+	 * @return submenu Send Images to RSS settings page
 	 * @since  1.4.0
 	 */
 	public function do_submenu_page() {
@@ -66,6 +67,11 @@ class SendImagesRSS_Settings {
 
 	}
 
+	/**
+	 * Output the plugin settings form.
+	 *
+	 * @since x.y.z
+	 */
 	public function do_settings_form() {
 		$page_title = get_admin_page_title();
 
@@ -81,7 +87,7 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
-	 * Add new fields to wp-admin/options-media.php page.
+	 * Add new fields to wp-admin/options-general.php?page=sendimagesrss
 	 *
 	 * @since 2.2.0
 	 */
@@ -146,6 +152,13 @@ class SendImagesRSS_Settings {
 				'callback' => 'do_number',
 				'section'  => 'summary',
 				'args'     => array( 'setting' => 'excerpt_length', 'min' => 1, 'max' => 200, 'label' => __( 'Number of Words', 'send-images-rss' ) ),
+			),
+			array(
+				'id'       => 'read_more',
+				'title'    => __( 'Read More Text', 'send-images-rss' ),
+				'callback' => 'do_text_field',
+				'section'  => 'summary',
+				'args'     => array( 'setting' => 'read_more' ),
 			),
 		);
 
@@ -260,6 +273,19 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
+	 * Generic callback to create a text field.
+	 *
+	 * @since 2.7.0
+	 */
+	public function do_text_field( $args ) {
+		printf( '<input type="text" id="sendimagesrss[%1$s]" name="sendimagesrss[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ) );
+		$function = $args['setting'] . '_description';
+		if ( method_exists( $this, $function ) ) {
+			$this->$function();
+		}
+	}
+
+	/**
 	 * Callback to populate the thumbnail size dropdown with available image sizes.
 	 * @return array selected sizes with names and dimensions
 	 *
@@ -302,7 +328,7 @@ class SendImagesRSS_Settings {
 	 * Callback for description for image size.
 	 * @since 2.7.0
 	 */
-	public function image_size_description() {
+	protected function image_size_description() {
 		$description = __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
@@ -311,8 +337,8 @@ class SendImagesRSS_Settings {
 	 * Callback for description for number of words in excerpt.
 	 * @since 2.7.0
 	 */
-	public function excerpt_length_description() {
-		$description = __( 'Set the number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
+	protected function excerpt_length_description() {
+		$description = __( 'Set the target number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 	/**
@@ -320,7 +346,7 @@ class SendImagesRSS_Settings {
 	 *
 	 * @since 2.3.0
 	 */
-	public function alternate_feed_description() {
+	protected function alternate_feed_description() {
 
 		if ( ! $this->rss_setting['alternate_feed'] || $this->rss_setting['simplify_feed'] ) {
 			return;
@@ -340,6 +366,21 @@ class SendImagesRSS_Settings {
 
 		printf( '<p class="description">%s</p>', wp_kses_post( $message ) );
 
+	}
+
+	/**
+	 * Callback to add a description for the read more setting
+	 * @return string text with placeholders for read more link on excerpt
+	 *
+	 * @since 2.7.0
+	 */
+	protected function read_more_description() {
+		$description  = __( 'You can use the following variables: the post link will be added to the entire text.', 'send-images-rss' );
+		$description .= '<ul>';
+		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%POSTNAME%%', __( 'The name of your post.', 'send-images-rss' ) );
+		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%BLOGNAME%%', __( 'The name of your site.', 'send-images-rss' ) );
+		$description .= '</ul>';
+		printf( '<p class="description">%s</p>', $description );
 	}
 
 	/**
@@ -371,6 +412,8 @@ class SendImagesRSS_Settings {
 
 		$new_value['excerpt_length'] = (int) $new_value['excerpt_length'];
 
+		$new_value['read_more']      = strip_tags( $new_value['read_more'] );
+
 		return $new_value;
 
 	}
@@ -385,7 +428,7 @@ class SendImagesRSS_Settings {
 	 * @param mixed $new_value Should ideally be a 1 or 0 integer passed in
 	 * @return integer 1 or 0.
 	 */
-	function one_zero( $new_value ) {
+	protected function one_zero( $new_value ) {
 		return (int) (bool) $new_value;
 	}
 
@@ -395,7 +438,7 @@ class SendImagesRSS_Settings {
 	 * @param  string $old_value Previous value
 	 * @return string            New or previous value, depending on allowed image size.
 	 */
-	function media_value( $new_value ) {
+	protected function media_value( $new_value ) {
 		if ( ! $new_value || $new_value < 200 || $new_value > 900 ) {
 			return $this->rss_setting['image_size'];
 		}
@@ -413,7 +456,7 @@ class SendImagesRSS_Settings {
 
 		$general_help  = '<h3>' . __( 'RSS Image Size', 'send-images-rss' ) . '</h3>';
 		$general_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS Image size (width). The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>';
-		$general_help .= '<p>' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>';
+		$general_help .= '<p class="description">' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>';
 
 		$full_text_help  = '<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>';
 		$full_text_help .= '<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'send-images-rss' ) . '</p>';
@@ -429,7 +472,11 @@ class SendImagesRSS_Settings {
 		$summary_help .= '<p>' . __( 'Set the alignment for your post\'s featured image.', 'send-images-rss' ) . '</p>';
 
 		$summary_help .= '<h3>' . __( 'Excerpt Length', 'send-images-rss' ) . '</h3>';
-		$summary_help .= '<p>' . __( 'Set the number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';
+		$summary_help .= '<p>' . __( 'Set the target number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';
+
+		$summary_help .= '<h3>' . __( 'Read More', 'send-images-rss' ) . '</h3>';
+		$summary_help .= '<p>' . __( 'Enter the text you want your "read more" link in your feed to contain. You can use placeholders for the post title and blog name.', 'send-images-rss' ) . '</p>';
+		$summary_help .= '<p class="description">' . __( 'Hint: "Read More" is probably inadequate for your link\'s anchor text.', 'send-images-rss' ) . '</p>';
 
 		$help_tabs = array(
 			array(
