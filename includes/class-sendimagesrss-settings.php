@@ -412,7 +412,7 @@ class SendImagesRSS_Settings {
 
 		$new_value['excerpt_length'] = (int) $new_value['excerpt_length'];
 
-		$new_value['read_more']      = strip_tags( $new_value['read_more'] );
+		$new_value['read_more']      = sanitize_text_field( $new_value['read_more'] );
 
 		return $new_value;
 
