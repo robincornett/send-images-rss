@@ -61,7 +61,7 @@ class SendImagesRSS_Excerpt_Fixer {
 				break;
 
 			case 'center':
-				$style = sprintf( 'display: block; margin: 0 auto 12px;max-width:%spx', $image_size );
+				$style = sprintf( 'display: block;margin: 0 auto 12px;max-width:%spx', $image_size );
 				break;
 
 			case 'none':
@@ -81,7 +81,7 @@ class SendImagesRSS_Excerpt_Fixer {
 				$image_source[0],
 				the_title_attribute( 'echo=0' ),
 				$alignment,
-				apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment )
+				apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment, $image_size )
 			);
 		}
 
