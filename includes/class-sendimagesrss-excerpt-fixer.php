@@ -50,25 +50,26 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		$post_id        = get_the_ID();
+		$image_size     = $this->setting['image_size'] ? $this->setting['image_size'] : 560;
 		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
 		$alignment      = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );
 
 		switch ( $alignment ) {
 			case 'right':
-				$style = 'margin: 0 0 20px 20px;';
+				$style = sprintf( 'margin: 0 0 20px 20px;max-width:%spx', $image_size );
 				break;
 
 			case 'center':
-				$style = 'display: block; margin: 0 auto 12px;';
+				$style = sprintf( 'display: block; margin: 0 auto 12px;max-width:%spx', $image_size );
 				break;
 
 			case 'none':
-				$style = 'margin: 0 0 0 20px;';
+				$style = sprintf( 'margin: 0 0 0 20px;max-width:%spx', $image_size );
 				break;
 
 			default:
-				$style = 'margin: 0 20px 20px 0;';
+				$style = sprintf( 'margin: 0 20px 20px 0;max-width:%spx', $image_size );
 				break;
 		}
 
