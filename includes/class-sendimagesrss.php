@@ -94,6 +94,9 @@ class SendImagesRSS {
 			return;
 		}
 
+		// because Photon refuses to use our new image size. Or behave.
+		add_filter( 'jetpack_photon_skip_image', '__return_true' );
+
 		$rss_option = get_option( 'rss_use_excerpt' );
 		/**
 		 * add a filter to work on the excerpt even if the feed is set to full text
@@ -104,14 +107,24 @@ class SendImagesRSS {
 		$damn_the_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
 		$damn_the_consequences = true === $damn_the_consequences ? $damn_the_consequences : false;
 
-		if ( '1' === $rss_option || true === $damn_the_consequences ) {
-			$this->fix_excerpts();
-			if ( '1' === $rss_option ) {
-				return;
-			}
+		// have to remove the photon filter twice as it's really aggressive
+		$photon_removed = '';
+		if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
+			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 		}
 
-		$this->fix_full_text();
+		if ( '1' === $rss_option || true === $damn_the_consequences ) {
+			$this->fix_excerpts();
+		}
+
+		if ( '0' === $rss_option ) {
+			$this->fix_full_text();
+		}
+
+		// re-enable photon, although since we're in the feed, not sure it's relevant
+		if ( $photon_removed ) {
+			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
+		}
 
 	}
 
@@ -124,27 +137,13 @@ class SendImagesRSS {
 
 	public function fix_full_text() {
 
-		// because Photon refuses to use our new image size.
-		add_filter( 'jetpack_photon_skip_image', '__return_true' );
-
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
-
-		// have to remove the photon filter twice as it's really aggressive
-		$photon_removed = '';
-		if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
-			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
-		}
 
 		$simplify = $this->settings->rss_setting['simplify_feed'];
 		$alt_feed = $this->settings->rss_setting['alternate_feed'];
 
 		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
-		}
-
-		// re-enable photon, although since we're in the feed, not sure it's relevant
-		if ( $photon_removed ) {
-			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
 
 	}
