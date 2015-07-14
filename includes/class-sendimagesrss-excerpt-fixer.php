@@ -127,7 +127,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 2.7.0
 	 */
 	protected function read_more() {
-		$read_more = $this->setting['read_more'];
+		$read_more = $this->setting['read_more'] ? $this->setting['read_more'] : sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' );
 		$post_name = get_the_title();
 		$permalink = get_permalink();
 		$blog_name = get_bloginfo( 'name' );
