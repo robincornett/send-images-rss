@@ -102,6 +102,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 			$text = get_the_content( '' );
 			$text = strip_shortcodes( $text );
+			$text = apply_filters( 'the_content', $text );
 			$text = str_replace( ']]>', ']]&gt;', $text );
 			$text = strip_tags( $text, $this->allowed_tags() );
 			$text = $this->count_excerpt( $text );

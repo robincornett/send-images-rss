@@ -133,6 +133,10 @@ class SendImagesRSS {
 		// remove the Yoast RSS footer
 		add_filter( 'wpseo_include_rss_footer', '__return_false' );
 
+		// remove the weird Woo filter (Canvas theme)
+		remove_filter( 'get_the_excerpt', 'woo_remove_dropcap_from_excerpts' );
+
+		// remove WP default trim since we're doing that ourselves
 		remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
 		add_filter( 'the_excerpt_rss', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
 
