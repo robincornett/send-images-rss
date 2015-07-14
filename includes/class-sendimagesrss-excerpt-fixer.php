@@ -28,9 +28,9 @@ class SendImagesRSS_Excerpt_Fixer {
 			return;
 		}
 		$before  = $this->set_featured_image();
-		$content = $this->trim_excerpt( $content );
-		$after   = $this->read_more();
-		return wpautop( $before . $content ) . wpautop( $after );
+		$content = wpautop( $this->trim_excerpt( $content ) );
+		$after   = wpautop( $this->read_more() );
+		return $before . $content . $after;
 	}
 
 	/**
