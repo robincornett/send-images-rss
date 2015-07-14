@@ -135,8 +135,6 @@ class SendImagesRSS_Excerpt_Fixer {
 		$read_more = str_replace( '%%POSTNAME%%', $post_name, $read_more );
 		$read_more = str_replace( '%%BLOGNAME%%', $blog_name, $read_more );
 
-		// remove the Yoast RSS footer
-		add_filter( 'wpseo_include_rss_footer', '__return_false' );
 		/**
 		 * Filter to modify link back to original post.
 		 *

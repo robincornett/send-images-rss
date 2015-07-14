@@ -130,6 +130,9 @@ class SendImagesRSS {
 
 	public function fix_excerpts() {
 
+		// remove the Yoast RSS footer
+		add_filter( 'wpseo_include_rss_footer', '__return_false' );
+
 		remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
 		add_filter( 'the_excerpt_rss', array( $this->excerpt_fixer, 'do_excerpt' ), 50 );
 
