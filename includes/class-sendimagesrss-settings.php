@@ -70,7 +70,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Output the plugin settings form.
 	 *
-	 * @since x.y.z
+	 * @since 2.7.0
 	 */
 	public function do_settings_form() {
 		$page_title = get_admin_page_title();
@@ -189,8 +189,9 @@ class SendImagesRSS_Settings {
 	 * @since 2.4.0
 	 */
 	public function general_section_description() {
-		$description      = sprintf( __( 'The <em>Send Images to RSS</em> plugin works out of the box without changing any settings. However, depending on your RSS settings, you may want to tweak some things.', 'send-images-rss' ) );
-		$description     .= sprintf( __( ' Your feed is currently set to show the <strong>%s</strong> for each post. You can change that on the <a href="%s">Settings > Reading page</a>.', 'send-images-rss' ), $this->rss_option_words, admin_url( 'options-reading.php' ) );
+		$description  = __( 'The <em>Send Images to RSS</em> plugin works out of the box without changing any settings. However, depending on your RSS settings, you may want to tweak some things.', 'send-images-rss' );
+		$description .= sprintf( __( ' Your feed is currently set to show the <strong>%s</strong> for each post. You can change that on the <a href="%s">Settings > Reading page</a>.', 'send-images-rss' ), $this->rss_option_words, admin_url( 'options-reading.php' ) );
+		$description .= __( ' Not sure what a setting does? Check the help tab for more information.', 'send-images-rss' );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
@@ -329,7 +330,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.7.0
 	 */
 	protected function image_size_description() {
-		$description = __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
+		$description = __( 'Most MailChimp users should <strong>should not</strong> need to change this number. Mad Mimi users should set this to 530.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 
@@ -380,7 +381,12 @@ class SendImagesRSS_Settings {
 		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%POSTNAME%%', __( 'The name of your post.', 'send-images-rss' ) );
 		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%BLOGNAME%%', __( 'The name of your site.', 'send-images-rss' ) );
 		$description .= '</ul>';
-		printf( '<p class="description">%s</p>', $description );
+		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+	}
+
+	protected function simplify_feed_description() {
+		$description = __( 'The plugin always converts galleries from thumbnails to full size images for the feed. Check this setting to have it do nothing else.', 'send-images-rss' );
+		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 
 	/**
