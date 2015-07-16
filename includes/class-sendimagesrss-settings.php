@@ -24,15 +24,11 @@ class SendImagesRSS_Settings {
 	protected $rss_option_words;
 
 	public function __construct() {
-		// Original Send Images RSS Settings
-		$simplify       = get_option( 'sendimagesrss_simplify_feed', 0 );
-		$size           = get_option( 'sendimagesrss_image_size', 560 );
-		$alternate_feed = get_option( 'sendimagesrss_alternate_feed', 0 );
 
 		$defaults = array(
-			'simplify_feed'  => $simplify ? $simplify : 0,
-			'image_size'     => $size ? $size : 560,
-			'alternate_feed' => $alternate_feed ? $alternate_feed : 0,
+			'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
+			'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
+			'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
 			'thumbnail_size' => 'thumbnail',
 			'alignment'      => 'left',
 			'excerpt_length' => 75,
@@ -381,11 +377,6 @@ class SendImagesRSS_Settings {
 		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%POSTNAME%%', __( 'The name of your post.', 'send-images-rss' ) );
 		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%BLOGNAME%%', __( 'The name of your site.', 'send-images-rss' ) );
 		$description .= '</ul>';
-		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
-	}
-
-	protected function simplify_feed_description() {
-		$description = __( 'The plugin always converts galleries from thumbnails to full size images for the feed. Check this setting to have it do nothing else.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 
