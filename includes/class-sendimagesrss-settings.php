@@ -326,7 +326,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.7.0
 	 */
 	protected function image_size_description() {
-		$description = __( 'Most MailChimp users should <strong>should not</strong> need to change this number. Mad Mimi users should set this to 530.', 'send-images-rss' );
+		$description = __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 
@@ -452,7 +452,7 @@ class SendImagesRSS_Settings {
 		$screen = get_current_screen();
 
 		$general_help  = '<h3>' . __( 'RSS Image Size', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS Image size (width). The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content).', 'send-images-rss' ) . '</p>';
+		$general_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS Image size (width). The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content). Mad Mimi users should set this to 530.', 'send-images-rss' ) . '</p>';
 		$general_help .= '<p class="description">' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images&rsquo; style.', 'send-images-rss' ) . '</p>';
 
 		$full_text_help  = '<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>';
@@ -471,7 +471,7 @@ class SendImagesRSS_Settings {
 		$summary_help .= '<h3>' . __( 'Excerpt Length', 'send-images-rss' ) . '</h3>';
 		$summary_help .= '<p>' . __( 'Set the target number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';
 
-		$summary_help .= '<h3>' . __( 'Read More', 'send-images-rss' ) . '</h3>';
+		$summary_help .= '<h3>' . __( 'Read More Text', 'send-images-rss' ) . '</h3>';
 		$summary_help .= '<p>' . __( 'Enter the text you want your "read more" link in your feed to contain. You can use placeholders for the post title and blog name.', 'send-images-rss' ) . '</p>';
 		$summary_help .= '<p class="description">' . __( 'Hint: "Read More" is probably inadequate for your link\'s anchor text.', 'send-images-rss' ) . '</p>';
 
@@ -507,7 +507,7 @@ class SendImagesRSS_Settings {
 	 */
 	public function do_admin_notice() {
 		$class       = 'update-nag';
-		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There\'s a <a href="%s">new settings page</a> and new features. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
+		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There are new features and a <a href="%s">new settings page</a>. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
 		$old_setting = get_option( 'sendimagesrss_image_size' );
 		$new_setting = get_option( 'sendimagesrss' );
 

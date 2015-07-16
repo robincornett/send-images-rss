@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Send Images to RSS 2.6.0\n"
+"Project-Id-Version: Send Images to RSS 2.7.0\n"
 "Report-Msgid-Bugs-To: Robin Cornett <hello@robincornett.com>\n"
-"POT-Creation-Date: 2015-06-02 08:20-0500\n"
+"POT-Creation-Date: 2015-07-15 21:13-0400\n"
 "PO-Revision-Date: 2015-04-28 14:01-0500\n"
 "Last-Translator: Robin Cornett Creative, LLC <hello@robincornett.com>\n"
 "Language-Team: Robin Cornett <hello@robincornett.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.1\n"
+"X-Generator: Poedit 1.8.2\n"
 "X-Poedit-Basepath: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
@@ -24,112 +24,266 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../includes/class-sendimagesrss-settings.php:49
-msgid "RSS Feeds"
+#: ../includes/class-sendimagesrss-excerpt-fixer.php:131
+#: ../includes/class-sendimagesrss-settings.php:35
+#, php-format
+msgid "Continue reading %s at %s."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:57
-#: ../includes/class-sendimagesrss-settings.php:225
+#: ../includes/class-sendimagesrss-settings.php:50
+msgid "Send Images to RSS Settings"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:51
+msgid "Send Images to RSS"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:58
+msgid "summaries"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:58
+msgid "full text"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:97
+msgid "General Plugin Settings"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:101
+#: ../includes/class-sendimagesrss-settings.php:486
+msgid "Full Text Settings"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:105
+#: ../includes/class-sendimagesrss-settings.php:491
+msgid "Summary Settings"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:112
+#: ../includes/class-sendimagesrss-settings.php:458
 msgid "Simplify Feed"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:62
-#: ../includes/class-sendimagesrss-settings.php:228
-msgid "RSS Image Size"
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:67
-#: ../includes/class-sendimagesrss-settings.php:232
-msgid "Alternate Feed"
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:117
-msgid ""
-"The <i>Send Images to RSS</i> plugin works out of the box without changing "
-"any settings. However, if you want to customize your image size and do not "
-"want to change the default feed, change those items here."
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:130
+#: ../includes/class-sendimagesrss-settings.php:115
 msgid "Convert galleries only; do not fix feeds for email."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:134
-msgid ""
-"The only part of your feed which will be modified are your galleries. Email "
-"sized images will not be created."
+#: ../includes/class-sendimagesrss-settings.php:119
+#: ../includes/class-sendimagesrss-settings.php:454
+msgid "RSS Image Size"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:146
+#: ../includes/class-sendimagesrss-settings.php:122
 msgid "Max Width"
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:148
+#: ../includes/class-sendimagesrss-settings.php:126
+#: ../includes/class-sendimagesrss-settings.php:461
+msgid "Alternate Feed"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:129
+msgid "Create a custom feed and use that for sending emails."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:133
+#: ../includes/class-sendimagesrss-settings.php:465
+msgid "Featured Image Size"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:140
+#: ../includes/class-sendimagesrss-settings.php:468
+msgid "Featured Image Alignment"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:147
+#: ../includes/class-sendimagesrss-settings.php:471
+msgid "Excerpt Length"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:150
+msgid "Number of Words"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:154
+#: ../includes/class-sendimagesrss-settings.php:474
+msgid "Read More Text"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:188
+msgid ""
+"The <em>Send Images to RSS</em> plugin works out of the box without changing "
+"any settings. However, depending on your RSS settings, you may want to tweak "
+"some things."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:189
+#, php-format
+msgid ""
+" Your feed is currently set to show the <strong>%s</strong> for each post. "
+"You can change that on the <a href=\"%s\">Settings > Reading page</a>."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:190
+msgid " Not sure what a setting does? Check the help tab for more information."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:200
+msgid ""
+"These settings apply only if your RSS feed is set to show the full text of "
+"each post."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:201
+#: ../includes/class-sendimagesrss-settings.php:215
+#, php-format
+msgid ""
+" Since your feed is set to <strong>%s</strong>, these settings will not "
+"apply."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:203
+#: ../includes/class-sendimagesrss-settings.php:217
+#, php-format
+msgid ""
+"Your RSS feeds are set to show the <strong>%s</strong> of each post, so "
+"these settings will apply."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:214
+msgid ""
+"These settings apply only if your RSS feed is set to show the summaries of "
+"each post."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:329
 msgid ""
 "Most users should <strong>should not</strong> need to change this number."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:164
-msgid "Create a custom feed and use that for sending emails."
+#: ../includes/class-sendimagesrss-settings.php:338
+msgid ""
+"Set the target number of words for the RSS summary to have. The final "
+"sentence will be complete."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:173
+#: ../includes/class-sendimagesrss-settings.php:357
 #, php-format
 msgid "Hey! Your new feed is at <a href=\"%1$s\" target=\"_blank\">%1$s</a>."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:199
+#: ../includes/class-sendimagesrss-settings.php:361
 msgid ""
-"Your RSS feed is set to send excerpts instead of full text, so your images "
-"will not be processed by the Send Image to RSS plugin. "
+"Sorry, your feed is set to show summaries, so no alternate feed can be "
+"created."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:201
-#, php-format
+#: ../includes/class-sendimagesrss-settings.php:375
 msgid ""
-"You can change this on the <a href=\"%1$s\">Settings > Reading page</a>."
+"You can use the following variables: the post link will be added to the "
+"entire text."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:210
-msgid ""
-"Warning! You have the Simplify Feed option checked! Your Alternate Feed "
-"setting will be ignored."
+#: ../includes/class-sendimagesrss-settings.php:377
+msgid "The name of your post."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:226
+#: ../includes/class-sendimagesrss-settings.php:378
+msgid "The name of your site."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:393
+msgid "Something unexpected happened. Please try again."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:455
+msgid ""
+"If you have customized your emails to be a nonstandard width, or you are "
+"using a template with a sidebar, you will want to change your RSS Image size "
+"(width). The default is 560 pixels, which is the content width of a standard "
+"single column email (600 pixels wide with 20 pixels padding on the content). "
+"Mad Mimi users should set this to 530."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:456
+msgid ""
+"Note: Changing the width here will not affect previously uploaded images, "
+"but it will affect the max-width applied to images&rsquo; style."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:459
 msgid ""
 "If you are not concerned about sending your feed out over email and want "
 "only your galleries changed from thumbnails to large images, select Simplify "
 "Feed."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:229
-msgid ""
-"If you have customized your emails to be a nonstandard width, or you are "
-"using a template with a sidebar, you will want to change your RSS Image size "
-"(width). The default is 560 pixels, which is the content width of a standard "
-"single column email (600 pixels wide with 20 pixels padding on the content)."
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:230
-msgid ""
-"Note: Changing the width here will not affect previously uploaded images, "
-"but it will affect the max-width applied to images&rsquo; style."
-msgstr ""
-
-#: ../includes/class-sendimagesrss-settings.php:233
+#: ../includes/class-sendimagesrss-settings.php:462
 msgid ""
 "By default, the Send Images to RSS plugin modifies every feed from your "
 "site. If you want to leave your main feed untouched and set up a totally "
 "separate feed for emails only, select this option."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:234
+#: ../includes/class-sendimagesrss-settings.php:463
 msgid ""
 "If you use custom post types with their own feeds, the alternate feed method "
 "will work even with them."
 msgstr ""
 
-#: ../includes/class-sendimagesrss-settings.php:238
-msgid "Send Images to RSS"
+#: ../includes/class-sendimagesrss-settings.php:466
+msgid "Select which size image you would like to use in your excerpt/summary."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:469
+msgid "Set the alignment for your post's featured image."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:472
+msgid ""
+"Set the target number of words you want your excerpt to generally have. The "
+"plugin will count that many words, and then add on as many as are required "
+"to ensure your summary ends in a complete sentence."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:475
+msgid ""
+"Enter the text you want your \"read more\" link in your feed to contain. You "
+"can use placeholders for the post title and blog name."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:476
+msgid "Hint: \"Read More\" is probably inadequate for your link's anchor text."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:481
+msgid "General Settings"
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:510
+#, php-format
+msgid ""
+"Thanks for updating <strong>Send Images to RSS</strong>. There are new "
+"features and a <a href=\"%s\">new settings page</a>. Please visit it to "
+"verify and resave your settings."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:518
+#, php-format
+msgid ""
+"Thanks for installing <strong>Send Images to RSS</strong>. The plugin works "
+"out of the box, but since you're installing for the first time, you might "
+"visit the <a href=\"%s\">settings page</a> and make sure everything is set "
+"the way you want it."
+msgstr ""
+
+#: ../includes/class-sendimagesrss-settings.php:528
+msgid ""
+"Warning! You have the Simplify Feed option checked! Your Alternate Feed "
+"setting will be ignored."
+msgstr ""
+
+#: ../includes/class-sendimagesrss.php:165
+msgid "Settings"
 msgstr ""
