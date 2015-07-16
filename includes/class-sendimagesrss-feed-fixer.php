@@ -18,6 +18,8 @@
 class SendImagesRSS_Feed_Fixer {
 
 	protected $image_size;
+	protected $hackrepair;
+
 	/**
 	 * Fix parts of a feed.
 	 *
@@ -96,6 +98,8 @@ class SendImagesRSS_Feed_Fixer {
 		$setting          = get_option( 'sendimagesrss' );
 		$old_setting      = get_option( 'sendimagesrss_image_size', 560 );
 		$this->image_size = $setting ? $setting['image_size'] : $old_setting;
+		$ithemes_ban      = get_option( 'itsec_ban_users' );
+		$this->hackrepair = $ithemes_ban ? $ithemes_ban['default'] : false;
 
 		foreach ( $images as $image ) {
 
@@ -177,7 +181,7 @@ class SendImagesRSS_Feed_Fixer {
 		$item            = $this->get_image_variables( $image );
 		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
-		$image_data      = $item->image_url ? getimagesize( $item->image_url ) : false;
+		$image_data      = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
 		$php_check       = false === $image_data ? $item->width : $image_data[0];
 		$maxwidth        = $this->image_size;
 
@@ -243,7 +247,7 @@ class SendImagesRSS_Feed_Fixer {
 		$item  = $this->get_image_variables( $image );
 		$width = $item->width;
 		if ( empty( $item->width ) ) {
-			$image_data = $item->image_url ? getimagesize( $item->image_url ) : false;
+			$image_data = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
 			$width      = false === $image_data ? $item->width : $image_data[0];
 		}
 		$maxwidth   = $this->image_size;
