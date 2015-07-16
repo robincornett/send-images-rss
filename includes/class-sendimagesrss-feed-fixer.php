@@ -93,11 +93,9 @@ class SendImagesRSS_Feed_Fixer {
 		// Now work on the images, which is why we're really here.
 		$images  = $doc->getElementsByTagName( 'img' );
 
-		$setting = get_option( 'sendimagesrss' );
-		if ( ! $setting ) {
-			$setting = get_option( 'sendimagesrss_image_size', 560 );
-		}
-		$this->image_size = $setting['image_size'] ? $setting['image_size'] : $setting;
+		$setting          = get_option( 'sendimagesrss' );
+		$old_setting      = get_option( 'sendimagesrss_image_size', 560 );
+		$this->image_size = $setting ? $setting['image_size'] : $old_setting;
 
 		foreach ( $images as $image ) {
 
