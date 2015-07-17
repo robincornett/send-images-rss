@@ -92,15 +92,14 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function modify_images( DOMDocument &$doc ) {
 
-		// Now work on the images, which is why we're really here.
-		$images  = $doc->getElementsByTagName( 'img' );
-
 		$setting          = get_option( 'sendimagesrss' );
 		$old_setting      = get_option( 'sendimagesrss_image_size', 560 );
 		$this->image_size = $setting ? $setting['image_size'] : $old_setting;
 		$ithemes_ban      = get_option( 'itsec_ban_users' );
 		$this->hackrepair = $ithemes_ban ? $ithemes_ban['default'] : false;
 
+		// Now work on the images, which is why we're really here.
+		$images = $doc->getElementsByTagName( 'img' );
 		foreach ( $images as $image ) {
 
 			$url = $image->getAttribute( 'src' );
@@ -181,8 +180,6 @@ class SendImagesRSS_Feed_Fixer {
 		$item            = $this->get_image_variables( $image );
 		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
 		$large_check     = isset( $item->large[3] ) && $item->large[3];
-		$image_data      = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
-		$php_check       = false === $image_data ? $item->width : $image_data[0];
 		$maxwidth        = $this->image_size;
 
 		/**
@@ -195,8 +192,12 @@ class SendImagesRSS_Feed_Fixer {
 		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
 		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
 
-		if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
-			$replace_small_images = true;
+		if ( false === $replace_small_images ) {
+			$image_data = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
+			$php_check  = false === $image_data ? $item->width : $image_data[0];
+			if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
+				$replace_small_images = true;
+			}
 		}
 
 		if ( ( $mailchimp_check || $large_check ) && true === $replace_small_images ) {
