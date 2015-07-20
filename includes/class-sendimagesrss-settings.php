@@ -23,22 +23,6 @@ class SendImagesRSS_Settings {
 	protected $rss_option;
 	protected $rss_option_words;
 
-	public function __construct() {
-
-		$defaults = array(
-			'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
-			'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
-			'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
-			'thumbnail_size' => 'thumbnail',
-			'alignment'      => 'left',
-			'excerpt_length' => 75,
-			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
-		);
-
-		$this->rss_setting = get_option( 'sendimagesrss', $defaults );
-
-	}
-
 	/**
 	 * add a submenu page under Appearance
 	 * @return submenu Send Images to RSS settings page
@@ -90,6 +74,18 @@ class SendImagesRSS_Settings {
 	public function register_settings() {
 
 		register_setting( 'sendimagesrss', 'sendimagesrss', array( $this, 'do_validation_things' ) );
+
+		$defaults = array(
+			'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
+			'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
+			'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
+			'thumbnail_size' => 'thumbnail',
+			'alignment'      => 'left',
+			'excerpt_length' => 75,
+			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
+		);
+
+		$this->rss_setting = get_option( 'sendimagesrss', $defaults );
 
 		$sections = array(
 			'general' => array(
