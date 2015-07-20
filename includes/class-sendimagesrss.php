@@ -21,6 +21,7 @@ class SendImagesRSS {
 	public $excerpt_fixer;
 	public $feed_fixer;
 	public $settings;
+
 	protected $rss_setting;
 
 	/**
@@ -64,8 +65,16 @@ class SendImagesRSS {
 	 */
 	public function init() {
 
-		$simplify    = $this->settings->rss_setting['simplify_feed'];
-		$image_width = $this->settings->rss_setting['image_size'];
+		$defaults = array(
+			'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
+			'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
+			'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
+		);
+
+		$this->rss_setting = get_option( 'sendimagesrss', $defaults );
+
+		$simplify    = $this->rss_setting['simplify_feed'];
+		$image_width = $this->rss_setting['image_size'];
 
 		if ( ! $simplify ) {
 			add_image_size( 'mailchimp', (int) $image_width, (int) ( $image_width * 2 ) );
@@ -74,7 +83,7 @@ class SendImagesRSS {
 		// Add a new feed, but tell WP to treat it as a standard RSS2 feed
 		// We do this so the output is the same by default, but we can use
 		// the different querystring value to conditionally apply the fixes.
-		$alt_feed   = $this->settings->rss_setting['alternate_feed'];
+		$alt_feed   = $this->rss_setting['alternate_feed'];
 		$rss_option = get_option( 'rss_use_excerpt' );
 		if ( $alt_feed && '0' === $rss_option ) {
 			add_feed( 'email', 'do_feed_rss2' );
@@ -146,8 +155,8 @@ class SendImagesRSS {
 
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
 
-		$simplify = $this->settings->rss_setting['simplify_feed'];
-		$alt_feed = $this->settings->rss_setting['alternate_feed'];
+		$simplify = $this->rss_setting['simplify_feed'];
+		$alt_feed = $this->rss_setting['alternate_feed'];
 
 		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );

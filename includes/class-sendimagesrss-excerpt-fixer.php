@@ -39,7 +39,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected function set_featured_image( $image = '' ) {
 
-		$this->setting  = get_option( 'sendimagesrss' );
+		$this->setting = get_option( 'sendimagesrss' );
 		if ( class_exists( 'Display_Featured_Image_Genesis_Common' ) ) {
 			$displayfeaturedimagegenesis_common = new Display_Featured_Image_Genesis_Common();
 			$version                            = $displayfeaturedimagegenesis_common->version ? $displayfeaturedimagegenesis_common->version : $displayfeaturedimagegenesis_common::$version;
@@ -54,6 +54,10 @@ class SendImagesRSS_Excerpt_Fixer {
 		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
 		$alignment      = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );
+
+		if ( ! $image_source ) {
+			return;
+		}
 
 		switch ( $alignment ) {
 			case 'right':
@@ -73,17 +77,15 @@ class SendImagesRSS_Excerpt_Fixer {
 				break;
 		}
 
-		if ( $image_source ) {
-			$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
-				get_the_permalink(),
-				$image_source[1],
-				$image_source[2],
-				$image_source[0],
-				the_title_attribute( 'echo=0' ),
-				$alignment,
-				apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment, $image_size )
-			);
-		}
+		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
+			get_the_permalink(),
+			$image_source[1],
+			$image_source[2],
+			$image_source[0],
+			the_title_attribute( 'echo=0' ),
+			$alignment,
+			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment, $image_size )
+		);
 
 		return $image;
 
