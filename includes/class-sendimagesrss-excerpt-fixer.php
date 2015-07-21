@@ -50,14 +50,15 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		$post_id        = get_the_ID();
-		$image_size     = $this->setting['image_size'] ? $this->setting['image_size'] : 560;
 		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
-		$alignment      = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );
 
 		if ( ! $image_source ) {
 			return;
 		}
+
+		$alignment  = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
+		$image_size = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 
 		switch ( $alignment ) {
 			case 'right':

@@ -89,16 +89,16 @@ class SendImagesRSS_Settings {
 
 		$sections = array(
 			'general' => array(
-				'id'       => 'general',
-				'title'    => __( 'General Plugin Settings', 'send-images-rss' ),
+				'id'    => 'general',
+				'title' => __( 'General Plugin Settings', 'send-images-rss' ),
 			),
 			'full' => array(
-				'id'       => 'full',
-				'title'    => __( 'Full Text Settings', 'send-images-rss' ),
+				'id'    => 'full',
+				'title' => __( 'Full Text Settings', 'send-images-rss' ),
 			),
 			'summary' => array(
-				'id'       => 'summary',
-				'title'    => __( 'Summary Settings', 'send-images-rss' ),
+				'id'    => 'summary',
+				'title' => __( 'Summary Settings', 'send-images-rss' ),
 			),
 		);
 
@@ -344,12 +344,9 @@ class SendImagesRSS_Settings {
 		if ( ! $this->rss_setting['alternate_feed'] || $this->rss_setting['simplify_feed'] ) {
 			return;
 		}
-		$url               = '?feed=email';
 		$pretty_permalinks = get_option( 'permalink_structure' );
-		if ( $pretty_permalinks ) {
-			$url = 'feed/email';
-		}
-		$message = sprintf(
+		$url               = $pretty_permalinks ? 'feed/email' : '?feed=email';
+		$message           = sprintf(
 			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 		);

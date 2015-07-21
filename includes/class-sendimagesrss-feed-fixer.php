@@ -93,8 +93,7 @@ class SendImagesRSS_Feed_Fixer {
 	protected function modify_images( DOMDocument &$doc ) {
 
 		$setting          = get_option( 'sendimagesrss' );
-		$old_setting      = get_option( 'sendimagesrss_image_size', 560 );
-		$this->image_size = $setting ? $setting['image_size'] : $old_setting;
+		$this->image_size = $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 		$ithemes_ban      = get_option( 'itsec_ban_users' );
 		$this->hackrepair = $ithemes_ban ? $ithemes_ban['default'] : false;
 

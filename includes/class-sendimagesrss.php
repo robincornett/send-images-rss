@@ -65,13 +65,16 @@ class SendImagesRSS {
 	 */
 	public function init() {
 
-		$defaults = array(
-			'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
-			'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
-			'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
-		);
+		$sendimagesrss_setting = get_option( 'sendimagesrss' );
+		if ( ! $sendimagesrss_setting ) {
+			$defaults = array(
+				'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
+				'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
+				'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
+			);
+		}
 
-		$this->rss_setting = get_option( 'sendimagesrss', $defaults );
+		$this->rss_setting = $sendimagesrss_setting ? $sendimagesrss_setting : get_option( 'sendimagesrss', $defaults );
 
 		$simplify    = $this->rss_setting['simplify_feed'];
 		$image_width = $this->rss_setting['image_size'];
@@ -137,7 +140,12 @@ class SendImagesRSS {
 
 	}
 
-	public function fix_excerpts() {
+	/**
+	 * Fix feeds for summaries feeds
+	 *
+	 * @since 2.7.0
+	 */
+	protected function fix_excerpts() {
 
 		// remove the Yoast RSS footer
 		add_filter( 'wpseo_include_rss_footer', '__return_false' );
@@ -151,7 +159,12 @@ class SendImagesRSS {
 
 	}
 
-	public function fix_full_text() {
+	/**
+	 * Fix feeds for full text feeds
+	 *
+	 * @since 2.7.0
+	 */
+	protected function fix_full_text() {
 
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
 
