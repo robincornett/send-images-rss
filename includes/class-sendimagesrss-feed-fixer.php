@@ -38,11 +38,10 @@ class SendImagesRSS_Feed_Fixer {
 
 		$this->modify_images( $doc );
 
-		//* Strip extra div added by new DOMDocument
+		// Strip extra div added by new DOMDocument
 		if ( version_compare( PHP_VERSION, '5.3.6', '>=' ) ) {
 			$content = substr( $doc->saveHTML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
-		}
-		else {
+		} else {
 			$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 		}
 
@@ -68,9 +67,8 @@ class SendImagesRSS_Feed_Fixer {
 		if ( function_exists( 'mb_convert_encoding' ) ) {
 			$currentencoding = mb_internal_encoding();
 			$content = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding ); // convert the feed from XML to HTML
-		}
-		// not sure this is an improvement over straight load (for special characters)
-		elseif ( function_exists( 'iconv' ) ) {
+		} elseif ( function_exists( 'iconv' ) ) {
+			// not sure this is an improvement over straight load (for special characters)
 			$currentencoding = iconv_get_encoding( 'internal_encoding' );
 			$content = iconv( $currentencoding, 'ISO-8859-1//IGNORE', $content );
 		}
@@ -224,9 +222,7 @@ class SendImagesRSS_Feed_Fixer {
 			$image->setAttribute( 'width', absint( $size_to_use[1] ) );
 			$image->setAttribute( 'style', esc_attr( $style ) );
 
-		}
-
-		else {
+		} else {
 			$this->fix_other_images( $image );
 			$this->fix_captions( $image );
 		}
@@ -252,8 +248,8 @@ class SendImagesRSS_Feed_Fixer {
 		}
 		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
-		$alignleft  = false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
+		$alignright = ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) ? true : false;
+		$alignleft  = ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) )  ? true : false;
 
 		// guard clause: set everything to be centered
 		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
@@ -263,12 +259,10 @@ class SendImagesRSS_Feed_Fixer {
 		// because it complicates things.
 		if ( ! empty( $width ) && $width < $maxwidth ) {
 			// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
-			if ( $alignright ) {
+			if ( true === $alignright ) {
 				$image->setAttribute( 'align', 'right' );
 				$style = sprintf( 'margin:0px 0px 10px 10px;max-width:%spx;', $halfwidth );
-			}
-			// or if it's a small image, aligned left
-			elseif ( $alignleft ) {
+			} elseif ( true === $alignleft ) { // or if it's a small image, aligned left
 				$image->setAttribute( 'align', 'left' );
 				$style = sprintf( 'margin:0px 10px 10px 0px;max-width:%spx;', $halfwidth );
 			}
@@ -301,8 +295,8 @@ class SendImagesRSS_Feed_Fixer {
 		$width      = $item->width;
 		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
-		$alignleft  = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
+		$alignright = ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) ? true : false;
+		$alignleft  = ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) ) ? true : false;
 
 		// now one last check if there are captions O.o
 		if ( false === strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
@@ -317,11 +311,9 @@ class SendImagesRSS_Feed_Fixer {
 		// if a width is set, then let's adjust for alignment
 		if ( ! empty( $width ) && $width < $maxwidth ) {
 			// if it's a small image with a caption, aligned right
-			if ( $alignright ) {
+			if ( true === $alignright ) {
 				$style = sprintf( 'float:right;max-width:%spx;', $halfwidth );
-			}
-			// or if it's a small image with a caption, aligned left
-			elseif ( $alignleft ) {
+			} elseif ( true === $alignleft ) { // or if it's a small image with a caption, aligned left
 				$style = sprintf( 'float:left;max-width:%spx;', $halfwidth );
 			}
 		}
@@ -350,7 +342,7 @@ class SendImagesRSS_Feed_Fixer {
 		$attachment_id = false;
 
 		// If there is no url, return.
-		if ( '' == $attachment_url ) {
+		if ( '' === $attachment_url ) {
 			return;
 		}
 
