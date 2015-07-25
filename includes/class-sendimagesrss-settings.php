@@ -11,13 +11,13 @@
  */
 
 /**
- * Class for adding a new field to the options-media.php page.
+ * Class for adding a new settings page to the WordPress admin, under Settings.
  *
  * @package SendImagesRSS
  */
 class SendImagesRSS_Settings {
 
-	public $rss_setting;
+	protected $rss_setting;
 	protected $page = 'sendimagesrss';
 	protected $fields;
 	protected $rss_option;
@@ -53,10 +53,11 @@ class SendImagesRSS_Settings {
 	 * @since 2.7.0
 	 */
 	public function do_settings_form() {
-		$page_title = get_admin_page_title();
+
+		$this->rss_setting = $this->get_rss_setting();
 
 		echo '<div class="wrap">';
-			echo '<h2>' . esc_attr( $page_title ) . '</h2>';
+			echo '<h2>' . esc_attr( get_admin_page_title() ) . '</h2>';
 			echo '<form action="options.php" method="post">';
 				settings_fields( 'sendimagesrss' );
 				do_settings_sections( 'sendimagesrss' );
@@ -64,6 +65,7 @@ class SendImagesRSS_Settings {
 				submit_button();
 			echo '</form>';
 		echo '</div>';
+
 	}
 
 	/**
@@ -75,17 +77,32 @@ class SendImagesRSS_Settings {
 
 		register_setting( 'sendimagesrss', 'sendimagesrss', array( $this, 'do_validation_things' ) );
 
+		$this->register_sections();
+
+	}
+
+	protected function get_rss_setting() {
+
+		$old_setting = get_option( 'sendimagesrss_image_size' );
 		$defaults = array(
-			'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
-			'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
-			'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
+			'simplify_feed'  => $old_setting ? get_option( 'sendimagesrss_simplify_feed' ) : 0,
+			'image_size'     => $old_setting ? get_option( 'sendimagesrss_image_size' ) : 560,
+			'alternate_feed' => $old_setting ? get_option( 'sendimagesrss_alternate_feed' ) : 0,
 			'thumbnail_size' => 'thumbnail',
 			'alignment'      => 'left',
 			'excerpt_length' => 75,
 			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
 		);
 
-		$this->rss_setting = get_option( 'sendimagesrss', $defaults );
+		return get_option( 'sendimagesrss', $defaults );
+	}
+
+	/**
+	 * Register sections for settings page.
+	 *
+	 * @since 2.7.0
+	 */
+	protected function register_sections() {
 
 		$sections = array(
 			'general' => array(
@@ -101,6 +118,28 @@ class SendImagesRSS_Settings {
 				'title' => __( 'Summary Settings', 'send-images-rss' ),
 			),
 		);
+
+		foreach ( $sections as $section ) {
+			add_settings_section(
+				$section['id'],
+				$section['title'],
+				array( $this, $section['id'] . '_section_description' ),
+				$this->page
+			);
+		}
+
+		$this->register_fields( $sections );
+
+	}
+
+	/**
+	 * Register settings fields
+	 * @param  settings sections $sections
+	 * @return fields           settings fields
+	 *
+	 * @since 2.7.0
+	 */
+	protected function register_fields( $sections ) {
 
 		$this->fields = array(
 			array(
@@ -153,15 +192,6 @@ class SendImagesRSS_Settings {
 				'args'     => array( 'setting' => 'read_more' ),
 			),
 		);
-
-		foreach ( $sections as $section ) {
-			add_settings_section(
-				$section['id'],
-				$section['title'],
-				array( $this, $section['id'] . '_section_description' ),
-				$this->page
-			);
-		}
 
 		foreach ( $this->fields as $field ) {
 			add_settings_field(
@@ -221,8 +251,9 @@ class SendImagesRSS_Settings {
 	 * @since 2.7.0
 	 */
 	public function do_checkbox( $args ) {
-		printf( '<input type="hidden" name="sendimagesrss[%s]" value="0" />', esc_attr( $args['setting'] ) );
-		printf( '<label for="sendimagesrss[%1$s]"><input type="checkbox" name="sendimagesrss[%1$s]" id="sendimagesrss[%1$s]" value="1" %2$s class="code" />%3$s</label>',
+		printf( '<input type="hidden" name="%s[%s]" value="0" />', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
+		printf( '<label for="%1$s[%2$s]"><input type="checkbox" name="%1$s[%2$s]" id="%1$s[%2$s]" value="1" %3$s class="code" />%4$s</label>',
+			esc_attr( $this->page ),
 			esc_attr( $args['setting'] ),
 			checked( 1, esc_attr( $this->rss_setting[ $args['setting'] ] ), false ),
 			esc_attr( $args['label'] )
@@ -240,8 +271,14 @@ class SendImagesRSS_Settings {
 	 */
 	public function do_number( $args ) {
 
-		printf( '<label for="sendimagesrss[%s]">%s</label>', esc_attr( $args['setting'] ), esc_attr( $args['label'] ) );
-		printf( '<input type="number" step="1" min="%1$s" max="%2$s" id="sendimagesrss[%3$s]" name="sendimagesrss[%3$s]" value="%4$s" class="small-text" />', (int) $args['min'], (int) $args['max'], esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ) );
+		printf( '<label for="%s[%s]">%s</label>', esc_attr( $this->page ),esc_attr( $args['setting'] ), esc_attr( $args['label'] ) );
+		printf( '<input type="number" step="1" min="%1$s" max="%2$s" id="%5$s[%3$s]" name="%5$s[%3$s]" value="%4$s" class="small-text" />',
+			(int) $args['min'],
+			(int) $args['max'],
+			esc_attr( $args['setting'] ),
+			esc_attr( $this->rss_setting[ $args['setting'] ] ),
+			esc_attr( $this->page )
+		);
 		$function = $args['setting'] . '_description';
 		if ( method_exists( $this, $function ) ) {
 			$this->$function();
@@ -271,7 +308,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.7.0
 	 */
 	public function do_text_field( $args ) {
-		printf( '<input type="text" id="sendimagesrss[%1$s]" name="sendimagesrss[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ) );
+		printf( '<input type="text" id="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ), esc_attr( $this->page ) );
 		$function = $args['setting'] . '_description';
 		if ( method_exists( $this, $function ) ) {
 			$this->$function();
@@ -334,6 +371,7 @@ class SendImagesRSS_Settings {
 		$description = __( 'Set the target number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
+
 	/**
 	 * Callback for alternate feed setting description.
 	 *
@@ -393,14 +431,14 @@ class SendImagesRSS_Settings {
 				$new_value[ $field['id'] ] = $this->one_zero( $new_value[ $field['id'] ] );
 			} elseif ( 'do_select' === $field['callback'] ) {
 				$new_value[ $field['id'] ] = esc_attr( $new_value[ $field['id'] ] );
+			} elseif ( 'do_number' === $field['callback'] ) {
+				$new_value[ $field['id'] ] = (int) $new_value[ $field['id'] ];
 			}
 		}
 
 		$new_value['image_size']     = $this->media_value( $new_value['image_size'] );
 
 		$new_value['thumbnail_size'] = esc_attr( $new_value['thumbnail_size'] );
-
-		$new_value['excerpt_length'] = (int) $new_value['excerpt_length'];
 
 		$new_value['read_more']      = sanitize_text_field( $new_value['read_more'] );
 
@@ -501,15 +539,16 @@ class SendImagesRSS_Settings {
 	public function do_admin_notice() {
 		$class       = 'update-nag';
 		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There are new features and a <a href="%s">new settings page</a>. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
-		$old_setting = get_option( 'sendimagesrss_image_size' );
-		$new_setting = get_option( 'sendimagesrss' );
+		$rss_setting = get_option( 'sendimagesrss' );
 
-		if ( $new_setting && ( ! $this->rss_setting['simplify_feed'] || ! $this->rss_setting['alternate_feed'] ) ) {
+		if ( $rss_setting && ( ! $rss_setting['simplify_feed'] || ! $rss_setting['alternate_feed'] ) ) {
 			return;
-		} elseif ( ! $old_setting && ! $new_setting ) {
+		}
+		$old_setting = get_option( 'sendimagesrss_image_size' );
+		if ( ! $old_setting && ! $rss_setting ) {
 			$class   = 'updated';
 			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
-		} elseif ( $this->rss_setting['simplify_feed'] && $this->rss_setting['alternate_feed'] ) {
+		} elseif ( $rss_setting['simplify_feed'] && $rss_setting['alternate_feed'] ) {
 			if ( '1' === $this->rss_option ) {
 				return;
 			}
