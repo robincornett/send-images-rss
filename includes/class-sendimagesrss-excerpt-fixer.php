@@ -58,23 +58,23 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		$alignment  = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
-		$image_size = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		$max_width  = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 
 		switch ( $alignment ) {
 			case 'right':
-				$style = sprintf( 'margin: 0 0 20px 20px;max-width:%spx', $image_size );
+				$style = sprintf( 'margin: 0 0 20px 20px;max-width:%spx;', $max_width );
 				break;
 
 			case 'center':
-				$style = sprintf( 'display: block;margin: 0 auto 12px;max-width:%spx', $image_size );
+				$style = sprintf( 'display: block;margin: 0 auto 12px;max-width:%spx;', $max_width );
 				break;
 
 			case 'none':
-				$style = sprintf( 'margin: 0 0 0 20px;max-width:%spx', $image_size );
+				$style = sprintf( 'margin: 0 0 0 20px;max-width:%spx;', $max_width );
 				break;
 
 			default:
-				$style = sprintf( 'margin: 0 20px 20px 0;max-width:%spx', $image_size );
+				$style = sprintf( 'margin: 0 20px 20px 0;max-width:%spx;', $max_width );
 				break;
 		}
 
@@ -85,7 +85,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			$image_source[0],
 			the_title_attribute( 'echo=0' ),
 			$alignment,
-			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment, $image_size )
+			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment, $max_width )
 		);
 
 		return $image;
