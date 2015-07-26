@@ -175,8 +175,8 @@ class SendImagesRSS_Feed_Fixer {
 	protected function replace_images( $image ) {
 
 		$item            = $this->get_image_variables( $image );
-		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
-		$large_check     = isset( $item->large[3] ) && $item->large[3];
+		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3] ? true : false;
+		$large_check     = isset( $item->large[3] ) && $item->large[3] ? true : false;
 		$maxwidth        = $this->image_size;
 
 		/**
