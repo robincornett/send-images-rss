@@ -244,8 +244,12 @@ class SendImagesRSS_Feed_Fixer {
 		}
 		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) ? true : false;
-		$alignleft  = ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) )  ? true : false;
+		$alignright = $alignleft = false;
+		if ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
+			$alignright = true;
+		} elseif ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) ) {
+			$alignleft = true;
+		}
 
 		// guard clause: set everything to be centered
 		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
@@ -291,8 +295,12 @@ class SendImagesRSS_Feed_Fixer {
 		$width      = $item->width;
 		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) ? true : false;
-		$alignleft  = ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) ) ? true : false;
+		$alignright = $alignleft = false;
+		if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
+			$alignright = true;
+		} elseif ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) ) {
+			$alignleft = true;
+		}
 
 		// now one last check if there are captions O.o
 		if ( false === strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
