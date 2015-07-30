@@ -43,6 +43,8 @@ Then go to your Plugins screen and click __Activate__.
 
 Most users should not need to change this. The plugin is designed with a default image size of 560 pixels for the width of the new image. If, however, your RSS email template is more or less than 600 pixels wide, or you're using a template with a sidebar, you may need to change this setting. What number you choose is up to you.
 
+Mad Mimi users should set this to 530.
+
 __Note:__ If you use an email template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
 
 ### Does this plugin work with excerpts?
@@ -82,6 +84,8 @@ Yes, now you can change that. By default, the plugin simply looks to see if an e
 ```php
 add_filter( 'send_images_rss_change_small_images', '__return_false' );
 ```
+
+Note to iThemes Security users: if you are using the HackRepair.com blacklist feature, you will not be able to make use of this filter, because it blocks how Send Images to RSS retrieves image data in the feed. I would **not** suggest disabling the security feature just to be able to use this filter.
 
 ### What if I upload my images to [flickr] or use images hosted somewhere other than my website?
 
