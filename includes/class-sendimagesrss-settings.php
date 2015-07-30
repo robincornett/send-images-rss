@@ -57,7 +57,7 @@ class SendImagesRSS_Settings {
 		$this->rss_setting = $this->get_rss_setting();
 
 		echo '<div class="wrap">';
-			echo '<h2>' . esc_attr( get_admin_page_title() ) . '</h2>';
+			echo '<h1>' . esc_attr( get_admin_page_title() ) . '</h1>';
 			echo '<form action="options.php" method="post">';
 				settings_fields( 'sendimagesrss' );
 				do_settings_sections( 'sendimagesrss' );
