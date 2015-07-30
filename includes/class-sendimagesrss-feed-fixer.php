@@ -156,8 +156,9 @@ class SendImagesRSS_Feed_Fixer {
 		if ( false === $item->image_id ) {
 			return $item;
 		}
-		$item->mailchimp = wp_get_attachment_image_src( $item->image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
-		$item->large     = wp_get_attachment_image_src( $item->image_id, 'large' ); // retrieve the large image size
+
+		$mailchimp    = wp_get_attachment_image_src( $item->image_id, 'mailchimp' );
+		$item->source = true === $mailchimp[3] ? $mailchimp : wp_get_attachment_image_src( $item->image_id, 'large' );
 
 		return $item;
 	}
@@ -173,10 +174,9 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function replace_images( $image ) {
 
-		$item            = $this->get_image_variables( $image );
-		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3] ? true : false;
-		$large_check     = isset( $item->large[3] ) && $item->large[3] ? true : false;
-		$maxwidth        = $this->image_size;
+		$item         = $this->get_image_variables( $image );
+		$maxwidth     = $this->image_size;
+		$source_check = ( isset( $item->source[3] ) && $item->source[3] ) ? true : false;
 
 		/**
 		 * add a filter to optionally not replace smaller images, even if a larger version exists.
@@ -199,20 +199,14 @@ class SendImagesRSS_Feed_Fixer {
 			}
 		}
 
-		if ( ( $mailchimp_check || $large_check ) && true === $replace_small_images ) {
+		if ( $source_check && true === $replace_small_images ) {
 
 			// remove the style from parentNode, only if it's a caption.
 			if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
 				$item->caption->removeAttribute( 'style' );
 			}
 
-			$size_to_use = $item->large;
-			$style       = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
-			if ( $mailchimp_check ) {
-				$size_to_use = $item->mailchimp;
-				$style       = 'display:block;margin:10px auto;';
-			}
-
+			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
 			/**
 			 * filter the image style
 			 * @since 2.6.0
@@ -220,8 +214,8 @@ class SendImagesRSS_Feed_Fixer {
 			$style = apply_filters( 'send_images_rss_email_image_style', $style, $maxwidth );
 
 			// use the MC size image, or the large image if there is no MC, for source
-			$image->setAttribute( 'src', esc_url( $size_to_use[0] ) );
-			$image->setAttribute( 'width', absint( $size_to_use[1] ) );
+			$image->setAttribute( 'src', esc_url( $item->source[0] ) );
+			$image->setAttribute( 'width', (int) $item->source[1] );
 			$image->setAttribute( 'style', esc_attr( $style ) );
 
 		} else {
