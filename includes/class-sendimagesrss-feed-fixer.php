@@ -406,12 +406,14 @@ class SendImagesRSS_Feed_Fixer {
 	 * since 2.7.0
 	 */
 	protected function check_hack_repair( $hack_repair = false ) {
-		$ithemes_ban = get_option( 'itsec_ban_users' );
-		if ( $ithemes_ban && class_exists( 'ITSEC_Core' ) ) {
-			$hack_repair = $ithemes_ban['default'];
+
+		if ( ! class_exists( 'ITSEC_Core' ) ) {
+			return $hack_repair;
 		}
 
-		return $hack_repair;
+		$ithemes_ban = get_option( 'itsec_ban_users' );
+		return $ithemes_ban['default'];
+
 	}
 
 }
