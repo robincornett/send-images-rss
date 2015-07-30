@@ -57,25 +57,28 @@ class SendImagesRSS_Excerpt_Fixer {
 			return;
 		}
 
-		$alignment  = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
-		$max_width  = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-
+		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		switch ( $alignment ) {
 			case 'right':
-				$style = sprintf( 'margin: 0 0 20px 20px;max-width:%spx;', $max_width );
+				$style = sprintf( 'margin: 0 0 20px 20px;' );
 				break;
 
 			case 'center':
-				$style = sprintf( 'display: block;margin: 0 auto 12px;max-width:%spx;', $max_width );
+				$style = sprintf( 'display: block;margin: 0 auto 12px;' );
 				break;
 
 			case 'none':
-				$style = sprintf( 'margin: 0 0 0 20px;max-width:%spx;', $max_width );
+				$style = sprintf( 'margin: 0 0 0 20px;' );
 				break;
 
 			default:
-				$style = sprintf( 'margin: 0 20px 20px 0;max-width:%spx;', $max_width );
+				$style = sprintf( 'margin: 0 20px 20px 0;' );
 				break;
+		}
+
+		if ( ! $image_source[3] ) {
+			$max_width = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+			$style    .= sprintf( 'max-width:%spx;', $max_width );
 		}
 
 		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
