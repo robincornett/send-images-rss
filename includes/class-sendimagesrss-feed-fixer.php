@@ -92,8 +92,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		$setting          = get_option( 'sendimagesrss' );
 		$this->image_size = $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-		$ithemes_ban      = get_option( 'itsec_ban_users' );
-		$this->hackrepair = $ithemes_ban ? $ithemes_ban['default'] : false;
+		$this->hackrepair = $this->check_hack_repair();
 
 		// Now work on the images, which is why we're really here.
 		$images = $doc->getElementsByTagName( 'img' );
@@ -190,8 +189,11 @@ class SendImagesRSS_Feed_Fixer {
 		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
 
 		if ( false === $replace_small_images ) {
-			$image_data = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
-			$php_check  = false === $image_data ? $item->width : $image_data[0];
+			$image_data = false;
+			if ( $item->image_url && false === $this->hackrepair ) {
+				$image_data = getimagesize( $item->image_url );
+			}
+			$php_check = false === $image_data ? $item->width : $image_data[0];
 			if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
 				$replace_small_images = true;
 			}
@@ -392,6 +394,22 @@ class SendImagesRSS_Feed_Fixer {
 		$result = $wpdb->get_col( $query_sql );
 
 		return empty( $result ) || ! is_numeric( $result[0] ) ? false : intval( $result[0] );
+	}
+
+	/**
+	 * Check whether iThemes Security hack repair is running or not as it throws errors in the feed
+	 * @param  boolean $hack_repair false by default
+	 * @return boolean              true if hack repair is set and plugin is active
+	 *
+	 * since 2.7.0
+	 */
+	protected function check_hack_repair( $hack_repair = false ) {
+		$ithemes_ban = get_option( 'itsec_ban_users' );
+		if ( $ithemes_ban && class_exists( 'ITSEC_Core' ) ) {
+			$hack_repair = $ithemes_ban['default'];
+		}
+
+		return $hack_repair;
 	}
 
 }
