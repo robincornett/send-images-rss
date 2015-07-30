@@ -88,7 +88,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			$image_source[0],
 			the_title_attribute( 'echo=0' ),
 			$alignment,
-			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment, $max_width )
+			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment )
 		);
 
 		return $image;
