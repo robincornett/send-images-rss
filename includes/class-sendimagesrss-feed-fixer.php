@@ -92,7 +92,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		$setting          = get_option( 'sendimagesrss' );
 		$this->image_size = $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-		$this->hackrepair = $this->check_hack_repair();
+		$this->hackrepair = $this->is_hackrepair();
 
 		// Now work on the images, which is why we're really here.
 		$images = $doc->getElementsByTagName( 'img' );
@@ -405,15 +405,17 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 * since 2.7.0
 	 */
-	protected function check_hack_repair( $hack_repair = false ) {
-
+	protected function is_hackrepair( $hack_repair = false ) {
 		if ( ! class_exists( 'ITSEC_Core' ) ) {
 			return $hack_repair;
 		}
 
 		$ithemes_ban = get_option( 'itsec_ban_users' );
-		return $ithemes_ban['default'];
 
+		if ( is_array( $ithemes_ban ) && isset( $ithemes_ban['default'] ) ) {
+			$hack_repair = $ithemes_ban['default'];
+		}
+		return $hack_repair;
 	}
 
 }
