@@ -85,9 +85,9 @@ class SendImagesRSS_Settings {
 
 		$old_setting = get_option( 'sendimagesrss_image_size' );
 		$defaults = array(
-			'simplify_feed'  => $old_setting ? get_option( 'sendimagesrss_simplify_feed' ) : 0,
-			'image_size'     => $old_setting ? get_option( 'sendimagesrss_image_size' ) : 560,
-			'alternate_feed' => $old_setting ? get_option( 'sendimagesrss_alternate_feed' ) : 0,
+			'simplify_feed'  => $old_setting ? get_option( 'sendimagesrss_simplify_feed', 0 ) : 0,
+			'image_size'     => $old_setting ? get_option( 'sendimagesrss_image_size', 560 ) : 560,
+			'alternate_feed' => $old_setting ? get_option( 'sendimagesrss_alternate_feed', 0 ) : 0,
 			'thumbnail_size' => 'thumbnail',
 			'alignment'      => 'left',
 			'excerpt_length' => 75,
