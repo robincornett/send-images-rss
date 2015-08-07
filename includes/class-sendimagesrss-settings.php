@@ -258,10 +258,7 @@ class SendImagesRSS_Settings {
 			checked( 1, esc_attr( $this->rss_setting[ $args['setting'] ] ), false ),
 			esc_attr( $args['label'] )
 		);
-		$function = $args['setting'] . '_description';
-		if ( method_exists( $this, $function ) ) {
-			$this->$function();
-		}
+		$this->do_description( $args['setting'] );
 	}
 
 	/**
@@ -279,10 +276,7 @@ class SendImagesRSS_Settings {
 			esc_attr( $this->rss_setting[ $args['setting'] ] ),
 			esc_attr( $this->page )
 		);
-		$function = $args['setting'] . '_description';
-		if ( method_exists( $this, $function ) ) {
-			$this->$function();
-		}
+		$this->do_description( $args['setting'] );
 
 	}
 
@@ -309,10 +303,7 @@ class SendImagesRSS_Settings {
 	 */
 	public function do_text_field( $args ) {
 		printf( '<input type="text" id="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ), esc_attr( $this->page ) );
-		$function = $args['setting'] . '_description';
-		if ( method_exists( $this, $function ) ) {
-			$this->$function();
-		}
+		$this->do_description( $args['setting'] );
 	}
 
 	/**
@@ -355,12 +346,25 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
+	 * Generic callback to display a field description.
+	 * @param  string $args setting name used to identify description callback
+	 * @return string       Description to explain a field.
+	 */
+	protected function do_description( $args ) {
+		$function = $args . '_description';
+		if ( ! method_exists( $this, $function ) ) {
+			return;
+		}
+		$description = $this->$function();
+		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+	}
+
+	/**
 	 * Callback for description for image size.
 	 * @since 2.7.0
 	 */
 	protected function image_size_description() {
-		$description = __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
-		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+		return __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
 	}
 
 	/**
@@ -368,8 +372,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.7.0
 	 */
 	protected function excerpt_length_description() {
-		$description = __( 'Set the target number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
-		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+		return __( 'Set the target number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
 	}
 
 	/**
@@ -384,15 +387,15 @@ class SendImagesRSS_Settings {
 		}
 		$pretty_permalinks = get_option( 'permalink_structure' );
 		$url               = $pretty_permalinks ? 'feed/email' : '?feed=email';
-		$message           = sprintf(
+		$description       = sprintf(
 			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 		);
 		if ( '1' === $this->rss_option ) {
-			$message = __( 'Sorry, your feed is set to show summaries, so no alternate feed can be created.', 'send-images-rss' );
+			$description = __( 'Sorry, your feed is set to show summaries, so no alternate feed can be created.', 'send-images-rss' );
 		}
 
-		printf( '<p class="description">%s</p>', wp_kses_post( $message ) );
+		return $description;
 
 	}
 
@@ -408,7 +411,7 @@ class SendImagesRSS_Settings {
 		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%POSTNAME%%', __( 'The name of your post.', 'send-images-rss' ) );
 		$description .= sprintf( '<li><strong>%s</strong>: %s</li>', '%%BLOGNAME%%', __( 'The name of your site.', 'send-images-rss' ) );
 		$description .= '</ul>';
-		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+		return $description;
 	}
 
 	/**
