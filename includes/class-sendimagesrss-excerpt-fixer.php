@@ -4,7 +4,6 @@
  *
  * @package   SendImagesRSS
  * @author    Robin Cornett <hello@robincornett.com>
- * @author    Gary Jones <gary@garyjones.co.uk>
  * @link      https://github.com/robincornett/send-images-rss
  * @copyright 2015 Robin Cornett
  * @license   GPL-2.0+

@@ -17,7 +17,16 @@
  */
 class SendImagesRSS_Feed_Fixer {
 
+	/**
+	 * Image size set by plugin
+	 * @var int
+	 */
 	protected $image_size;
+
+	/**
+	 * if iThemes Security is set to use the hackrepair blacklist
+	 * @var boolean
+	 */
 	protected $hackrepair;
 
 	/**

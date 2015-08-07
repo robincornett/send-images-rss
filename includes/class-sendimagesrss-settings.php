@@ -17,10 +17,34 @@
  */
 class SendImagesRSS_Settings {
 
+	/**
+	 * Option registered by plugin.
+	 * @var array
+	 */
 	protected $rss_setting;
+
+	/**
+	 * Slug for settings page.
+	 * @var string
+	 */
 	protected $page = 'sendimagesrss';
+
+	/**
+	 * Settings fields registered by plugin.
+	 * @var array
+	 */
 	protected $fields;
+
+	/**
+	 * RSS feed option set in WP (full text or summaries).
+	 * @var string 1/0
+	 */
 	protected $rss_option;
+
+	/**
+	 * translation of $rss_option into text.
+	 * @var string full text/summaries
+	 */
 	protected $rss_option_words;
 
 	/**
