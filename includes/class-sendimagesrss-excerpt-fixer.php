@@ -38,16 +38,12 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected function set_featured_image( $image = '' ) {
 
-		$this->setting = get_option( 'sendimagesrss' );
-		if ( class_exists( 'Display_Featured_Image_Genesis_Common' ) ) {
-			$displayfeaturedimagegenesis_common = new Display_Featured_Image_Genesis_Common();
-			$version                            = $displayfeaturedimagegenesis_common->version ? $displayfeaturedimagegenesis_common->version : $displayfeaturedimagegenesis_common::$version;
-			$displaysetting                     = get_option( 'displayfeaturedimagegenesis' );
-			if ( $displaysetting['feed_image'] && $version <= '2.2.2' ) {
-				return;
-			}
+		$concede = $this->concede_to_displayfeaturedimage();
+		if ( $concede ) {
+			return;
 		}
 
+		$this->setting  = get_option( 'sendimagesrss' );
 		$post_id        = get_the_ID();
 		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
 		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );
@@ -239,6 +235,30 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if we should not run and let (old) featured image plugin do its work instead.
+	 * @param  boolean $concede false by default
+	 * @return boolean          true only if plugin is 2.3.0 or later, and is set to add an image to the feed
+	 */
+	protected function concede_to_displayfeaturedimage( $concede = false ) {
+		if ( ! property_exists( 'Display_Featured_Image_Genesis_Common', 'version' ) ) {
+			return $concede;
+		}
+
+		$reflection = new ReflectionProperty( 'Display_Featured_Image_Genesis_Common', 'version' );
+		$is_static  = $reflection->isStatic();
+		if ( ! $is_static ) {
+			// we can return early here regardless of featured image settings, because the new version is smart and will quit in favor of us.
+			return $concede;
+		}
+		$displaysetting = get_option( 'displayfeaturedimagegenesis' );
+		if ( $displaysetting['feed_image'] ) {
+			return true;
+		}
+
+		return $concede;
 	}
 
 }
