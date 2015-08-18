@@ -242,23 +242,19 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @param  boolean $concede false by default
 	 * @return boolean          true only if plugin is 2.3.0 or later, and is set to add an image to the feed
 	 */
-	protected function concede_to_displayfeaturedimage( $concede = false ) {
+	protected function concede_to_displayfeaturedimage() {
 		if ( ! property_exists( 'Display_Featured_Image_Genesis_Common', 'version' ) ) {
-			return $concede;
+			return false;
 		}
 
 		$reflection = new ReflectionProperty( 'Display_Featured_Image_Genesis_Common', 'version' );
 		$is_static  = $reflection->isStatic();
 		if ( ! $is_static ) {
 			// we can return early here regardless of featured image settings, because the new version is smart and will quit in favor of us.
-			return $concede;
+			return false;
 		}
 		$displaysetting = get_option( 'displayfeaturedimagegenesis' );
-		if ( $displaysetting['feed_image'] ) {
-			return true;
-		}
-
-		return $concede;
+		return $displaysetting['feed_image'] ? true : false;
 	}
 
 }

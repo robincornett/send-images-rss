@@ -414,7 +414,8 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 * since 2.7.0
 	 */
-	protected function is_hackrepair( $hack_repair = false ) {
+	protected function is_hackrepair() {
+		$hack_repair = false;
 		if ( ! class_exists( 'ITSEC_Core' ) ) {
 			return $hack_repair;
 		}
