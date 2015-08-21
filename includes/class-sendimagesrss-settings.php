@@ -337,6 +337,7 @@ class SendImagesRSS_Settings {
 	 * @since 3.0.0
 	 */
 	protected function pick_sizes() {
+		$options['none']    = __( 'No Image', 'send-images-rss' );
 		$intermediate_sizes = get_intermediate_image_sizes();
 		foreach ( $intermediate_sizes as $_size ) {
 			$default_sizes = apply_filters( 'send_images_rss_thumbnail_size_list', array( 'thumbnail', 'medium' ) );
