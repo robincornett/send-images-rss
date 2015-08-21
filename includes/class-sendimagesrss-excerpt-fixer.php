@@ -53,23 +53,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
-		switch ( $alignment ) {
-			case 'right':
-				$style = sprintf( 'margin: 0 0 20px 20px;' );
-				break;
-
-			case 'center':
-				$style = sprintf( 'display: block;margin: 0 auto 12px;' );
-				break;
-
-			case 'none':
-				$style = sprintf( 'margin: 0 0 0 20px;' );
-				break;
-
-			default:
-				$style = sprintf( 'margin: 0 20px 20px 0;' );
-				break;
-		}
+		$style     = $this->set_image_style( $alignment );
 
 		if ( ! $image_source[3] ) {
 			$max_width = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
@@ -91,10 +75,37 @@ class SendImagesRSS_Excerpt_Fixer {
 	}
 
 	/**
+	 * Set the image alignment
+	 * @param string $alignment image alignment as set in settings
+	 *
+	 * @since 3.0.0
+	 */
+	protected function set_image_style( $alignment ) {
+		switch ( $alignment ) {
+			case 'right':
+				$style = sprintf( 'margin: 0 0 20px 20px;' );
+				break;
+
+			case 'center':
+				$style = sprintf( 'display: block;margin: 0 auto 12px;' );
+				break;
+
+			case 'none':
+				$style = sprintf( 'margin: 0 0 0 20px;' );
+				break;
+
+			default:
+				$style = sprintf( 'margin: 0 20px 20px 0;' );
+				break;
+		}
+		return $style;
+	}
+
+	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
 	 * @return trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function trim_excerpt( $text ) {
 
