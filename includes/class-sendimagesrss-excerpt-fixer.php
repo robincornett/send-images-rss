@@ -193,19 +193,15 @@ class SendImagesRSS_Excerpt_Fixer {
 	/**
 	 * Get the post's featured image id. Uses get_fallback_image_id if there is no featured image.
 	 * @param  int  $post_id current post ID
-	 * @param  boolean $id      image ID
+	 * @param  boolean $image_id      image ID
 	 * @return ID           ID of featured image, fallback image if no featured image, or false if no image exists.
 	 *
-	 * Since 2.7.0
+	 * Since 3.0.0
 	 */
-	protected function get_image_id( $post_id, $id = false ) {
+	protected function get_image_id( $post_id, $image_id = false ) {
 
-		if ( has_post_thumbnail() ) {
-			$id = get_post_thumbnail_id( $post_id );
-		} else {
-			$id = $this->get_fallback_image_id( $post_id );
-		}
-		return apply_filters( 'send_images_rss_featured_image_id', $id );
+		$image_id = has_post_thumbnail() ? get_post_thumbnail_id( $post_id ) : $this->get_fallback_image_id( $post_id );
+		return apply_filters( 'send_images_rss_featured_image_id', $image_id );
 
 	}
 
