@@ -74,7 +74,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Output the plugin settings form.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function do_settings_form() {
 
@@ -124,7 +124,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Register sections for settings page.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function register_sections() {
 
@@ -161,7 +161,7 @@ class SendImagesRSS_Settings {
 	 * @param  settings sections $sections
 	 * @return fields           settings fields
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function register_fields( $sections ) {
 
@@ -244,7 +244,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for full text plugin settings section.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function full_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the full text of each post.', 'send-images-rss' );
@@ -258,7 +258,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Callback for summary plugin settings section.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function summary_section_description() {
 		$description  = __( 'These settings apply only if your RSS feed is set to show the summaries of each post.', 'send-images-rss' );
@@ -272,7 +272,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Generic callback to create a checkbox setting.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function do_checkbox( $args ) {
 		printf( '<input type="hidden" name="%s[%s]" value="0" />', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
@@ -288,7 +288,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Generic callback to create a number field setting.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function do_number( $args ) {
 
@@ -307,7 +307,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Generic callback to create a select/dropdown setting.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
@@ -323,7 +323,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Generic callback to create a text field.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function do_text_field( $args ) {
 		printf( '<input type="text" id="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ), esc_attr( $this->page ) );
@@ -334,7 +334,7 @@ class SendImagesRSS_Settings {
 	 * Callback to populate the thumbnail size dropdown with available image sizes.
 	 * @return array selected sizes with names and dimensions
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function pick_sizes() {
 		$intermediate_sizes = get_intermediate_image_sizes();
@@ -357,7 +357,7 @@ class SendImagesRSS_Settings {
 	 * Callback to create a dropdown list for featured image alignment.
 	 * @return array list of alignment choices.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function pick_alignment() {
 		$options = array(
@@ -385,7 +385,7 @@ class SendImagesRSS_Settings {
 
 	/**
 	 * Callback for description for image size.
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function image_size_description() {
 		return __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
@@ -393,7 +393,7 @@ class SendImagesRSS_Settings {
 
 	/**
 	 * Callback for description for number of words in excerpt.
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function excerpt_length_description() {
 		return __( 'Set the target number of words for the RSS summary to have. The final sentence will be complete.', 'send-images-rss' );
@@ -427,7 +427,7 @@ class SendImagesRSS_Settings {
 	 * Callback to add a description for the read more setting
 	 * @return string text with placeholders for read more link on excerpt
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function read_more_description() {
 		$description  = __( 'You can use the following variables: the post link will be added to the entire text.', 'send-images-rss' );
@@ -443,7 +443,7 @@ class SendImagesRSS_Settings {
 	 * @param  array $new_value new values from settings page
 	 * @return array            validated values
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function do_validation_things( $new_value ) {
 
@@ -561,7 +561,7 @@ class SendImagesRSS_Settings {
 	 * Set notices to display for settings incompatibilities/updates.
 	 * @return admin notice
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function do_admin_notice() {
 		$class       = 'update-nag';

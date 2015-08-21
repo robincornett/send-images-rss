@@ -412,7 +412,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @param  boolean $hack_repair false by default
 	 * @return boolean              true if hack repair is set and plugin is active
 	 *
-	 * since 2.7.0
+	 * since 3.0.0
 	 */
 	protected function is_hackrepair() {
 		$hack_repair = false;

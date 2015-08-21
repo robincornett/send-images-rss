@@ -13,7 +13,7 @@
  * Plugin Name:       Send Images to RSS
  * Plugin URI:        https://wordpress.org/plugins/send-images-rss
  * Description:       Makes your RSS emails look more like your website by converting overly large images and galleries to an email friendly format. Built with MailChimp in mind.
- * Version:           2.7.0
+ * Version:           3.0.0
  * Author:            Robin Cornett
  * Author URI:        http://robincornett.com
  * Text Domain:       send-images-rss

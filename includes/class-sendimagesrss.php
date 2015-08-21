@@ -114,7 +114,7 @@ class SendImagesRSS {
 		 * add a filter to work on the excerpt even if the feed is set to full text
 		 * @var boolean
 		 *
-		 * @since 2.7.0
+		 * @since 3.0.0
 		 */
 		$damn_the_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
 		$damn_the_consequences = true === $damn_the_consequences ? $damn_the_consequences : false;
@@ -143,7 +143,7 @@ class SendImagesRSS {
 	/**
 	 * Fix feeds for summaries feeds
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function fix_excerpts() {
 
@@ -162,7 +162,7 @@ class SendImagesRSS {
 	/**
 	 * Fix feeds for full text feeds
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function fix_full_text() {
 
@@ -181,7 +181,7 @@ class SendImagesRSS {
 	 * Add link to plugin settings page in plugin table
 	 * @param $links link to settings page
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	public function add_settings_link( $links ) {
 		$links[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'options-general.php?page=sendimagesrss' ) ), esc_attr__( 'Settings', 'send-images-rss' ) );

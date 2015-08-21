@@ -34,7 +34,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Add post's featured image to beginning of excerpt
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function set_featured_image( $image = '' ) {
 
@@ -123,7 +123,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			/**
 			 * Filter to modify trimmed excerpt.
 			 *
-			 * @since 2.7.0
+			 * @since 3.0.0
 			 */
 			$text = apply_filters( 'send_images_rss_trim_excerpt', $text, $raw_excerpt );
 
@@ -137,7 +137,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Modify read more link.
 	 * @return link to original post
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function read_more() {
 		$read_more = $this->setting['read_more'] ? $this->setting['read_more'] : sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' );
@@ -151,7 +151,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		/**
 		 * Filter to modify link back to original post.
 		 *
-		 * @since 2.7.0
+		 * @since 3.0.0
 		 */
 		$output = sprintf( '<a href="%s">%s</a>', esc_url( $permalink ), esc_html( $read_more ) );
 		return apply_filters( 'send_images_rss_excerpt_read_more', $output, $read_more, $blog_name, $post_name );
@@ -161,7 +161,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Tags to allow in excerpt
 	 * @return string allowed tags
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function allowed_tags( $tags = '' ) {
 		$tags = '<style>,<br>,<br/>,<em>,<i>,<ul>,<ol>,<li>,<strong>,<b>,<p>';
@@ -173,7 +173,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @param  excerpt $text original excerpt
 	 * @return trimmed excerpt       ends in a complete sentence.
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function count_excerpt( $text, $output = '' ) {
 		$excerpt_length = $this->setting['excerpt_length'] ? $this->setting['excerpt_length'] : 75;
@@ -221,7 +221,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @param  int $post_id first image in post ID
 	 * @return ID          ID of the first image attached to the post
 	 *
-	 * @since 2.7.0
+	 * @since 3.0.0
 	 */
 	protected function get_fallback_image_id( $post_id = null ) {
 		$image_ids = array_keys(
