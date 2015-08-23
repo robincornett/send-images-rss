@@ -36,7 +36,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Add post's featured image to beginning of excerpt
 	 * @since 3.0.0
 	 */
-	protected function set_featured_image( $image = '' ) {
+	protected function set_featured_image() {
 
 		$concede = $this->concede_to_displayfeaturedimage();
 		if ( $concede ) {
@@ -52,25 +52,11 @@ class SendImagesRSS_Excerpt_Fixer {
 			return;
 		}
 
-		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
-		$style     = $this->set_image_style( $alignment );
-
-		if ( ! $image_source[3] ) {
-			$max_width = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-			$style    .= sprintf( 'max-width:%spx;', $max_width );
+		if ( ! $image_source[3] && 'mailchimp' === $thumbnail_size ) {
+			$image_source = wp_get_attachment_image_src( $this->get_image_id( $post_id ), 'large' );
 		}
 
-		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
-			get_the_permalink(),
-			$image_source[1],
-			$image_source[2],
-			$image_source[0],
-			the_title_attribute( 'echo=0' ),
-			$alignment,
-			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment )
-		);
-
-		return $image;
+		return $this->build_image( $image_source );
 
 	}
 
@@ -99,6 +85,37 @@ class SendImagesRSS_Excerpt_Fixer {
 				break;
 		}
 		return $style;
+	}
+
+	/**
+	 * Build the featured image
+	 * @param  array $image_source attachment url, width, height
+	 * @return string               image HTML
+	 *
+	 * @since 3.0.0
+	 */
+	protected function build_image( $image_source ) {
+
+		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
+		$style     = $this->set_image_style( $alignment );
+
+		if ( ! $image_source[3] ) {
+			$max_width = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+			$style    .= sprintf( 'max-width:%spx;', $max_width );
+		}
+
+		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
+			get_the_permalink(),
+			$image_source[1],
+			$image_source[2],
+			$image_source[0],
+			the_title_attribute( 'echo=0' ),
+			$alignment,
+			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment )
+		);
+
+		return $image;
+
 	}
 
 	/**
