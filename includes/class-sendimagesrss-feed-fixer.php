@@ -16,6 +16,19 @@
  * @package SendImagesRSS
  */
 class SendImagesRSS_Feed_Fixer {
+
+	/**
+	 * Image size set by plugin
+	 * @var int
+	 */
+	protected $image_size;
+
+	/**
+	 * if iThemes Security is set to use the hackrepair blacklist
+	 * @var boolean
+	 */
+	protected $hackrepair;
+
 	/**
 	 * Fix parts of a feed.
 	 *
@@ -34,11 +47,10 @@ class SendImagesRSS_Feed_Fixer {
 
 		$this->modify_images( $doc );
 
-		//* Strip extra div added by new DOMDocument
+		// Strip extra div added by new DOMDocument
 		if ( version_compare( PHP_VERSION, '5.3.6', '>=' ) ) {
 			$content = substr( $doc->saveHTML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
-		}
-		else {
+		} else {
 			$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 		}
 
@@ -64,9 +76,8 @@ class SendImagesRSS_Feed_Fixer {
 		if ( function_exists( 'mb_convert_encoding' ) ) {
 			$currentencoding = mb_internal_encoding();
 			$content = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding ); // convert the feed from XML to HTML
-		}
-		// not sure this is an improvement over straight load (for special characters)
-		elseif ( function_exists( 'iconv' ) ) {
+		} elseif ( function_exists( 'iconv' ) ) {
+			// not sure this is an improvement over straight load (for special characters)
 			$currentencoding = iconv_get_encoding( 'internal_encoding' );
 			$content = iconv( $currentencoding, 'ISO-8859-1//IGNORE', $content );
 		}
@@ -88,9 +99,12 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function modify_images( DOMDocument &$doc ) {
 
-		// Now work on the images, which is why we're really here.
-		$images  = $doc->getElementsByTagName( 'img' );
+		$setting          = get_option( 'sendimagesrss' );
+		$this->image_size = $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		$this->hackrepair = $this->is_hackrepair();
 
+		// Now work on the images, which is why we're really here.
+		$images = $doc->getElementsByTagName( 'img' );
 		foreach ( $images as $image ) {
 
 			$url = $image->getAttribute( 'src' );
@@ -151,8 +165,9 @@ class SendImagesRSS_Feed_Fixer {
 		if ( false === $item->image_id ) {
 			return $item;
 		}
-		$item->mailchimp = wp_get_attachment_image_src( $item->image_id, 'mailchimp' ); // retrieve the new MailChimp sized image
-		$item->large     = wp_get_attachment_image_src( $item->image_id, 'large' ); // retrieve the large image size
+
+		$mailchimp    = wp_get_attachment_image_src( $item->image_id, 'mailchimp' );
+		$item->source = true === $mailchimp[3] ? $mailchimp : wp_get_attachment_image_src( $item->image_id, 'large' );
 
 		return $item;
 	}
@@ -168,12 +183,9 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function replace_images( $image ) {
 
-		$item            = $this->get_image_variables( $image );
-		$mailchimp_check = isset( $item->mailchimp[3] ) && $item->mailchimp[3];
-		$large_check     = isset( $item->large[3] ) && $item->large[3];
-		$image_data      = $item->image_url ? getimagesize( $item->image_url ) : false;
-		$php_check       = false === $image_data ? $item->width : $image_data[0];
-		$maxwidth        = get_option( 'sendimagesrss_image_size', 560 );
+		$item         = $this->get_image_variables( $image );
+		$maxwidth     = $this->image_size;
+		$source_check = ( isset( $item->source[3] ) && $item->source[3] ) ? true : false;
 
 		/**
 		 * add a filter to optionally not replace smaller images, even if a larger version exists.
@@ -185,24 +197,25 @@ class SendImagesRSS_Feed_Fixer {
 		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
 		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
 
-		if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
-			$replace_small_images = true;
+		if ( false === $replace_small_images ) {
+			$image_data = false;
+			if ( $item->image_url && false === $this->hackrepair ) {
+				$image_data = getimagesize( $item->image_url );
+			}
+			$php_check = false === $image_data ? $item->width : $image_data[0];
+			if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
+				$replace_small_images = true;
+			}
 		}
 
-		if ( ( $mailchimp_check || $large_check ) && true === $replace_small_images ) {
+		if ( $source_check && true === $replace_small_images ) {
 
 			// remove the style from parentNode, only if it's a caption.
 			if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
 				$item->caption->removeAttribute( 'style' );
 			}
 
-			$size_to_use = $item->large;
-			$style       = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
-			if ( $mailchimp_check ) {
-				$size_to_use = $item->mailchimp;
-				$style       = 'display:block;margin:10px auto;';
-			}
-
+			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
 			/**
 			 * filter the image style
 			 * @since 2.6.0
@@ -210,13 +223,11 @@ class SendImagesRSS_Feed_Fixer {
 			$style = apply_filters( 'send_images_rss_email_image_style', $style, $maxwidth );
 
 			// use the MC size image, or the large image if there is no MC, for source
-			$image->setAttribute( 'src', esc_url( $size_to_use[0] ) );
-			$image->setAttribute( 'width', absint( $size_to_use[1] ) );
+			$image->setAttribute( 'src', esc_url( $item->source[0] ) );
+			$image->setAttribute( 'width', (int) $item->source[1] );
 			$image->setAttribute( 'style', esc_attr( $style ) );
 
-		}
-
-		else {
+		} else {
 			$this->fix_other_images( $image );
 			$this->fix_captions( $image );
 		}
@@ -237,13 +248,17 @@ class SendImagesRSS_Feed_Fixer {
 		$item  = $this->get_image_variables( $image );
 		$width = $item->width;
 		if ( empty( $item->width ) ) {
-			$image_data = $item->image_url ? getimagesize( $item->image_url ) : false;
+			$image_data = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
 			$width      = false === $image_data ? $item->width : $image_data[0];
 		}
-		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
+		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
-		$alignleft  = false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
+		$alignright = $alignleft = false;
+		if ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
+			$alignright = true;
+		} elseif ( false !== strpos( $item->class, 'alignleft' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) ) {
+			$alignleft = true;
+		}
 
 		// guard clause: set everything to be centered
 		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
@@ -253,12 +268,10 @@ class SendImagesRSS_Feed_Fixer {
 		// because it complicates things.
 		if ( ! empty( $width ) && $width < $maxwidth ) {
 			// now, if it's a small image, aligned right. since images with captions don't have alignment, we have to check the caption alignment also.
-			if ( $alignright ) {
+			if ( true === $alignright ) {
 				$image->setAttribute( 'align', 'right' );
 				$style = sprintf( 'margin:0px 0px 10px 10px;max-width:%spx;', $halfwidth );
-			}
-			// or if it's a small image, aligned left
-			elseif ( $alignleft ) {
+			} elseif ( true === $alignleft ) { // or if it's a small image, aligned left
 				$image->setAttribute( 'align', 'left' );
 				$style = sprintf( 'margin:0px 10px 10px 0px;max-width:%spx;', $halfwidth );
 			}
@@ -289,10 +302,14 @@ class SendImagesRSS_Feed_Fixer {
 
 		$item       = $this->get_image_variables( $image );
 		$width      = $item->width;
-		$maxwidth   = get_option( 'sendimagesrss_image_size', 560 );
+		$maxwidth   = $this->image_size;
 		$halfwidth  = floor( $maxwidth / 2 );
-		$alignright = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' );
-		$alignleft  = false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' );
+		$alignright = $alignleft = false;
+		if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
+			$alignright = true;
+		} elseif ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignleft' ) ) {
+			$alignleft = true;
+		}
 
 		// now one last check if there are captions O.o
 		if ( false === strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
@@ -307,11 +324,9 @@ class SendImagesRSS_Feed_Fixer {
 		// if a width is set, then let's adjust for alignment
 		if ( ! empty( $width ) && $width < $maxwidth ) {
 			// if it's a small image with a caption, aligned right
-			if ( $alignright ) {
+			if ( true === $alignright ) {
 				$style = sprintf( 'float:right;max-width:%spx;', $halfwidth );
-			}
-			// or if it's a small image with a caption, aligned left
-			elseif ( $alignleft ) {
+			} elseif ( true === $alignleft ) { // or if it's a small image with a caption, aligned left
 				$style = sprintf( 'float:left;max-width:%spx;', $halfwidth );
 			}
 		}
@@ -340,7 +355,7 @@ class SendImagesRSS_Feed_Fixer {
 		$attachment_id = false;
 
 		// If there is no url, return.
-		if ( '' == $attachment_url ) {
+		if ( '' === $attachment_url ) {
 			return;
 		}
 
@@ -390,6 +405,27 @@ class SendImagesRSS_Feed_Fixer {
 		$result = $wpdb->get_col( $query_sql );
 
 		return empty( $result ) || ! is_numeric( $result[0] ) ? false : intval( $result[0] );
+	}
+
+	/**
+	 * Check whether iThemes Security hack repair is running or not as it throws errors in the feed
+	 * @param  boolean $hack_repair false by default
+	 * @return boolean              true if hack repair is set and plugin is active
+	 *
+	 * since 3.0.0
+	 */
+	protected function is_hackrepair() {
+		$hack_repair = false;
+		if ( ! class_exists( 'ITSEC_Core' ) ) {
+			return $hack_repair;
+		}
+
+		$ithemes_ban = get_option( 'itsec_ban_users' );
+
+		if ( is_array( $ithemes_ban ) && isset( $ithemes_ban['default'] ) ) {
+			$hack_repair = $ithemes_ban['default'];
+		}
+		return $hack_repair;
 	}
 
 }
