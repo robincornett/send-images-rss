@@ -170,8 +170,8 @@ add_filter( 'send_images_rss_process_excerpt_anyway', '__return_true' );
 Please note that your feed settings need to be set to **full text**.
 
 ## Screenshots
-![Screenshot of the optional plugin settings in Settings > Send Images to RSS.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
-__Screenshot of the optional plugin settings in Settings > Send Images to RSS.__
+![Screenshot of the plugin settings in Settings > Send Images to RSS.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
+__Screenshot of the plugin settings in Settings > Send Images to RSS.__
 
 ## Credits
 

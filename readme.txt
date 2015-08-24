@@ -149,7 +149,7 @@ Please note that your feed settings need to be set to **full text**.
 
 == Screenshots ==
 
-1. Screenshot of the optional plugin settings in Settings > Send Images to RSS.
+1. Screenshot of the plugin settings in Settings > Send Images to RSS.
 
 == Upgrade Notice ==
 
