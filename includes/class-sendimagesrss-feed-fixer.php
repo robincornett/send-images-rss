@@ -110,24 +110,16 @@ class SendImagesRSS_Feed_Fixer {
 			$url = $image->getAttribute( 'src' );
 			$id  = $this->get_image_id( $url );
 
-			/**
-			 * Add filter to optionally process external images as best we can.
-			 * @var boolean
-			 *
-			 * @since 2.6.0
-			 */
-			$process_external_images = apply_filters( 'send_images_rss_process_external_images', false );
-			$process_external_images = true === $process_external_images ? $process_external_images : false;
-
 			// if the image is not part of WP, we cannot use it, although we'll provide a filter to try anyway
-			if ( false === $id && false === $process_external_images ) {
+			if ( false === $id && false === $this->process_external_images() ) {
 				continue;
 			}
 
 			$image->removeAttribute( 'height' );
 			$image->removeAttribute( 'style' );
 
-			if ( false === $id && true === $process_external_images ) {
+			// external images
+			if ( false === $id && true === $this->process_external_images() ) {
 				$this->fix_other_images( $image );
 				$this->fix_captions( $image );
 				continue;
@@ -417,6 +409,17 @@ class SendImagesRSS_Feed_Fixer {
 			$hack_repair = $ithemes_ban['default'];
 		}
 		return $hack_repair;
+	}
+
+	/**
+	 * Add filter to optionally process external images as best we can.
+	 * @var boolean
+	 *
+	 * @since 2.6.0
+	 */
+	protected function process_external_images() {
+		$process_external = apply_filters( 'send_images_rss_process_external_images', false );
+		return true === $process_external ? true : false;
 	}
 
 	/**
