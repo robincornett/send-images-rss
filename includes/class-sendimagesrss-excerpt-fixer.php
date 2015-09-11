@@ -26,6 +26,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( ! is_feed() ) {
 			return;
 		}
+		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
 		$before  = $this->set_featured_image();
 		$content = wpautop( $this->trim_excerpt( $content ) );
 		$after   = wpautop( $this->read_more() );
