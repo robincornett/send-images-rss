@@ -52,7 +52,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			return;
 		}
 
-		if ( ! $image_source[3] && 'mailchimp' === $thumbnail_size ) {
+		if ( isset( $image_source[3] ) && ! $image_source[3] && 'mailchimp' === $thumbnail_size ) {
 			$image_source = wp_get_attachment_image_src( $this->get_image_id( $post_id ), 'large' );
 		}
 
@@ -99,7 +99,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		$style     = $this->set_image_style( $alignment );
 
-		if ( ! $image_source[3] ) {
+		if ( ( isset( $image_source[3] ) && ! $image_source[3] ) || ! isset( $image_source[3] ) ) {
 			$max_width = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 			$style    .= sprintf( 'max-width:%spx;', $max_width );
 		}
