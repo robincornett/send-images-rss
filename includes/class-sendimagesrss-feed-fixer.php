@@ -18,12 +18,6 @@
 class SendImagesRSS_Feed_Fixer {
 
 	/**
-	 * Image size set by plugin
-	 * @var int
-	 */
-	protected $image_size;
-
-	/**
 	 * if iThemes Security is set to use the hackrepair blacklist
 	 * @var boolean
 	 */
@@ -99,8 +93,6 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function modify_images( DOMDocument &$doc ) {
 
-		$setting          = get_option( 'sendimagesrss' );
-		$this->image_size = $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 		$this->hackrepair = $this->is_hackrepair();
 
 		// Now work on the images, which is why we're really here.
@@ -128,7 +120,6 @@ class SendImagesRSS_Feed_Fixer {
 			$this->replace_images( $image );
 
 		}
-
 	}
 
 
@@ -159,7 +150,7 @@ class SendImagesRSS_Feed_Fixer {
 		}
 
 		$mailchimp    = wp_get_attachment_image_src( $item->image_id, 'mailchimp' );
-		$item->source = true === $mailchimp[3] ? $mailchimp : wp_get_attachment_image_src( $item->image_id, 'large' );
+		$item->source = isset( $mailchimp[3] ) && true === $mailchimp[3] ? $mailchimp : wp_get_attachment_image_src( $item->image_id, 'large' );
 
 		return $item;
 	}
@@ -176,7 +167,7 @@ class SendImagesRSS_Feed_Fixer {
 	protected function replace_images( $image ) {
 
 		$item                 = $this->get_image_variables( $image );
-		$maxwidth             = $this->image_size;
+		$maxwidth             = $this->get_image_size();
 		$source_check         = ( isset( $item->source[3] ) && $item->source[3] ) ? true : false;
 		$replace_small_images = $this->replace_small_images( $item );
 
@@ -234,7 +225,7 @@ class SendImagesRSS_Feed_Fixer {
 			$image_data = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
 			$width      = false === $image_data ? $item->width : $image_data[0];
 		}
-		$maxwidth   = $this->image_size;
+		$maxwidth   = $this->get_image_size();
 		$halfwidth  = floor( $maxwidth / 2 );
 		$alignright = $alignleft = false;
 		if ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
@@ -285,7 +276,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		$item       = $this->get_image_variables( $image );
 		$width      = $item->width;
-		$maxwidth   = $this->image_size;
+		$maxwidth   = $this->get_image_size();
 		$halfwidth  = floor( $maxwidth / 2 );
 		$alignright = $alignleft = false;
 		if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
@@ -421,7 +412,7 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function process_external_images() {
 		$process_external = apply_filters( 'send_images_rss_process_external_images', false );
-		return true === $process_external ? true : false;
+		return (bool) true === $process_external ? true : false;
 	}
 
 	/**
@@ -432,9 +423,17 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 */
 	protected function replace_small_images( $item ) {
-		$maxwidth             = $this->image_size;
+		$maxwidth             = $this->get_image_size();
 		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
 		return (bool) false === $replace_small_images ? false : true;
 	}
 
+	/**
+	 * Get the email image size
+	 * @return int The plugin image size (from settings page), or 560 by default
+	 */
+	protected function get_image_size() {
+		$setting = get_option( 'sendimagesrss' );
+		return $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+	}
 }
