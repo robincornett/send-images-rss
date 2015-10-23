@@ -65,8 +65,8 @@ class SendImagesRSS {
 	 */
 	public function init() {
 
-		$sendimagesrss_setting = get_option( 'sendimagesrss' );
-		if ( ! $sendimagesrss_setting ) {
+		$setting = get_option( 'sendimagesrss' );
+		if ( ! $setting ) {
 			$defaults = array(
 				'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
 				'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
@@ -74,7 +74,7 @@ class SendImagesRSS {
 			);
 		}
 
-		$this->rss_setting = $sendimagesrss_setting ? $sendimagesrss_setting : get_option( 'sendimagesrss', $defaults );
+		$this->rss_setting = $setting ? $setting : get_option( 'sendimagesrss', $defaults );
 
 		$simplify    = $this->rss_setting['simplify_feed'];
 		$image_width = $this->rss_setting['image_size'];
@@ -110,14 +110,6 @@ class SendImagesRSS {
 		add_filter( 'jetpack_photon_skip_image', '__return_true' );
 
 		$rss_option = get_option( 'rss_use_excerpt' );
-		/**
-		 * add a filter to work on the excerpt even if the feed is set to full text
-		 * @var boolean
-		 *
-		 * @since 3.0.0
-		 */
-		$damn_the_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
-		$damn_the_consequences = true === $damn_the_consequences ? $damn_the_consequences : false;
 
 		// have to remove the photon filter twice as it's really aggressive
 		$photon_removed = '';
@@ -125,7 +117,8 @@ class SendImagesRSS {
 			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 		}
 
-		if ( '1' === $rss_option || true === $damn_the_consequences ) {
+		$damn_consequences = $this->damn_consequences();
+		if ( '1' === $rss_option || $damn_consequences ) {
 			$this->fix_excerpts();
 		}
 
@@ -188,4 +181,14 @@ class SendImagesRSS {
 		return $links;
 	}
 
+	/**
+	 * add a filter to work on the excerpt even if the feed is set to full text
+	 * @var boolean
+	 *
+	 * @since 3.0.0
+	 */
+	protected function damn_consequences( $damn_consequences = false ) {
+		$damn_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
+		return true === $damn_consequences ? true : false;
+	}
 }
