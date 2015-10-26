@@ -182,12 +182,12 @@ class SendImagesRSS_Feed_Fixer {
 			}
 		}
 
-		if ( $source_check && true === $replace_small_images ) {
+		// remove the style from parentNode, only if it's a caption.
+		if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
+			$item->caption->removeAttribute( 'style' );
+		}
 
-			// remove the style from parentNode, only if it's a caption.
-			if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
-				$item->caption->removeAttribute( 'style' );
-			}
+		if ( $source_check && true === $replace_small_images ) {
 
 			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
 			/**
