@@ -169,7 +169,7 @@ class SendImagesRSS_Feed_Fixer {
 		$item                 = $this->get_image_variables( $image );
 		$maxwidth             = $this->get_image_size();
 		$source_check         = ( isset( $item->source[3] ) && $item->source[3] ) ? true : false;
-		$replace_small_images = $this->replace_small_images( $item );
+		$replace_small_images = $this->replace_small_images( $item, $maxwidth );
 
 		if ( false === $replace_small_images ) {
 			$image_data = false;
@@ -422,9 +422,11 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 2.6.0
 	 *
 	 */
-	protected function replace_small_images( $item ) {
-		$maxwidth             = $this->get_image_size();
-		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
+	protected function replace_small_images( $item, $maxwidth ) {
+		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true );
+		if ( ! $item->width || $item->width >= $maxwidth ) {
+			$replace_small_images = true;
+		}
 		return (bool) false === $replace_small_images ? false : true;
 	}
 
