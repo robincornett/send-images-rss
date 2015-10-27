@@ -166,28 +166,28 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function replace_images( $image ) {
 
-		$item                 = $this->get_image_variables( $image );
-		$maxwidth             = $this->get_image_size();
-		$source_check         = ( isset( $item->source[3] ) && $item->source[3] ) ? true : false;
-		$replace_small_images = $this->replace_small_images( $item, $maxwidth );
-
-		if ( false === $replace_small_images ) {
-			$image_data = false;
-			if ( $item->image_url && false === $this->hackrepair ) {
-				$image_data = getimagesize( $item->image_url );
-			}
-			$php_check = false === $image_data ? $item->width : $image_data[0];
-			if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
-				$replace_small_images = true;
-			}
-		}
+		$item = $this->get_image_variables( $image );
 
 		// remove the style from parentNode, only if it's a caption.
 		if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
 			$item->caption->removeAttribute( 'style' );
 		}
 
-		if ( $source_check && true === $replace_small_images ) {
+		$maxwidth           = $this->get_image_size();
+		$replace_this_image = $this->replace_this_image( $item, $maxwidth );
+
+		if ( false === $replace_this_image ) {
+			$image_data = false;
+			if ( $item->image_url && false === $this->hackrepair ) {
+				$image_data = getimagesize( $item->image_url );
+			}
+			$php_check = false === $image_data ? $item->width : $image_data[0];
+			if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
+				$replace_this_image = true;
+			}
+		}
+
+		if ( true === $replace_this_image ) {
 
 			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
 			/**
@@ -422,12 +422,12 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 2.6.0
 	 *
 	 */
-	protected function replace_small_images( $item, $maxwidth ) {
-		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true );
+	protected function replace_this_image( $item, $maxwidth ) {
+		$replace_this_image = apply_filters( 'send_images_rss_change_small_images', true );
 		if ( ! $item->width || $item->width >= $maxwidth ) {
-			$replace_small_images = true;
+			$replace_this_image = true;
 		}
-		return (bool) false === $replace_small_images ? false : true;
+		return (bool) false === $replace_this_image ? false : true;
 	}
 
 	/**
