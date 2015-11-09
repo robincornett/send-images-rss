@@ -434,7 +434,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * Get the email image size
 	 * @return int The plugin image size (from settings page), or 560 by default
 	 *
-	 * @since x.y.z
+	 * @since 3.0.1
 	 */
 	protected function get_image_size() {
 		$setting = get_option( 'sendimagesrss' );
@@ -446,7 +446,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @param  array $source result of wp_get_attachment_image_src, array if it's an image, false if not
 	 * @return boolean         true if the image exists and comes in the specific size
 	 *
-	 * @since x.y.z
+	 * @since 3.0.1
 	 */
 	protected function does_image_size_exist( $source ) {
 		return ( isset( $source[3] ) && $source[3] ) ? true : false;

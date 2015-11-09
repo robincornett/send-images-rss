@@ -90,6 +90,16 @@ __Note:__ If you use an email template with a sidebar, I strongly recommend that
 
 Smaller images will still be small. WordPress handles image alignment differently than email clients (set by class v. inline align). If your smaller image has an right/left alignment set in post, the plugin will copy that alignment in your email as well, and add a margin.
 
+### I uploaded a large image to my post, but inserted a smaller version of it. The feed output a large version instead of the small. Can I change that?
+
+Yes, you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, add this filter to your site, either in your functions.php file or a functionality plugin:
+
+```php
+add_filter( 'send_images_rss_change_small_images', '__return_false' );
+```
+
+Note to iThemes Security users: if you are using the HackRepair.com blacklist feature, you will not be able to make use of this filter, because it blocks how Send Images to RSS retrieves image data in the feed. I would **not** suggest disabling the security feature just to be able to use this filter.
+
 ### I have funky characters in my RSS feed and emails. Why?
 
 Because you have funky characters and/or invalid markup in your posts. The plugin attempts to process your feed and encode wonky markup, but if your server doesn't have certain packages installed, the fallback is to process your feed as is, warts and all.
@@ -109,16 +119,6 @@ If this happens, your permalink for the new feed may not have been updated. Visi
 ### What is Simplify Feed?
 
 If you use native WordPress galleries in your posts, they're sent to your feed as thumbnails. Even if you do not use an RSS/email service, you can still use this plugin to sort out your galleries for subscribers who use an RSS reader. If you select Simplify Feed, your galleries will be converted, but there will not be an email sized image created, and no alternate feed will be created.
-
-### I uploaded a large image to my post, but inserted a smaller version of it. The feed output a large version instead of the small. Can I change that?
-
-Yes, you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, add this filter to your site, either in your functions.php file or a functionality plugin:
-
-```php
-add_filter( 'send_images_rss_change_small_images', '__return_false' );
-```
-
-Note to iThemes Security users: if you are using the HackRepair.com blacklist feature, you will not be able to make use of this filter, because it blocks how Send Images to RSS retrieves image data in the feed. I would **not** suggest disabling the security feature just to be able to use this filter.
 
 ### What if I upload my images to [flickr] or use images hosted somewhere other than my website?
 
@@ -181,6 +181,12 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 * Thanks to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### 3.0.1
+* improved: moved filters to individual functions
+* bugfix: fixed image ID retrieval if protocol mismatch (eg secure admin, nonsecure front end)
+* bugfix: override Photon in every possible way
+* bugfix: added missing permalink to excerpt read more filter
 
 ### 3.0.0
 * new: optionally add your featured image to the excerpt in your feed!
