@@ -18,12 +18,6 @@
 class SendImagesRSS_Feed_Fixer {
 
 	/**
-	 * Image size set by plugin
-	 * @var int
-	 */
-	protected $image_size;
-
-	/**
 	 * if iThemes Security is set to use the hackrepair blacklist
 	 * @var boolean
 	 */
@@ -99,8 +93,6 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function modify_images( DOMDocument &$doc ) {
 
-		$setting          = get_option( 'sendimagesrss' );
-		$this->image_size = $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 		$this->hackrepair = $this->is_hackrepair();
 
 		// Now work on the images, which is why we're really here.
@@ -110,24 +102,16 @@ class SendImagesRSS_Feed_Fixer {
 			$url = $image->getAttribute( 'src' );
 			$id  = $this->get_image_id( $url );
 
-			/**
-			 * Add filter to optionally process external images as best we can.
-			 * @var boolean
-			 *
-			 * @since 2.6.0
-			 */
-			$process_external_images = apply_filters( 'send_images_rss_process_external_images', false );
-			$process_external_images = true === $process_external_images ? $process_external_images : false;
-
 			// if the image is not part of WP, we cannot use it, although we'll provide a filter to try anyway
-			if ( false === $id && false === $process_external_images ) {
+			if ( false === $id && false === $this->process_external_images() ) {
 				continue;
 			}
 
 			$image->removeAttribute( 'height' );
 			$image->removeAttribute( 'style' );
 
-			if ( false === $id && true === $process_external_images ) {
+			// external images
+			if ( false === $id && true === $this->process_external_images() ) {
 				$this->fix_other_images( $image );
 				$this->fix_captions( $image );
 				continue;
@@ -136,7 +120,6 @@ class SendImagesRSS_Feed_Fixer {
 			$this->replace_images( $image );
 
 		}
-
 	}
 
 
@@ -167,7 +150,7 @@ class SendImagesRSS_Feed_Fixer {
 		}
 
 		$mailchimp    = wp_get_attachment_image_src( $item->image_id, 'mailchimp' );
-		$item->source = true === $mailchimp[3] ? $mailchimp : wp_get_attachment_image_src( $item->image_id, 'large' );
+		$item->source = $this->does_image_size_exist( $mailchimp ) ? $mailchimp : wp_get_attachment_image_src( $item->image_id, 'large' );
 
 		return $item;
 	}
@@ -183,37 +166,28 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	protected function replace_images( $image ) {
 
-		$item         = $this->get_image_variables( $image );
-		$maxwidth     = $this->image_size;
-		$source_check = ( isset( $item->source[3] ) && $item->source[3] ) ? true : false;
+		$item = $this->get_image_variables( $image );
 
-		/**
-		 * add a filter to optionally not replace smaller images, even if a larger version exists.
-		 * @var boolean
-		 *
-		 * @since 2.6.0
-		 *
-		 */
-		$replace_small_images = apply_filters( 'send_images_rss_change_small_images', true, ( ! $item->width || $item->width >= $maxwidth ) );
-		$replace_small_images = false === $replace_small_images ? $replace_small_images : true;
+		// remove the style from parentNode, only if it's a caption.
+		if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
+			$item->caption->removeAttribute( 'style' );
+		}
 
-		if ( false === $replace_small_images ) {
+		$maxwidth           = $this->get_image_size();
+		$replace_this_image = $this->replace_this_image( $item, $maxwidth );
+
+		if ( false === $replace_this_image ) {
 			$image_data = false;
 			if ( $item->image_url && false === $this->hackrepair ) {
 				$image_data = getimagesize( $item->image_url );
 			}
 			$php_check = false === $image_data ? $item->width : $image_data[0];
 			if ( ( ! empty( $item->width ) && (int) $item->width !== $php_check ) || $php_check >= $maxwidth ) {
-				$replace_small_images = true;
+				$replace_this_image = true;
 			}
 		}
 
-		if ( $source_check && true === $replace_small_images ) {
-
-			// remove the style from parentNode, only if it's a caption.
-			if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'wp-caption' ) ) {
-				$item->caption->removeAttribute( 'style' );
-			}
+		if ( true === $replace_this_image ) {
 
 			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
 			/**
@@ -251,7 +225,7 @@ class SendImagesRSS_Feed_Fixer {
 			$image_data = $item->image_url && ! $this->hackrepair ? getimagesize( $item->image_url ) : false;
 			$width      = false === $image_data ? $item->width : $image_data[0];
 		}
-		$maxwidth   = $this->image_size;
+		$maxwidth   = $this->get_image_size();
 		$halfwidth  = floor( $maxwidth / 2 );
 		$alignright = $alignleft = false;
 		if ( false !== strpos( $item->class, 'alignright' ) || false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
@@ -302,7 +276,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		$item       = $this->get_image_variables( $image );
 		$width      = $item->width;
-		$maxwidth   = $this->image_size;
+		$maxwidth   = $this->get_image_size();
 		$halfwidth  = floor( $maxwidth / 2 );
 		$alignright = $alignleft = false;
 		if ( false !== strpos( $item->caption->getAttribute( 'class' ), 'alignright' ) ) {
@@ -361,12 +335,14 @@ class SendImagesRSS_Feed_Fixer {
 
 		// Get the upload directory paths
 		$upload_dir_paths = wp_upload_dir();
+		$base_url         = wp_make_link_relative( $upload_dir_paths['baseurl'] );
+		$attachment_url   = wp_make_link_relative( $attachment_url );
 
 		// Make sure the upload path base directory exists in the attachment URL, to verify that we're working with a media library image
-		if ( false !== strpos( $attachment_url, $upload_dir_paths['baseurl'] ) ) {
+		if ( false !== strpos( $attachment_url, $base_url ) ) {
 
 			// Remove the upload path base directory from the attachment URL
-			$attachment_url = str_replace( $upload_dir_paths['baseurl'] . '/', '', $attachment_url );
+			$attachment_url = str_replace( $base_url . '/', '', $attachment_url );
 
 			// If this is the URL of an auto-generated thumbnail, get the URL of the original image
 			$url_stripped   = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
@@ -428,4 +404,51 @@ class SendImagesRSS_Feed_Fixer {
 		return $hack_repair;
 	}
 
+	/**
+	 * Add filter to optionally process external images as best we can.
+	 * @var boolean
+	 *
+	 * @since 2.6.0
+	 */
+	protected function process_external_images() {
+		$process_external = apply_filters( 'send_images_rss_process_external_images', false );
+		return (bool) true === $process_external ? true : false;
+	}
+
+	/**
+	 * add a filter to optionally not replace smaller images, even if a larger version exists.
+	 * @var boolean
+	 *
+	 * @since 2.6.0
+	 *
+	 */
+	protected function replace_this_image( $item, $maxwidth ) {
+		$replace_this_image = apply_filters( 'send_images_rss_change_small_images', true );
+		if ( ! $item->width || $item->width >= $maxwidth ) {
+			$replace_this_image = true;
+		}
+		return (bool) false === $replace_this_image ? false : true;
+	}
+
+	/**
+	 * Get the email image size
+	 * @return int The plugin image size (from settings page), or 560 by default
+	 *
+	 * @since 3.0.1
+	 */
+	protected function get_image_size() {
+		$setting = get_option( 'sendimagesrss' );
+		return $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+	}
+
+	/**
+	 * Helper function to determine if an image size actually exists for the selected image
+	 * @param  array $source result of wp_get_attachment_image_src, array if it's an image, false if not
+	 * @return boolean         true if the image exists and comes in the specific size
+	 *
+	 * @since 3.0.1
+	 */
+	protected function does_image_size_exist( $source ) {
+		return ( isset( $source[3] ) && $source[3] ) ? true : false;
+	}
 }
