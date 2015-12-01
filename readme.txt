@@ -4,7 +4,7 @@ Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 3.8
-Tested up to: 4.4beta
+Tested up to: 4.4
 Stable tag: 3.0.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -61,6 +61,10 @@ Spanish tranlation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 1. Visit the Settings > Send Images to RSS page to change the default behavior of the plugin.
 
 == Frequently Asked Questions ==
+
+= Note for [new] MailChimp users: =
+
+MailChimp has added a new setting to the RSS campaign setup process: "Resize RSS feed images to fit template" ... please __do not__ use this setting, especially if you are using excerpts with small images, or using small images with alignment, because MailChimp will blow them up and make them sad and ugly.
 
 = How can I change the size of the image being sent to the RSS? =
 

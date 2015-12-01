@@ -74,6 +74,10 @@ Then go to your Plugins screen and click __Activate__.
 
 ## Frequently Asked Questions
 
+### Note for [new] MailChimp users:
+
+MailChimp has added a new setting to the RSS campaign setup process: "Resize RSS feed images to fit template" ... please __do not__ use this setting, especially if you are using excerpts with small images, or using small images with alignment, because MailChimp will blow them up and make them sad and ugly.
+
 ### How can I change the size of the image being sent to the RSS?
 
 Most users should not need to change this. The plugin is designed with a default image size of 560 pixels for the width of the new image. If, however, your RSS email template is more or less than 600 pixels wide, or you're using a template with a sidebar, you may need to change this setting. What number you choose is up to you.
