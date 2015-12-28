@@ -66,17 +66,7 @@ class SendImagesRSS {
 	 */
 	public function init() {
 
-		$setting = get_option( 'sendimagesrss' );
-		if ( ! $setting ) {
-			$defaults = array(
-				'simplify_feed'  => get_option( 'sendimagesrss_simplify_feed', 0 ),
-				'image_size'     => get_option( 'sendimagesrss_image_size', 560 ),
-				'alternate_feed' => get_option( 'sendimagesrss_alternate_feed', 0 ),
-			);
-		}
-
-		$this->rss_setting = $setting ? $setting : get_option( 'sendimagesrss', $defaults );
-
+		$this->rss_setting  = sendimagesrss_get_setting();
 		$simplify    = $this->rss_setting['simplify_feed'];
 		$image_width = $this->rss_setting['image_size'];
 

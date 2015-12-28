@@ -121,7 +121,8 @@ class SendImagesRSS_Settings {
 			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
 		);
 
-		return get_option( 'sendimagesrss', $defaults );
+		$setting = get_option( 'sendimagesrss', $defaults );
+		return $setting;
 	}
 
 	/**

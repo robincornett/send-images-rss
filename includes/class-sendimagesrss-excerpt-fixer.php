@@ -44,7 +44,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			return;
 		}
 
-		$this->setting  = get_option( 'sendimagesrss' );
+		$this->setting  = sendimagesrss_get_setting();
 		$post_id        = get_the_ID();
 		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
 		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );

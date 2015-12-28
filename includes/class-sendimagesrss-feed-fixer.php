@@ -437,7 +437,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 3.0.1
 	 */
 	protected function get_image_size() {
-		$setting = get_option( 'sendimagesrss' );
+		$setting = sendimagesrss_get_setting();
 		return $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 	}
 
