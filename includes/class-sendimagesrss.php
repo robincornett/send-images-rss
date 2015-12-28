@@ -157,8 +157,29 @@ class SendImagesRSS {
 
 		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
-		}
 
+			$featured_image = isset( $this->rss_setting['featured_image'] ) ? $this->rss_setting['featured_image'] : 0;
+			if ( $featured_image ) {
+				add_filter( 'the_content_feed', array( $this, 'add_featured_image' ), 100 );
+			}
+		}
+	}
+
+	/**
+	 * @param $content
+	 * @uses set_featured_image() from excerpt fixer class.
+	 * @return string
+	 * @since 3.1.0
+	 */
+	public function add_featured_image( $content ) {
+		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
+			$displaysetting = get_option( 'displayfeaturedimagegenesis' );
+			if ( isset( $displaysetting['feed_image'] ) && $displaysetting['feed_image'] ) {
+				return $content;
+			}
+		}
+		$image = $this->excerpt_fixer->set_featured_image();
+		return $image . $content;
 	}
 
 	/**

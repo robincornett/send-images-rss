@@ -37,7 +37,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Add post's featured image to beginning of excerpt
 	 * @since 3.0.0
 	 */
-	protected function set_featured_image() {
+	public function set_featured_image() {
 
 		$concede = $this->concede_to_displayfeaturedimage();
 		if ( $concede ) {
