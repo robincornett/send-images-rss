@@ -42,6 +42,7 @@ class SendImagesRSS {
 	 * @since 2.4.0
 	 */
 	public function run() {
+		add_filter( 'sendimagesrss_get_setting', array( $this->settings, 'get_rss_setting' ) );
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );

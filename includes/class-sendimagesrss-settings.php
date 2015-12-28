@@ -105,7 +105,10 @@ class SendImagesRSS_Settings {
 
 	}
 
-	protected function get_rss_setting() {
+	/**
+	 * @return array Setting for plugin, or defaults.
+	 */
+	public function get_rss_setting() {
 
 		$old_setting = get_option( 'sendimagesrss_image_size' );
 		$defaults = array(

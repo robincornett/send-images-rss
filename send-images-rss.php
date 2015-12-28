@@ -65,3 +65,11 @@ $sendimagesrss = new SendImagesRSS(
 
 // Run the plugin
 $sendimagesrss->run();
+
+/**
+ * Helper function to get the RSS setting.
+ * @since x.y.z
+ */
+function sendimagesrss_get_setting() {
+	return apply_filters( 'sendimagesrss_get_setting', false );
+}
