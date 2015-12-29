@@ -26,10 +26,11 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( ! is_feed() ) {
 			return;
 		}
-		$this->setting = sendimagesrss_get_setting();
+		$this->setting  = sendimagesrss_get_setting();
+		$thumbnail_size = isset( $this->setting[ 'thumbnail_size' ] ) ? $this->setting[ 'thumbnail_size' ] : 'thumbnail';
 
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
-		$before  = $this->set_featured_image();
+		$before  = $this->set_featured_image( $thumbnail_size );
 		$content = wpautop( $this->trim_excerpt( $content ) );
 		$after   = wpautop( $this->read_more() );
 		return $before . $content . $after;
@@ -39,17 +40,15 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Add post's featured image to beginning of excerpt
 	 * @since 3.0.0
 	 */
-	public function set_featured_image() {
+	public function set_featured_image( $thumbnail_size ) {
 
 		$concede = $this->concede_to_displayfeaturedimage();
 		if ( $concede ) {
 			return;
 		}
 
-		$this->setting  = sendimagesrss_get_setting();
-		$image_id       = $this->get_image_id( get_the_ID() );
-		$thumbnail_size = isset( $this->setting['thumbnail_size'] ) ? $this->setting['thumbnail_size'] : 'thumbnail';
-
+		$this->setting = sendimagesrss_get_setting();
+		$image_id      = $this->get_image_id( get_the_ID() );
 		if ( ! $image_id || 'none' === $thumbnail_size ) {
 			return;
 		}
@@ -102,7 +101,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		$style     = $this->set_image_style( $alignment );
 		$max_width = isset( $this->setting['image_size'] ) ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-		if ( isset( $image_source[1] ) && $image_source[1] > $max_width ) {
+		if ( sendimagesrss_can_process() && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
 			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
 

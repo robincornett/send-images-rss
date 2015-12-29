@@ -68,8 +68,17 @@ $sendimagesrss->run();
 
 /**
  * Helper function to get the RSS setting.
- * @since x.y.z
+ * @since 3.1.0
  */
 function sendimagesrss_get_setting() {
 	return apply_filters( 'sendimagesrss_get_setting', false );
+}
+
+/**
+ * Helper function to evaluate if the feed/image can be processed.
+ * @return mixed|void
+ * @since 3.1.0
+ */
+function sendimagesrss_can_process() {
+	return apply_filters( 'sendimagesrss_can_process', false );
 }

@@ -43,6 +43,7 @@ class SendImagesRSS {
 	 */
 	public function run() {
 		add_filter( 'sendimagesrss_get_setting', array( $this->settings, 'get_rss_setting' ) );
+		add_filter( 'sendimagesrss_can_process', array( $this, 'can_process' ) );
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
@@ -154,17 +155,15 @@ class SendImagesRSS {
 	protected function fix_full_text() {
 
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
+		$featured_image = isset( $this->rss_setting['featured_image'] ) ? $this->rss_setting['featured_image'] : 0;
+		if ( $featured_image ) {
+			add_filter( 'the_content_feed', array( $this, 'add_featured_image' ), 100 );
+		}
 
-		$simplify = $this->rss_setting['simplify_feed'];
-		$alt_feed = $this->rss_setting['alternate_feed'];
-
-		if ( ! $simplify && ( ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ) ) {
+		$simplify    = $this->rss_setting['simplify_feed'];
+		$can_process = $this->can_process();
+		if ( ! $simplify && $can_process ) {
 			add_filter( 'the_content', array( $this->feed_fixer, 'fix' ), 20 );
-
-			$featured_image = isset( $this->rss_setting['featured_image'] ) ? $this->rss_setting['featured_image'] : 0;
-			if ( $featured_image ) {
-				add_filter( 'the_content_feed', array( $this, 'add_featured_image' ), 100 );
-			}
 		}
 	}
 
@@ -181,7 +180,10 @@ class SendImagesRSS {
 				return $content;
 			}
 		}
-		$image = $this->excerpt_fixer->set_featured_image();
+		$can_process    = $this->can_process();
+		$thumbnail_size = isset( $this->setting[ 'thumbnail_size' ] ) ? $this->setting[ 'thumbnail_size' ] : 'thumbnail';
+		$size           = $can_process ? $thumbnail_size : 'full';
+		$image          = $this->excerpt_fixer->set_featured_image( $size );
 		return $image . $content;
 	}
 
@@ -205,5 +207,17 @@ class SendImagesRSS {
 	protected function damn_consequences( $damn_consequences = false ) {
 		$damn_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', false );
 		return true === $damn_consequences ? true : false;
+	}
+
+	/**
+	 * Function to check whether the feed/image can be processed or not
+	 * @param bool $can_process
+	 *
+	 * @return bool
+	 * @since 3.1.0
+	 */
+	public function can_process( $can_process = false ) {
+		$alt_feed = $this->rss_setting['alternate_feed'];
+		return ( $alt_feed && is_feed( 'email' ) || ! $alt_feed ) ? true : false;
 	}
 }
