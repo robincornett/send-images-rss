@@ -226,7 +226,7 @@ class SendImagesRSS_Settings {
 				'title'    => __( 'Featured Image', 'send-images-rss' ),
 				'callback' => 'do_checkbox',
 				'section'  => 'full',
-				'args'     => array ( 'setting' => 'featured_image', 'label' => __( 'Add the featured image to the beginning of the full post.', 'send-images-rss' ) ),
+				'args'     => array ( 'setting' => 'featured_image', 'label' => __( 'Add the featured image to the beginning of the full post (uses General Image Settings).', 'send-images-rss' ) ),
 			),
 		);
 
@@ -404,15 +404,20 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
-	 * Callback for description for image size.
+	 * Callback for description for email/image size.
 	 * @since 3.0.0
 	 */
 	protected function image_size_description() {
 		return __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
 	}
 
+	/**
+	 * Callback for description for featured image size.
+	 * @return string|void
+	 * since 3.1.0
+	 */
 	protected function thumbnail_size_description() {
-		return __( 'The featured image will be added to the excerpt if your feed is set to summary, or if you enable this under the full text settings.', 'send-images-rss' );
+		return __( 'The featured image will be added to the excerpt if your feed is set to summary, or if you enable the featured image under the full text settings.', 'send-images-rss' );
 	}
 	/**
 	 * Callback for description for number of words in excerpt.
@@ -464,7 +469,7 @@ class SendImagesRSS_Settings {
 	/**
 	 * Add a description to the new featured image checkbox.
 	 * @return string|void
-	 * since x.y.z
+	 * since 3.1.0
 	 */
 	protected function featured_image_description() {
 		$description = __( 'Note: adding the featured image to the full text RSS feed may result in duplicate images, depending on how your theme or another plugin is configured.', 'send-images-rss' );
