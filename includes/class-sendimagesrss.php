@@ -48,7 +48,6 @@ class SendImagesRSS {
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
 		add_filter( 'plugin_action_links_' . SENDIMAGESRSS_BASENAME, array( $this, 'add_settings_link' ) );
-		add_filter( 'wp_get_attachment_image_srcset', array( $this, 'remove_srcset' ) );
 	}
 
 	/**
@@ -97,6 +96,9 @@ class SendImagesRSS {
 		if ( ! is_feed() ) {
 			return;
 		}
+
+		// disable srcset on images in feeds
+		add_filter( 'wp_calculate_image_srcset', '__return_false' );
 
 		// because Photon refuses to use our new image size. Or behave.
 		add_filter( 'jetpack_photon_skip_image', '__return_true' );
@@ -192,19 +194,6 @@ class SendImagesRSS {
 	public function add_settings_link( $links ) {
 		$links[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'options-general.php?page=sendimagesrss' ) ), esc_attr__( 'Settings', 'send-images-rss' ) );
 		return $links;
-	}
-
-	/**
-	 * Disable srcset for feeds because of https issues.
-	 * @param $srcset
-	 * @return bool
-	 * @since 3.1.0
-	 */
-	public function remove_srcset( $srcset ) {
-		if ( is_feed() ) {
-			return false;
-		}
-		return $srcset;
 	}
 
 	/**
