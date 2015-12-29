@@ -419,6 +419,7 @@ class SendImagesRSS_Settings {
 	protected function thumbnail_size_description() {
 		return __( 'The featured image will be added to the excerpt if your feed is set to summary, or if you enable the featured image under the full text settings.', 'send-images-rss' );
 	}
+
 	/**
 	 * Callback for description for number of words in excerpt.
 	 * @since 3.0.0

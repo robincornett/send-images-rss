@@ -26,6 +26,8 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( ! is_feed() ) {
 			return;
 		}
+		$this->setting = sendimagesrss_get_setting();
+
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
 		$before  = $this->set_featured_image();
 		$content = wpautop( $this->trim_excerpt( $content ) );
@@ -45,16 +47,16 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		$this->setting  = sendimagesrss_get_setting();
-		$post_id        = get_the_ID();
-		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
-		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );
+		$image_id       = $this->get_image_id( get_the_ID() );
+		$thumbnail_size = isset( $this->setting['thumbnail_size'] ) ? $this->setting['thumbnail_size'] : 'thumbnail';
 
-		if ( ! $image_source || 'none' === $thumbnail_size ) {
+		if ( ! $image_id || 'none' === $thumbnail_size ) {
 			return;
 		}
 
+		$image_source = wp_get_attachment_image_src( $image_id, $thumbnail_size );
 		if ( isset( $image_source[3] ) && ! $image_source[3] && 'mailchimp' === $thumbnail_size ) {
-			$image_source = wp_get_attachment_image_src( $this->get_image_id( $post_id ), 'large' );
+			$image_source = wp_get_attachment_image_src( $image_id, 'large' );
 		}
 
 		return $this->build_image( $image_source );
@@ -99,10 +101,9 @@ class SendImagesRSS_Excerpt_Fixer {
 
 		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		$style     = $this->set_image_style( $alignment );
-
-		if ( ( isset( $image_source[3] ) && ! $image_source[3] ) || ! isset( $image_source[3] ) ) {
-			$max_width = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-			$style    .= sprintf( 'max-width:%spx;', $max_width );
+		$max_width = isset( $this->setting['image_size'] ) ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		if ( isset( $image_source[1] ) && $image_source[1] > $max_width ) {
+			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
 
 		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
