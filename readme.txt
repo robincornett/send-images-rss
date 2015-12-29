@@ -52,7 +52,7 @@ If you have added the featured image to your feed excerpt using your own functio
 
 Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary feed contributions.
 
-Spanish tranlation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
+Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 == Installation ==
 
@@ -73,6 +73,10 @@ Most users should not need to change this. The plugin is designed with a default
 Mad Mimi users should set this to 530.
 
 **Note:** If you use a template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
+
+= What about featured images? =
+
+If your site's feed settings are set to Summary instead of Full Text, the featured image (or first image) will be added to each post. As of version 3.1.0, you can now add your post's featured image to the full text feed as well. If you use this setting, plase double check your feed (again) to make sure you don't have duplicate featured images, as some themes and plugins do this as well. (If you are a _Display Featured Image for Genesis_ user, I've got you covered--this setting will not work until you've deactivated this setting in that plugin.)
 
 = Does this plugin work with excerpts? =
 
@@ -161,6 +165,11 @@ Please note that your feed settings need to be set to **full text**.
 bugfixes for Photon/excerpts and sites with mixed protocols
 
 == Changelog ==
+
+= 3.1.0 =
+* added: now include the featured image with your full text feeds
+* fixed: disable responsive images in RSS feeds (sorry, WP 4.4, but this isn't helpful here)
+* fixed: max-width style on featured images
 
 = 3.0.1 =
 * improved: moved filters to individual functions

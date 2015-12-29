@@ -39,7 +39,7 @@ If you have added the featured image to your feed excerpt using your own functio
 
 Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary feed contributions.
 
-Spanish tranlation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
+Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 ## Requirements
 * WordPress 3.8, tested up to 4.3
@@ -86,6 +86,10 @@ Mad Mimi users should set this to 530.
 
 __Note:__ If you use an email template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
 
+### What about featured images?
+
+If your site's feed settings are set to Summary instead of Full Text, the featured image (or first image) will be added to each post. As of version 3.1.0, you can now add your post's featured image to the full text feed as well. If you use this setting, plase double check your feed (again) to make sure you don't have duplicate featured images, as some themes and plugins do this as well. (If you are a _Display Featured Image for Genesis_ user, I've got you covered--this setting will not work until you've deactivated this setting in that plugin.)
+
 ### Does this plugin work with excerpts?
 
 **YES INDEEDY.** It's true, as of version 3.0.0, _Send Images to RSS_ works with RSS feeds set to show excerpts/summaries! With this change, there's a new plugin settings page to handle the additional settings, which allow you to add the featured image to your excerpt, set its alignment, and set the target number of words for the excerpt. If a post has images uploaded to it (attached), but no featured image, the plugin will use the first attached image for the excerpt.
@@ -102,7 +106,7 @@ Yes, you can change that. By default, the plugin simply looks to see if an email
 add_filter( 'send_images_rss_change_small_images', '__return_false' );
 ```
 
-Note to iThemes Security users: if you are using the HackRepair.com blacklist feature, you will not be able to make use of this filter, because it blocks how Send Images to RSS retrieves image data in the feed. I would **not** suggest disabling the security feature just to be able to use this filter.
+Note to iThemes Security users: if you are using the HackRepair.com blacklist feature, you will not be able to make use of this filter, because it blocks how _Send Images to RSS_ retrieves image data in the feed. I would **not** suggest disabling the security feature just to be able to use this filter.
 
 ### I have funky characters in my RSS feed and emails. Why?
 
@@ -185,6 +189,11 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 * Thanks to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### 3.1.0
+* added: now include the featured image with your full text feeds
+* fixed: disable responsive images in RSS feeds (sorry, WP 4.4, but this isn't helpful here)
+* fixed: max-width style on featured images
 
 ### 3.0.1
 * improved: moved filters to individual functions
