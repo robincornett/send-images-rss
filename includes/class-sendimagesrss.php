@@ -181,9 +181,8 @@ class SendImagesRSS {
 			}
 		}
 		$can_process    = $this->can_process();
-		$thumbnail_size = isset( $this->setting[ 'thumbnail_size' ] ) ? $this->setting[ 'thumbnail_size' ] : 'thumbnail';
-		$size           = $can_process ? $thumbnail_size : 'full';
-		$image          = $this->excerpt_fixer->set_featured_image( $size );
+		$thumbnail_size = isset( $this->rss_setting[ 'thumbnail_size' ] ) && $can_process ? $this->rss_setting[ 'thumbnail_size' ] : 'full';
+		$image          = $this->excerpt_fixer->set_featured_image( $thumbnail_size );
 		return $image . $content;
 	}
 
@@ -200,7 +199,7 @@ class SendImagesRSS {
 
 	/**
 	 * add a filter to work on the excerpt even if the feed is set to full text
-	 * @var boolean
+	 * @return bool
 	 *
 	 * @since 3.0.0
 	 */
@@ -210,7 +209,7 @@ class SendImagesRSS {
 	}
 
 	/**
-	 * Function to check whether the feed/image can be processed or not
+	 * Function to check whether the feed/image should be processed or not
 	 * @param bool $can_process
 	 *
 	 * @return bool
