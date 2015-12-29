@@ -137,11 +137,7 @@ class SendImagesRSS_Settings {
 		$sections = array(
 			'general' => array(
 				'id'    => 'general',
-				'title' => __( 'General Plugin Settings', 'send-images-rss' ),
-			),
-			'images'  => array (
-				'id'    => 'images',
-				'title' => __( 'Image Settings', 'send-images-rss' ),
+				'title' => __( 'General Image Settings', 'send-images-rss' ),
 			),
 			'full'    => array (
 				'id'    => 'full',
@@ -187,7 +183,7 @@ class SendImagesRSS_Settings {
 				'id'       => 'image_size',
 				'title'    => __( 'RSS/Email Image Width', 'send-images-rss' ),
 				'callback' => 'do_number',
-				'section'  => 'images',
+				'section'  => 'general',
 				'args'     => array( 'setting' => 'image_size', 'min' => 200, 'max' => 900, 'label' => __( 'Max Width', 'send-images-rss' ) ),
 			),
 			array(
@@ -201,14 +197,14 @@ class SendImagesRSS_Settings {
 				'id'       => 'thumbnail_size',
 				'title'    => __( 'Featured Image Size', 'send-images-rss' ),
 				'callback' => 'do_select',
-				'section'  => 'images',
+				'section'  => 'general',
 				'args'     => array( 'setting' => 'thumbnail_size', 'options' => 'sizes' ),
 			),
 			array(
 				'id'       => 'alignment',
 				'title'    => __( 'Featured Image Alignment', 'send-images-rss' ),
 				'callback' => 'do_select',
-				'section'  => 'images',
+				'section'  => 'general',
 				'args'     => array( 'setting' => 'alignment', 'options' => 'alignment' ),
 			),
 			array(
@@ -340,6 +336,7 @@ class SendImagesRSS_Settings {
 				printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $this->rss_setting[ $args['setting'] ], false ), esc_attr( $key ) );
 			} ?>
 		</select> <?php
+		$this->do_description( $args['setting'] );
 	}
 
 	/**
@@ -363,7 +360,7 @@ class SendImagesRSS_Settings {
 		$intermediate_sizes = get_intermediate_image_sizes();
 		foreach ( $intermediate_sizes as $_size ) {
 			$default_sizes = apply_filters( 'send_images_rss_thumbnail_size_list', array( 'thumbnail', 'medium' ) );
-			if ( in_array( $_size, $default_sizes ) ) {
+			if ( in_array( $_size, $default_sizes, true ) ) {
 				$width  = get_option( $_size . '_size_w' );
 				$height = get_option( $_size . '_size_h' );
 				$options[ $_size ] = sprintf( '%s ( %sx%s )', $_size, $width, $height );
@@ -414,6 +411,9 @@ class SendImagesRSS_Settings {
 		return __( 'Most users should <strong>should not</strong> need to change this number.', 'send-images-rss' );
 	}
 
+	protected function thumbnail_size_description() {
+		return __( 'The featured image will be added to the excerpt if your feed is set to summary, or if you enable this under the full text settings.', 'send-images-rss' );
+	}
 	/**
 	 * Callback for description for number of words in excerpt.
 	 * @since 3.0.0
