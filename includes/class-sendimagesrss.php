@@ -181,7 +181,7 @@ class SendImagesRSS {
 			}
 		}
 		$can_process    = $this->can_process();
-		$thumbnail_size = isset( $this->rss_setting[ 'thumbnail_size' ] ) && $can_process ? $this->rss_setting[ 'thumbnail_size' ] : 'full';
+		$thumbnail_size = $can_process && isset( $this->rss_setting[ 'thumbnail_size' ] ) ? $this->rss_setting[ 'thumbnail_size' ] : 'full';
 		$image          = $this->excerpt_fixer->set_featured_image( $thumbnail_size );
 		return $image . $content;
 	}
@@ -217,6 +217,6 @@ class SendImagesRSS {
 	 */
 	public function can_process( $can_process = false ) {
 		$alt_feed = $this->rss_setting['alternate_feed'];
-		return ( $alt_feed && is_feed( 'email' ) || ! $alt_feed ) ? true : false;
+		return $alt_feed && is_feed( 'email' ) || ! $alt_feed ? true : false;
 	}
 }

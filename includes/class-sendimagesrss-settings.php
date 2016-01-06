@@ -477,7 +477,7 @@ class SendImagesRSS_Settings {
 		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
 			$setting = get_option( 'displayfeaturedimagegenesis', false );
 			if ( isset( $setting['feed_image'] ) && $setting['feed_image'] && '0' === $this->rss_option && $this->rss_setting['featured_image'] ) {
-				$description .= ' <strong>' . sprintf( __( 'Hold on there, cowboy! You are adding the featured image to your feed twice: once here and once over in <a href="%s">Display Featured Image for Genesis</a>. Please check the help tab on this screen for suggestions of how to fix this issue.', 'send-images-rss' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</strong>';
+				$description .= ' <strong>' . sprintf( __( 'Hold on there, cowboy! You are attempting to add the featured image to your feed twice: once here and once over in <a href="%s">Display Featured Image for Genesis</a>. Please check the help tab on this screen for suggestions of how to fix this issue.', 'send-images-rss' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</strong>';
 			}
 		}
 		return $description;
@@ -567,6 +567,7 @@ class SendImagesRSS_Settings {
 
 		$full_text_help .= '<h3>' . __( 'Featured Image', 'send-images-rss' ) . '</h3>';
 		$full_text_help .= '<p>' . __( 'Some themes and/or plugins add the featured image to the front end of your site, but not to the feed. If you are using a full text feed and want the featured image to be added to it, use this setting. I definitely recommend double checking your feed after enabling this, in case your theme or another plugin already adds the featured image to the feed, because you may end up with duplicate images.', 'send-images-rss' ) . '</p>';
+		$full_text_help .= '<p>' . __( 'If you are using the Alternate Feed setting, the featured image will be added to both feeds, but the full size version will be used on your unprocessed feed.', 'send-images-rss' ) . '</p>';
 		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
 			$full_text_help .= '<p class="description">' . sprintf( __( 'As a <a href="%s">Display Featured Image for Genesis</a> user, you already have the option to add featured images to your feed using that plugin. If you have both plugins set to add the featured image to your full text feed, this plugin will step aside and not output the featured image until you have deactivated that setting in the other. This plugin gives you more control over the featured image output in the feed.', 'send-images-rss' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</p>';
 		}
