@@ -499,12 +499,18 @@ class SendImagesRSS_Settings {
 		check_admin_referer( 'sendimagesrss_save-settings', 'sendimagesrss_nonce' );
 
 		foreach ( $this->fields as $field ) {
-			if ( 'do_checkbox' === $field['callback'] ) {
-				$new_value[ $field['id'] ] = $this->one_zero( $new_value[ $field['id'] ] );
-			} elseif ( 'do_select' === $field['callback'] ) {
-				$new_value[ $field['id'] ] = esc_attr( $new_value[ $field['id'] ] );
-			} elseif ( 'do_number' === $field['callback'] ) {
-				$new_value[ $field['id'] ] = (int) $new_value[ $field['id'] ];
+			switch ( $field['callback'] ) {
+				case 'do_checkbox':
+					$new_value[ $field['id'] ] = $this->one_zero( $new_value[ $field['id'] ] );
+					break;
+
+				case 'do_select':
+					$new_value[ $field['id'] ] = esc_attr( $new_value[ $field['id'] ] );
+					break;
+
+				case 'do_number':
+					$new_value[ $field['id'] ] = (int) $new_value[ $field['id'] ];
+					break;
 			}
 		}
 
@@ -571,6 +577,7 @@ class SendImagesRSS_Settings {
 		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
 			$full_text_help .= '<p class="description">' . sprintf( __( 'As a <a href="%s">Display Featured Image for Genesis</a> user, you already have the option to add featured images to your feed using that plugin. If you have both plugins set to add the featured image to your full text feed, this plugin will step aside and not output the featured image until you have deactivated that setting in the other. This plugin gives you more control over the featured image output in the feed.', 'send-images-rss' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</p>';
 		}
+		$full_text_help .= '<p>' . __( 'Note: the plugin will attempt to see if the image is already in your post content. If it is, the featured image will not be added to the feed as it would be considered a duplication.', 'send-images-rss') . '</p>';
 
 		$general_help .= '<h3>' . __( 'Featured Image Size', 'send-images-rss' ) . '</h3>';
 		$general_help .= '<p>' . __( 'Select which size image you would like to use in your excerpt/summary.', 'send-images-rss' ) . '</p>';

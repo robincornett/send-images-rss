@@ -33,7 +33,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		$before  = $this->set_featured_image( $thumbnail_size );
 		$content = wpautop( $this->trim_excerpt( $content ) );
 		$after   = wpautop( $this->read_more() );
-		return $before . $content . $after;
+		return wp_kses_post( $before . $content . $after );
 	}
 
 	/**
@@ -52,6 +52,11 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( ! $image_id || 'none' === $thumbnail_size ) {
 			return;
 		}
+		$rss_option = get_option( 'rss_use_excerpt' );
+		$in_content = '0' === $rss_option ? $this->is_image_in_content( $image_id ) : false;
+		if ( $in_content ) {
+			return;
+		}
 
 		$image_source = wp_get_attachment_image_src( $image_id, $thumbnail_size );
 		if ( isset( $image_source[3] ) && ! $image_source[3] && 'mailchimp' === $thumbnail_size ) {
@@ -65,8 +70,8 @@ class SendImagesRSS_Excerpt_Fixer {
 	/**
 	 * Set the image alignment
 	 * @param string $alignment image alignment as set in settings
-	 *
-	 * @since 3.0.0
+	 * @return string
+	 * @since  3.0.0
 	 */
 	protected function set_image_style( $alignment ) {
 		switch ( $alignment ) {
@@ -282,4 +287,23 @@ class SendImagesRSS_Excerpt_Fixer {
 		return $displaysetting['feed_image'] ? true : false;
 	}
 
+	/**
+	 * For full text feeds when the featured image has been added to the feed, check
+	 * if the image already exists in the post content ((full size only).
+	 * @param $image_id
+	 * @param bool $in_content
+	 * @return bool
+	 *
+	 * @since x.y.z
+	 */
+	protected function is_image_in_content( $image_id, $in_content = false ) {
+		$source  = wp_get_attachment_image_src( $image_id, 'full' );
+		$post    = get_post();
+		$content = strpos( $post->post_content, 'src="' . $source[0] );
+
+		if ( false !== $content ) {
+			$in_content = true;
+		}
+		return apply_filters( 'send_images_rss_image_in_content', $in_content, $image_id );
+	}
 }
