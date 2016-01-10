@@ -293,7 +293,8 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * For full text feeds when the featured image has been added to the feed, check
-	 * if the image already exists in the post content (mailchimp size).
+	 * if the image already exists in the post content (mailchimp size for altered
+	 * feeds; full size for unaltered feeds).
 	 * @param $image_id
 	 * @param $content
 	 * @param bool $in_content
@@ -302,7 +303,8 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 3.1.0
 	 */
 	protected function is_image_in_content( $image_id, $content, $in_content = false ) {
-		$source       = wp_get_attachment_image_src( $image_id, 'mailchimp' );
+		$image_size   = sendimagesrss_can_process() ? 'mailchimp' : 'full';
+		$source       = wp_get_attachment_image_src( $image_id, $image_size );
 		$post_content = strpos( $content, 'src="' . $source[0] );
 
 		if ( false !== $post_content ) {
