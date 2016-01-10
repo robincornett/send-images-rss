@@ -182,7 +182,7 @@ class SendImagesRSS {
 		}
 		$can_process    = $this->can_process();
 		$thumbnail_size = $can_process && isset( $this->rss_setting[ 'thumbnail_size' ] ) ? $this->rss_setting[ 'thumbnail_size' ] : 'full';
-		$image          = $this->excerpt_fixer->set_featured_image( $thumbnail_size );
+		$image          = $this->excerpt_fixer->set_featured_image( $thumbnail_size, $content );
 		return wp_kses_post( $image . $content );
 	}
 

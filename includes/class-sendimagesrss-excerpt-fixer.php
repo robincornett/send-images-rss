@@ -37,10 +37,14 @@ class SendImagesRSS_Excerpt_Fixer {
 	}
 
 	/**
-	 * Add post's featured image to beginning of excerpt
+	 * Set up the featured image for the excerpt/full text.
+	 * @param $thumbnail_size image size to use
+	 * @param string $content post content (only needed for full text feeds)
+	 * @return string|void
+	 *
 	 * @since 3.0.0
 	 */
-	public function set_featured_image( $thumbnail_size ) {
+	public function set_featured_image( $thumbnail_size, $content = '' ) {
 
 		$concede = $this->concede_to_displayfeaturedimage();
 		if ( $concede ) {
@@ -53,7 +57,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			return;
 		}
 		$rss_option = get_option( 'rss_use_excerpt' );
-		$in_content = '0' === $rss_option ? $this->is_image_in_content( $image_id ) : false;
+		$in_content = '0' === $rss_option ? $this->is_image_in_content( $image_id, $content ) : false;
 		if ( $in_content ) {
 			return;
 		}
@@ -126,7 +130,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
-	 * @return trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
+	 * @return string trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
 	 *
 	 * @since 3.0.0
 	 */
@@ -158,7 +162,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Modify read more link.
-	 * @return link to original post
+	 * @return string link to original post
 	 *
 	 * @since 3.0.0
 	 */
@@ -193,8 +197,8 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
-	 * @param  excerpt $text original excerpt
-	 * @return trimmed excerpt       ends in a complete sentence.
+	 * @param  $text original excerpt
+	 * @return string excerpt       ends in a complete sentence.
 	 *
 	 * @since 3.0.0
 	 */
@@ -228,7 +232,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Get the post's featured image id. Uses get_fallback_image_id if there is no featured image.
 	 * @param  int  $post_id current post ID
 	 * @param  boolean $image_id      image ID
-	 * @return ID           ID of featured image, fallback image if no featured image, or false if no image exists.
+	 * @return string  ID of featured image, fallback image if no featured image, or false if no image exists.
 	 *
 	 * Since 3.0.0
 	 */
@@ -289,19 +293,19 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * For full text feeds when the featured image has been added to the feed, check
-	 * if the image already exists in the post content ((full size only).
+	 * if the image already exists in the post content (mailchimp size).
 	 * @param $image_id
+	 * @param $content
 	 * @param bool $in_content
 	 * @return bool
 	 *
 	 * @since x.y.z
 	 */
-	protected function is_image_in_content( $image_id, $in_content = false ) {
-		$source  = wp_get_attachment_image_src( $image_id, 'full' );
-		$post    = get_post();
-		$content = strpos( $post->post_content, 'src="' . $source[0] );
+	protected function is_image_in_content( $image_id, $content, $in_content = false ) {
+		$source       = wp_get_attachment_image_src( $image_id, 'mailchimp' );
+		$post_content = strpos( $content, 'src="' . $source[0] );
 
-		if ( false !== $content ) {
+		if ( false !== $post_content ) {
 			$in_content = true;
 		}
 		return apply_filters( 'send_images_rss_image_in_content', $in_content, $image_id );
