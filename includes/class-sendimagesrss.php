@@ -6,7 +6,7 @@
  * @author    Robin Cornett <hello@robincornett.com>
  * @author    Gary Jones <gary@garyjones.co.uk>
  * @link      https://github.com/robincornett/send-images-rss
- * @copyright 2015 Robin Cornett
+ * @copyright 2014-2016 Robin Cornett
  * @license   GPL-2.0+
  */
 
@@ -188,9 +188,10 @@ class SendImagesRSS {
 
 	/**
 	 * Add link to plugin settings page in plugin table
-	 * @param $links link to settings page
+	 * @param $links array link to settings page
 	 *
 	 * @since 3.0.0
+	 * @return array
 	 */
 	public function add_settings_link( $links ) {
 		$links[] = sprintf( '<a href="%s">%s</a>', esc_url( admin_url( 'options-general.php?page=sendimagesrss' ) ), esc_attr__( 'Settings', 'send-images-rss' ) );

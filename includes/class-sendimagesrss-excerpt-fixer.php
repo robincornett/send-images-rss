@@ -5,7 +5,7 @@
  * @package   SendImagesRSS
  * @author    Robin Cornett <hello@robincornett.com>
  * @link      https://github.com/robincornett/send-images-rss
- * @copyright 2015 Robin Cornett
+ * @copyright 2014-2016 Robin Cornett
  * @license   GPL-2.0+
  */
 
@@ -299,7 +299,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @param bool $in_content
 	 * @return bool
 	 *
-	 * @since x.y.z
+	 * @since 3.1.0
 	 */
 	protected function is_image_in_content( $image_id, $content, $in_content = false ) {
 		$source       = wp_get_attachment_image_src( $image_id, 'mailchimp' );
