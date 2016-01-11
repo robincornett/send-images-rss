@@ -107,10 +107,11 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected function build_image( $image_source ) {
 
-		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
-		$style     = $this->set_image_style( $alignment );
-		$max_width = isset( $this->setting['image_size'] ) ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-		if ( sendimagesrss_can_process() && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
+		$rss_option = get_option( 'rss_use_excerpt' );
+		$alignment  = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
+		$style      = $this->set_image_style( $alignment );
+		$max_width  = isset( $this->setting['image_size'] ) ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		if ( ( '1' === $rss_option || sendimagesrss_can_process() ) && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
 			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
 
