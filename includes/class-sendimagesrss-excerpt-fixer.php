@@ -111,7 +111,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		$alignment  = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
 		$style      = $this->set_image_style( $alignment );
 		$max_width  = isset( $this->setting['image_size'] ) ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-		if ( ( '1' === $rss_option || sendimagesrss_can_process() ) && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
+		if ( ( '1' === $rss_option || $this->can_process() ) && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
 			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
 
@@ -304,7 +304,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 3.1.0
 	 */
 	protected function is_image_in_content( $image_id, $content, $in_content = false ) {
-		$image_size   = sendimagesrss_can_process() ? 'mailchimp' : 'full';
+		$image_size   = $this->can_process() ? 'mailchimp' : 'full';
 		$source       = wp_get_attachment_image_src( $image_id, $image_size );
 		$post_content = strpos( $content, 'src="' . $source[0] );
 
@@ -312,5 +312,18 @@ class SendImagesRSS_Excerpt_Fixer {
 			$in_content = true;
 		}
 		return apply_filters( 'send_images_rss_image_in_content', $in_content, $image_id );
+	}
+
+	/**
+	 * Function to check whether the feed/image should be processed or not
+	 * @param bool $can_process
+	 *
+	 * @return bool
+	 * @since 3.1.0
+	 */
+	public function can_process( $can_process = false ) {
+		$setting  = sendimagesrss_get_setting();
+		$alt_feed = $setting['alternate_feed'];
+		return ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ? true : false;
 	}
 }
