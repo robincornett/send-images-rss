@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Send Images to RSS 3.1.0\n"
 "Report-Msgid-Bugs-To: Robin Cornett <hello@robincornett.com>\n"
-"POT-Creation-Date: 2016-01-10 11:01-0500\n"
+"POT-Creation-Date: 2016-01-11 13:24-0500\n"
 "PO-Revision-Date: 2015-04-28 14:01-0500\n"
 "Last-Translator: Robin Cornett Creative, LLC <hello@robincornett.com>\n"
 "Language-Team: Robin Cornett <hello@robincornett.com>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../includes/class-sendimagesrss-excerpt-fixer.php:170
+#: ../includes/class-sendimagesrss-excerpt-fixer.php:171
 #: ../includes/class-sendimagesrss-settings.php:121
 #, php-format
 msgid "Continue reading %s at %s."
@@ -357,6 +357,6 @@ msgid ""
 "setting will be ignored."
 msgstr ""
 
-#: ../includes/class-sendimagesrss.php:197
+#: ../includes/class-sendimagesrss.php:213
 msgid "Settings"
 msgstr ""

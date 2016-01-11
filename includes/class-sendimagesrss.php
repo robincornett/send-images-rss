@@ -17,11 +17,26 @@
  */
 class SendImagesRSS {
 
+	/**
+	 * @var SendImagesRSS_Strip_Gallery $gallery_stripper Converts galleries to full size images.
+	 */
 	public $gallery_stripper;
+	/**
+	 * @var SendImagesRSS_Excerpt_Fixer $excerpt_fixer Fixes feed excerpts.
+	 */
 	public $excerpt_fixer;
+	/**
+	 * @var SendImagesRSS_Feed_Fixer $feed_fixer Fixes full text feeds.
+	 */
 	public $feed_fixer;
+	/**
+	 * @var SendImagesRSS_Settings $settings The settings class/page.
+	 */
 	public $settings;
 
+	/**
+	 * @var array $rss_setting The plugin setting.
+	 */
 	protected $rss_setting;
 
 	/**
@@ -219,6 +234,6 @@ class SendImagesRSS {
 	 */
 	public function can_process( $can_process = false ) {
 		$alt_feed = $this->rss_setting['alternate_feed'];
-		return $alt_feed && is_feed( 'email' ) || ! $alt_feed ? true : false;
+		return ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ? true : false;
 	}
 }
