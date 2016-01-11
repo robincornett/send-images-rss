@@ -180,9 +180,10 @@ class SendImagesRSS {
 				return $content;
 			}
 		}
-		$can_process    = $this->can_process();
-		$thumbnail_size = $can_process && isset( $this->rss_setting[ 'thumbnail_size' ] ) ? $this->rss_setting[ 'thumbnail_size' ] : 'full';
-		$image          = $this->excerpt_fixer->set_featured_image( $thumbnail_size, $content );
+		$can_process            = $this->can_process();
+		$unprocessed_image_size = apply_filters( 'send_images_rss_unprocessed_featured_image_size', 'large' );
+		$thumbnail_size         = $can_process && isset( $this->rss_setting['thumbnail_size'] ) ? $this->rss_setting['thumbnail_size'] : $unprocessed_image_size;
+		$image                  = $this->excerpt_fixer->set_featured_image( $thumbnail_size, $content );
 		return wp_kses_post( $image . $content );
 	}
 
