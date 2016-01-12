@@ -162,8 +162,8 @@ Please note that your feed settings need to be set to **full text**.
 
 == Upgrade Notice ==
 
-= 3.0.1 =
-bugfixes for Photon/excerpts and sites with mixed protocols
+= 3.1.0 =
+new: include the featured image in full text feeds, too.
 
 == Changelog ==
 
