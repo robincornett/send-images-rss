@@ -6,14 +6,14 @@
  * @author            Robin Cornett
  * @author            Gary Jones <gary@garyjones.co.uk>
  * @link              https://github.com/robincornett/send-images-rss
- * @copyright         2015 Robin Cornett
+ * @copyright         2014-2016 Robin Cornett
  * @license           GPL-2.0+
  *
  * @wordpress-plugin
  * Plugin Name:       Send Images to RSS
  * Plugin URI:        https://wordpress.org/plugins/send-images-rss
  * Description:       Makes your RSS emails look more like your website by converting overly large images and galleries to an email friendly format. Built with MailChimp in mind.
- * Version:           3.0.1
+ * Version:           3.1.0
  * Author:            Robin Cornett
  * Author URI:        http://robincornett.com
  * Text Domain:       send-images-rss
@@ -65,3 +65,11 @@ $sendimagesrss = new SendImagesRSS(
 
 // Run the plugin
 $sendimagesrss->run();
+
+/**
+ * Helper function to get the RSS setting.
+ * @since 3.1.0
+ */
+function sendimagesrss_get_setting() {
+	return apply_filters( 'sendimagesrss_get_setting', false );
+}

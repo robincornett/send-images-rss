@@ -4,8 +4,8 @@ Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 3.8
-Tested up to: 4.4beta
-Stable tag: 3.0.1
+Tested up to: 4.4
+Stable tag: 3.1.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -43,6 +43,7 @@ This plugin should work with any theme. Some themes and plugins do modify the fe
 * For summary feeds, the _Yoast SEO_ RSS link is removed (the full text feed and front end output are not changed).
 * For summary feeds, the excerpt filter added by the _Woo Canvas_ theme is removed (the full text feed and front end output are not changed).
 * For summary feeds, this plugin will replace the image settings for _Display Featured Image for Genesis_ for versions 2.3.0 and later (because this plugin is smarter). If you're using _Display Featured Image for Genesis_ 2.2.2 or lower, this plugin will concede graciously. But you should update, please.
+* For full text feeds, this plugin will not duplicate featured images if they are being added by _Display Featured Image for Genesis_--you will want to disable that feature in _Display Featured Image for Genesis_.
 
 If you have added the featured image to your feed excerpt using your own functions, or another plugin, you will need to get rid of that before using this plugin.
 
@@ -52,7 +53,7 @@ If you have added the featured image to your feed excerpt using your own functio
 
 Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary feed contributions.
 
-Spanish tranlation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
+Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 == Installation ==
 
@@ -62,6 +63,10 @@ Spanish tranlation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 == Frequently Asked Questions ==
 
+= Note for [new] MailChimp users: =
+
+MailChimp has added a new setting to the RSS campaign setup process: "Resize RSS feed images to fit template" ... please __do not__ use this setting, especially if you are using excerpts with small images, or using small images with alignment, because MailChimp will blow them up and make them sad and ugly.
+
 = How can I change the size of the image being sent to the RSS? =
 
 Most users should not need to change this. The plugin is designed with a default image size of 560 pixels for the width of the new image. If, however, your RSS email template is more or less than 600 pixels wide, or you're using a template with a sidebar, you may need to change this setting. What number you choose is up to you.
@@ -69,6 +74,10 @@ Most users should not need to change this. The plugin is designed with a default
 Mad Mimi users should set this to 530.
 
 **Note:** If you use a template with a sidebar, I strongly recommend that you opt to use the Alternate Feed for your emails, as your images will be too small to be attractive on services like Flipboard and Feedly.
+
+= What about featured images? =
+
+If your site's feed settings are set to Summary instead of Full Text, the featured image (or first image) will be added to each post. As of version 3.1.0, you can now add your post's featured image to the full text feed as well. If you use this setting, please double check your feed (again) to make sure you don't have duplicate featured images, as some themes and plugins do this as well. (If you are a _Display Featured Image for Genesis_ user, I've got you covered--this setting will not work until you've deactivated this setting in that plugin.)
 
 = Does this plugin work with excerpts? =
 
@@ -153,10 +162,15 @@ Please note that your feed settings need to be set to **full text**.
 
 == Upgrade Notice ==
 
-= 3.0.1 =
-bugfixes for Photon/excerpts and sites with mixed protocols
+= 3.1.0 =
+new: include the featured image in full text feeds, too.
 
 == Changelog ==
+
+= 3.1.0 =
+* added: now include the featured image with your full text feeds
+* fixed: disable responsive images in RSS feeds (sorry, WP 4.4, but this isn't helpful here)
+* fixed: max-width style on featured images
 
 = 3.0.1 =
 * improved: moved filters to individual functions

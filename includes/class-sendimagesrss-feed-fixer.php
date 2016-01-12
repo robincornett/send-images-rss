@@ -6,7 +6,7 @@
  * @author    Robin Cornett <hello@robincornett.com>
  * @author    Gary Jones <gary@garyjones.co.uk>
  * @link      https://github.com/robincornett/send-images-rss
- * @copyright 2015 Robin Cornett
+ * @copyright 2014-2016 Robin Cornett
  * @license   GPL-2.0+
  */
 
@@ -437,7 +437,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 3.0.1
 	 */
 	protected function get_image_size() {
-		$setting = get_option( 'sendimagesrss' );
+		$setting = sendimagesrss_get_setting();
 		return $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 	}
 

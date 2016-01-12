@@ -5,7 +5,7 @@
  * @package   SendImagesRSS
  * @author    Robin Cornett <hello@robincornett.com>
  * @link      https://github.com/robincornett/send-images-rss
- * @copyright 2015 Robin Cornett
+ * @copyright 2014-2016 Robin Cornett
  * @license   GPL-2.0+
  */
 
@@ -26,35 +26,45 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( ! is_feed() ) {
 			return;
 		}
+		$this->setting  = sendimagesrss_get_setting();
+		$thumbnail_size = isset( $this->setting[ 'thumbnail_size' ] ) ? $this->setting[ 'thumbnail_size' ] : 'thumbnail';
+
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
-		$before  = $this->set_featured_image();
+		$before  = $this->set_featured_image( $thumbnail_size );
 		$content = wpautop( $this->trim_excerpt( $content ) );
 		$after   = wpautop( $this->read_more() );
-		return $before . $content . $after;
+		return wp_kses_post( $before . $content . $after );
 	}
 
 	/**
-	 * Add post's featured image to beginning of excerpt
+	 * Set up the featured image for the excerpt/full text.
+	 * @param $thumbnail_size image size to use
+	 * @param string $content post content (only needed for full text feeds)
+	 * @return string|void
+	 *
 	 * @since 3.0.0
 	 */
-	protected function set_featured_image() {
+	public function set_featured_image( $thumbnail_size, $content = '' ) {
 
 		$concede = $this->concede_to_displayfeaturedimage();
 		if ( $concede ) {
 			return;
 		}
 
-		$this->setting  = get_option( 'sendimagesrss' );
-		$post_id        = get_the_ID();
-		$thumbnail_size = $this->setting['thumbnail_size'] ? $this->setting['thumbnail_size'] : 'thumbnail';
-		$image_source   = wp_get_attachment_image_src( $this->get_image_id( $post_id ), $thumbnail_size );
-
-		if ( ! $image_source || 'none' === $thumbnail_size ) {
+		$this->setting = sendimagesrss_get_setting();
+		$image_id      = $this->get_image_id( get_the_ID() );
+		if ( ! $image_id || 'none' === $thumbnail_size ) {
+			return;
+		}
+		$rss_option = get_option( 'rss_use_excerpt' );
+		$in_content = '0' === $rss_option ? $this->is_image_in_content( $image_id, $content ) : false;
+		if ( $in_content ) {
 			return;
 		}
 
+		$image_source = wp_get_attachment_image_src( $image_id, $thumbnail_size );
 		if ( isset( $image_source[3] ) && ! $image_source[3] && 'mailchimp' === $thumbnail_size ) {
-			$image_source = wp_get_attachment_image_src( $this->get_image_id( $post_id ), 'large' );
+			$image_source = wp_get_attachment_image_src( $image_id, 'large' );
 		}
 
 		return $this->build_image( $image_source );
@@ -64,8 +74,8 @@ class SendImagesRSS_Excerpt_Fixer {
 	/**
 	 * Set the image alignment
 	 * @param string $alignment image alignment as set in settings
-	 *
-	 * @since 3.0.0
+	 * @return string
+	 * @since  3.0.0
 	 */
 	protected function set_image_style( $alignment ) {
 		switch ( $alignment ) {
@@ -97,12 +107,12 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected function build_image( $image_source ) {
 
-		$alignment = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
-		$style     = $this->set_image_style( $alignment );
-
-		if ( ( isset( $image_source[3] ) && ! $image_source[3] ) || ! isset( $image_source[3] ) ) {
-			$max_width = $this->setting['image_size'] ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
-			$style    .= sprintf( 'max-width:%spx;', $max_width );
+		$rss_option = get_option( 'rss_use_excerpt' );
+		$alignment  = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
+		$style      = $this->set_image_style( $alignment );
+		$max_width  = isset( $this->setting['image_size'] ) ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		if ( ( '1' === $rss_option || $this->can_process() ) && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
+			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
 
 		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
@@ -121,7 +131,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
-	 * @return trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
+	 * @return string trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
 	 *
 	 * @since 3.0.0
 	 */
@@ -153,7 +163,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Modify read more link.
-	 * @return link to original post
+	 * @return string link to original post
 	 *
 	 * @since 3.0.0
 	 */
@@ -188,8 +198,8 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
-	 * @param  excerpt $text original excerpt
-	 * @return trimmed excerpt       ends in a complete sentence.
+	 * @param  $text original excerpt
+	 * @return string excerpt       ends in a complete sentence.
 	 *
 	 * @since 3.0.0
 	 */
@@ -223,7 +233,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Get the post's featured image id. Uses get_fallback_image_id if there is no featured image.
 	 * @param  int  $post_id current post ID
 	 * @param  boolean $image_id      image ID
-	 * @return ID           ID of featured image, fallback image if no featured image, or false if no image exists.
+	 * @return string  ID of featured image, fallback image if no featured image, or false if no image exists.
 	 *
 	 * Since 3.0.0
 	 */
@@ -282,4 +292,38 @@ class SendImagesRSS_Excerpt_Fixer {
 		return $displaysetting['feed_image'] ? true : false;
 	}
 
+	/**
+	 * For full text feeds when the featured image has been added to the feed, check
+	 * if the image already exists in the post content (mailchimp size for altered
+	 * feeds; full size for unaltered feeds).
+	 * @param $image_id
+	 * @param $content
+	 * @param bool $in_content
+	 * @return bool
+	 *
+	 * @since 3.1.0
+	 */
+	protected function is_image_in_content( $image_id, $content, $in_content = false ) {
+		$image_size   = $this->can_process() ? 'mailchimp' : 'full';
+		$source       = wp_get_attachment_image_src( $image_id, $image_size );
+		$post_content = strpos( $content, 'src="' . $source[0] );
+
+		if ( false !== $post_content ) {
+			$in_content = true;
+		}
+		return apply_filters( 'send_images_rss_image_in_content', $in_content, $image_id );
+	}
+
+	/**
+	 * Function to check whether the feed/image should be processed or not
+	 * @param bool $can_process
+	 *
+	 * @return bool
+	 * @since 3.1.0
+	 */
+	public function can_process( $can_process = false ) {
+		$setting  = sendimagesrss_get_setting();
+		$alt_feed = $setting['alternate_feed'];
+		return ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ? true : false;
+	}
 }
