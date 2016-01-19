@@ -124,6 +124,7 @@ class SendImagesRSS_Settings {
 
 		$setting = get_option( 'sendimagesrss', $defaults );
 		$setting[ 'featured_image' ] = isset( $setting[ 'featured_image' ] ) ? $setting[ 'featured_image' ] : 0;
+		$setting[ 'process_both' ] = isset( $setting[ 'process_both' ] ) ? $setting[ 'process_both' ] : 0;
 		return $setting;
 	}
 
@@ -227,6 +228,13 @@ class SendImagesRSS_Settings {
 				'callback' => 'do_checkbox',
 				'section'  => 'full',
 				'args'     => array ( 'setting' => 'featured_image', 'label' => __( 'Add the featured image to the beginning of the full post (uses General Image Settings).', 'send-images-rss' ) ),
+			),
+			array (
+				'id'       => 'process_both',
+				'title'    => __( 'Process Both Feeds', 'send-images-rss' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'general',
+				'args'     => array ( 'setting' => 'process_both', 'label' => __( 'Process both the full text and summary of the feed.', 'send-images-rss' ) ),
 			),
 		);
 
@@ -481,6 +489,12 @@ class SendImagesRSS_Settings {
 			}
 		}
 		return $description;
+	}
+
+	protected function process_both_description() {
+		if ( '1' === $this->rss_option ) {
+			return __( 'This setting will not take effect until your RSS feed settings are changed to show the full text, not summaries.', 'send-images-rss' );
+		}
 	}
 
 	/**
