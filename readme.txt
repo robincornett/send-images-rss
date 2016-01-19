@@ -150,11 +150,9 @@ The filter for captions is `send_images_rss_caption_style`, but takes the same a
 
 = What if I want the full feed to be processed AND have the featured image added to the excerpt? =
 
-I'm glad you asked, although this seems like an odd request to me personally. You can force the plugin to process both the excerpts and the full text of your feed with this filter:
+As of version 3.1.1, you can do this on the plugin settings page. Make sure your feed settings are set to **full text**, and then check the "Process Both Feeds" setting.
 
-    add_filter( 'send_images_rss_process_excerpt_anyway', '__return_true' );
-
-Please note that your feed settings need to be set to **full text**.
+If you used the filter to set this up in earlier versions of the plugin, you can leave the filter in place, and it will continue to work, or you can remove it and use this setting instead. The filter will always override the option on the settings page.
 
 == Screenshots ==
 
@@ -166,6 +164,9 @@ Please note that your feed settings need to be set to **full text**.
 new: include the featured image in full text feeds, too.
 
 == Changelog ==
+
+= 3.1.1 =
+* added: option to process both the full text and summary feeds simultaneously.
 
 = 3.1.0 =
 * added: now include the featured image with your full text feeds

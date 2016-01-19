@@ -220,8 +220,8 @@ class SendImagesRSS {
 	 * @since 3.0.0
 	 */
 	protected function damn_consequences( $damn_consequences = false ) {
-		$damn_consequences = $this->rss_setting['process_both'];
+		$damn_consequences = $this->rss_setting['process_both'] ? true : false;
 		$damn_consequences = apply_filters( 'send_images_rss_process_excerpt_anyway', $damn_consequences );
-		return $damn_consequences ? true : false;
+		return true === $damn_consequences ? true : false;
 	}
 }

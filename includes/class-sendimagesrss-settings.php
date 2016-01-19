@@ -599,6 +599,9 @@ class SendImagesRSS_Settings {
 		$general_help .= '<h3>' . __( 'Featured Image Alignment', 'send-images-rss' ) . '</h3>';
 		$general_help .= '<p>' . __( 'Set the alignment for your post\'s featured image.', 'send-images-rss' ) . '</p>';
 
+		$general_help .= '<h3>' . __( 'Process Both Feeds', 'send-images-rss' ) . '</h3>';
+		$general_help .= '<p>' . __( 'Some users like to allow subscribers who use Feedly or another RSS reader to read the full post, with images, but use the summary for email subscribers. To get images processed on both, set your feed settings to Full Text, and check this option.', 'send-images-rss' ) . '</p>';
+
 		$summary_help  = '<h3>' . __( 'Excerpt Length', 'send-images-rss' ) . '</h3>';
 		$summary_help .= '<p>' . __( 'Set the target number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';
 
