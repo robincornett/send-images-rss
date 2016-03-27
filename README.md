@@ -43,7 +43,7 @@ Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary 
 Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 ## Requirements
-* WordPress 3.8, tested up to 4.4
+* WordPress 4.0, tested up to 4.4
 
 ## Installation
 
