@@ -273,6 +273,9 @@ class SendImagesRSS_Settings {
 		if ( '0' === $this->rss_option ) {
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
 		}
+		if ( $this->rss_setting['process_both'] ) {
+			$description = __( 'These settings apply to the full content RSS feed.', 'send-images-rss' );
+		}
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
@@ -291,6 +294,9 @@ class SendImagesRSS_Settings {
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
 		if ( '1' === $this->rss_option ) {
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
+		}
+		if ( $this->rss_setting['process_both'] ) {
+			$description = __( 'These settings apply to the excerpt/summary RSS feed.', 'send-images-rss' );
 		}
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
