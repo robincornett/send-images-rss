@@ -124,6 +124,7 @@ class SendImagesRSS_Settings {
 
 		$setting = get_option( 'sendimagesrss', $defaults );
 		$setting[ 'featured_image' ] = isset( $setting[ 'featured_image' ] ) ? $setting[ 'featured_image' ] : 0;
+		$setting[ 'process_both' ] = isset( $setting[ 'process_both' ] ) ? $setting[ 'process_both' ] : 0;
 		return $setting;
 	}
 
@@ -228,6 +229,13 @@ class SendImagesRSS_Settings {
 				'section'  => 'full',
 				'args'     => array ( 'setting' => 'featured_image', 'label' => __( 'Add the featured image to the beginning of the full post (uses General Image Settings).', 'send-images-rss' ) ),
 			),
+			array (
+				'id'       => 'process_both',
+				'title'    => __( 'Process Both Feeds', 'send-images-rss' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'general',
+				'args'     => array ( 'setting' => 'process_both', 'label' => __( 'Process both the full text and summary of the feed.', 'send-images-rss' ) ),
+			),
 		);
 
 		foreach ( $this->fields as $field ) {
@@ -265,6 +273,9 @@ class SendImagesRSS_Settings {
 		if ( '0' === $this->rss_option ) {
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
 		}
+		if ( $this->rss_setting['process_both'] ) {
+			$description = __( 'These settings apply to the full content RSS feed.', 'send-images-rss' );
+		}
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
@@ -283,6 +294,9 @@ class SendImagesRSS_Settings {
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
 		if ( '1' === $this->rss_option ) {
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
+		}
+		if ( $this->rss_setting['process_both'] ) {
+			$description = __( 'These settings apply to the excerpt/summary RSS feed.', 'send-images-rss' );
 		}
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
@@ -483,6 +497,12 @@ class SendImagesRSS_Settings {
 		return $description;
 	}
 
+	protected function process_both_description() {
+		if ( '1' === $this->rss_option ) {
+			return __( 'This setting will not take effect until your RSS feed settings are changed to show the full text, not summaries.', 'send-images-rss' );
+		}
+	}
+
 	/**
 	 * Validate all settings.
 	 * @param  array $new_value new values from settings page
@@ -584,6 +604,9 @@ class SendImagesRSS_Settings {
 
 		$general_help .= '<h3>' . __( 'Featured Image Alignment', 'send-images-rss' ) . '</h3>';
 		$general_help .= '<p>' . __( 'Set the alignment for your post\'s featured image.', 'send-images-rss' ) . '</p>';
+
+		$general_help .= '<h3>' . __( 'Process Both Feeds', 'send-images-rss' ) . '</h3>';
+		$general_help .= '<p>' . __( 'Some users like to allow subscribers who use Feedly or another RSS reader to read the full post, with images, but use the summary for email subscribers. To get images processed on both, set your feed settings to Full Text, and check this option.', 'send-images-rss' ) . '</p>';
 
 		$summary_help  = '<h3>' . __( 'Excerpt Length', 'send-images-rss' ) . '</h3>';
 		$summary_help .= '<p>' . __( 'Set the target number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';

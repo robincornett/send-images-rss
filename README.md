@@ -43,7 +43,7 @@ Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary 
 Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 ## Requirements
-* WordPress 3.8, tested up to 4.4
+* WordPress 4.0, tested up to 4.4
 
 ## Installation
 
@@ -170,13 +170,9 @@ The filter for captions is `send_images_rss_caption_style`, but takes the same a
 
 ### What if I want the full feed to be processed AND have the featured image added to the excerpt?
 
-I'm glad you asked, although this seems like an odd request to me personally. You can force the plugin to process both the excerpts and the full text of your feed with this filter:
+As of version 3.1.1, you can do this on the plugin settings page. Make sure your feed settings are set to **full text**, and then check the "Process Both Feeds" setting.
 
-```php
-add_filter( 'send_images_rss_process_excerpt_anyway', '__return_true' );
-```
-
-Please note that your feed settings need to be set to **full text**.
+If you used the filter to set this up in earlier versions of the plugin, you can leave the filter in place, and it will continue to work, or you can remove it and use this setting instead. The filter will always override the option on the settings page.
 
 ## Screenshots
 ![Screenshot of the plugin settings in Settings > Send Images to RSS.](https://github.com/robincornett/send-images-rss/blob/develop/assets/screenshot-1.png)  
@@ -190,6 +186,9 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 * Thanks to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### 3.1.1
+* added: option to process both the full text and summary feeds simultaneously.
 
 ### 3.1.0
 * added: now include the featured image with your full text feeds
