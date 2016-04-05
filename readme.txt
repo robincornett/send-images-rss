@@ -5,7 +5,7 @@ Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 4.0
 Tested up to: 4.5
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -160,8 +160,8 @@ If you used the filter to set this up in earlier versions of the plugin, you can
 
 == Upgrade Notice ==
 
-= 3.1.0 =
-new: include the featured image in full text feeds, too.
+= 3.1.1 =
+NEW: minimum WordPress version is now 4.0; new setting to process both feeds.
 
 == Changelog ==
 
