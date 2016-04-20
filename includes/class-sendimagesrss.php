@@ -118,6 +118,9 @@ class SendImagesRSS {
 		// because Photon refuses to use our new image size. Or behave.
 		add_filter( 'jetpack_photon_skip_image', '__return_true' );
 
+		// allow display:block; in the inline styles
+		add_filter( 'safe_style_css', array( $this, 'allow_display_inline_css' ) );
+
 		$rss_option = get_option( 'rss_use_excerpt' );
 
 		// have to remove the photon filter twice as it's really aggressive
@@ -139,7 +142,20 @@ class SendImagesRSS {
 		if ( $photon_removed ) {
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
+	}
 
+	/**
+	 * Filter the allowed attributes for inline styles.
+	 * @param $attributes
+	 *
+	 * @return array
+	 * @since x.y.z
+	 */
+	public function allow_display_inline_css( $attributes ) {
+		if ( is_feed() ) {
+			$attributes[] = 'display';
+		}
+		return $attributes;
 	}
 
 	/**
