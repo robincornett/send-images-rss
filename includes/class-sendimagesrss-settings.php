@@ -395,10 +395,10 @@ class SendImagesRSS_Settings {
 	 */
 	protected function pick_alignment() {
 		$options = array(
-			'left'   => 'Left',
-			'right'  => 'Right',
-			'center' => 'Center',
-			'none'   => 'None',
+			'left'   => __( 'Left', 'send-images-rss' ),
+			'right'  => __( 'Right', 'send-images-rss' ),
+			'center' => __( 'Center', 'send-images-rss' ),
+			'none'   => __( 'None', 'send-images-rss' ),
 		);
 		return $options;
 	}
