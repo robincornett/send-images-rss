@@ -64,10 +64,16 @@ class SendImagesRSS_Settings {
 
 		$this->rss_option       = get_option( 'rss_use_excerpt' );
 		$this->rss_option_words = '1' === $this->rss_option ? __( 'summaries', 'send-images-rss' ) : __( 'full text', 'send-images-rss' );
+		$this->rss_setting      = $this->get_rss_setting();
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'load-settings_page_sendimagesrss', array( $this, 'help' ) );
 		add_action( 'admin_notices', array( $this, 'do_admin_notice' ) );
+
+		$sections     = $this->register_sections();
+		$this->fields = $this->register_fields();
+		$this->add_sections( $sections );
+		$this->add_fields( $this->fields, $sections );
 
 	}
 
@@ -77,8 +83,6 @@ class SendImagesRSS_Settings {
 	 * @since 3.0.0
 	 */
 	public function do_settings_form() {
-
-		$this->rss_setting = $this->get_rss_setting();
 
 		echo '<div class="wrap">';
 			echo '<h1>' . esc_attr( get_admin_page_title() ) . '</h1>';
@@ -98,11 +102,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.2.0
 	 */
 	public function register_settings() {
-
 		register_setting( 'sendimagesrss', 'sendimagesrss', array( $this, 'do_validation_things' ) );
-
-		$this->register_sections();
-
 	}
 
 	/**
@@ -123,9 +123,7 @@ class SendImagesRSS_Settings {
 		);
 
 		$setting = get_option( 'sendimagesrss', $defaults );
-		$setting[ 'featured_image' ] = isset( $setting[ 'featured_image' ] ) ? $setting[ 'featured_image' ] : 0;
-		$setting[ 'process_both' ] = isset( $setting[ 'process_both' ] ) ? $setting[ 'process_both' ] : 0;
-		return $setting;
+		return wp_parse_args( $setting, $defaults );
 	}
 
 	/**
@@ -149,7 +147,14 @@ class SendImagesRSS_Settings {
 				'title' => __( 'Summary Settings', 'send-images-rss' ),
 			),
 		);
+		return $sections;
+	}
 
+	/**
+	 * Adds the registered sections to this settings page.
+	 * @param $sections array sections for this settings page.
+	 */
+	protected function add_sections( $sections ) {
 		foreach ( $sections as $section ) {
 			add_settings_section(
 				$section['id'],
@@ -158,21 +163,17 @@ class SendImagesRSS_Settings {
 				$this->page
 			);
 		}
-
-		$this->register_fields( $sections );
-
 	}
 
 	/**
 	 * Register settings fields
-	 * @param  settings sections $sections
-	 * @return fields           settings fields
+	 * @return array          settings fields
 	 *
 	 * @since 3.0.0
 	 */
-	protected function register_fields( $sections ) {
+	protected function register_fields() {
 
-		$this->fields = array(
+		$fields = array(
 			array(
 				'id'       => 'simplify_feed',
 				'title'    => __( 'Simplify Feed', 'send-images-rss' ),
@@ -238,7 +239,16 @@ class SendImagesRSS_Settings {
 			),
 		);
 
-		foreach ( $this->fields as $field ) {
+		return $fields;
+	}
+
+	/**
+	 * Adds the settings fields to each section.
+	 * @param $fields array
+	 * @param $sections array
+	 */
+	protected function add_fields( $fields, $sections ) {
+		foreach ( $fields as $field ) {
 			add_settings_field(
 				'[' . $field['id'] . ']',
 				sprintf( '<label for="%s">%s</label>', $field['id'], $field['title'] ),
