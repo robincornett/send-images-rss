@@ -531,14 +531,15 @@ class SendImagesRSS_Settings {
 				case 'do_number':
 					$new_value[ $field['id'] ] = (int) $new_value[ $field['id'] ];
 					break;
+				
+				case 'do_text_field':
+					$new_value[ $field['id'] ]  = sanitize_text_field( $new_value[ $field['id'] ] );
+					break;
 			}
 		}
 
-		$new_value['image_size']     = $this->media_value( $new_value['image_size'] );
-
-		$new_value['thumbnail_size'] = esc_attr( $new_value['thumbnail_size'] );
-
-		$new_value['read_more']      = sanitize_text_field( $new_value['read_more'] );
+		$new_value['image_size']     = $this->check_value( $new_value['image_size'], $this->rss_setting['image_size'], 200, 900 );
+		$new_value['excerpt_length'] = $this->check_value( $new_value['excerpt_length'], $this->rss_setting['excerpt_length'], 1, 200 );
 
 		return $new_value;
 
@@ -563,12 +564,29 @@ class SendImagesRSS_Settings {
 	 * @param  string $new_value New value
 	 * @param  string $old_value Previous value
 	 * @return string            New or previous value, depending on allowed image size.
+	 * @deprecated x.y.z and using check_value() instead.
 	 */
 	protected function media_value( $new_value ) {
 		if ( ! $new_value || $new_value < 200 || $new_value > 900 ) {
 			return $this->rss_setting['image_size'];
 		}
 		return (int) $new_value;
+	}
+
+	/**
+	 * Check the numeric value against the allowed range. If it's within the range, return it; otherwise, return the old value.
+	 * @param $new_value int new submitted value
+	 * @param $old_value int old setting value
+	 * @param $min int minimum value
+	 * @param $max int maximum value
+	 *
+	 * @return int
+	 */
+	protected function check_value( $new_value, $old_value, $min, $max ) {
+		if ( $new_value >= $min && $new_value <= $max ) {
+			return (int) $new_value;
+		}
+		return (int) $old_value;
 	}
 
 	/**
