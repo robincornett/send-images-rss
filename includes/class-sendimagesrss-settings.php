@@ -498,9 +498,10 @@ class SendImagesRSS_Settings {
 	}
 
 	protected function process_both_description() {
-		if ( '1' === $this->rss_option ) {
-			return __( 'This setting will not take effect until your RSS feed settings are changed to show the full text, not summaries.', 'send-images-rss' );
+		if ( '1' !== $this->rss_option ) {
+			return;
 		}
+		return __( 'This setting will not take effect until your RSS feed settings are changed to show the full text, not summaries.', 'send-images-rss' );
 	}
 
 	/**
