@@ -353,13 +353,13 @@ class SendImagesRSS_Settings {
 	 */
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
-		$options  = $this->$function(); ?>
-		<select id="sendimagesrss[<?php echo esc_attr( $args['setting'] ); ?>]" name="sendimagesrss[<?php echo esc_attr( $args['setting'] ); ?>]">
-			<?php
+		$options  = $this->$function();
+		printf( '<label for="%s[%s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
+		printf( '<select id="%1$s[%2$s]" name="%1$s[%2$s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
 			foreach ( (array) $options as $name => $key ) {
 				printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $this->rss_setting[ $args['setting'] ], false ), esc_attr( $key ) );
-			} ?>
-		</select> <?php
+			}
+		echo '</select>';
 		$this->do_description( $args['setting'] );
 	}
 
@@ -369,7 +369,10 @@ class SendImagesRSS_Settings {
 	 * @since 3.0.0
 	 */
 	public function do_text_field( $args ) {
-		printf( '<input type="text" id="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ), esc_attr( $this->page ) );
+		printf( '<input type="text" id="%3$s[%1$s]" aria-label="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />',
+			esc_attr( $args['setting'] ),
+			esc_attr( $this->rss_setting[ $args['setting'] ] ),
+			esc_attr( $this->page ) );
 		$this->do_description( $args['setting'] );
 	}
 
