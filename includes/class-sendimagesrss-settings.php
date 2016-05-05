@@ -531,6 +531,7 @@ class SendImagesRSS_Settings {
 		}
 
 		check_admin_referer( 'sendimagesrss_save-settings', 'sendimagesrss_nonce' );
+		$new_value = array_merge( $this->rss_setting, $new_value );
 
 		foreach ( $this->fields as $field ) {
 			switch ( $field['callback'] ) {
@@ -702,5 +703,4 @@ class SendImagesRSS_Settings {
 		}
 		printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
 	}
-
 }
