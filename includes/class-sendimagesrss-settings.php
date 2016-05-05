@@ -681,7 +681,7 @@ class SendImagesRSS_Settings {
 	public function do_admin_notice() {
 		$class       = 'update-nag';
 		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There are new features and a <a href="%s">new settings page</a>. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
-		$rss_setting = sendimagesrss_get_setting();
+		$rss_setting = get_option( 'sendimagesrss' );
 
 		if ( $rss_setting && ( ! $rss_setting['simplify_feed'] || ! $rss_setting['alternate_feed'] ) ) {
 			return;
