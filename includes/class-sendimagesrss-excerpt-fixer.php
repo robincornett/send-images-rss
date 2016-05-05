@@ -27,7 +27,11 @@ class SendImagesRSS_Excerpt_Fixer {
 			return;
 		}
 		$this->setting  = sendimagesrss_get_setting();
-		$thumbnail_size = isset( $this->setting[ 'thumbnail_size' ] ) ? $this->setting[ 'thumbnail_size' ] : 'thumbnail';
+		/**
+		 * Add a filter to change the RSS thumbnail size.
+		 * @since 3.2.0
+		 */
+		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $this->setting[ 'thumbnail_size' ] );
 
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
 		$before  = $this->set_featured_image( $thumbnail_size );
