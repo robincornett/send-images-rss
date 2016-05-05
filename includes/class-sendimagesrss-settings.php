@@ -462,8 +462,8 @@ class SendImagesRSS_Settings {
 	 */
 	protected function alternate_feed_description() {
 
-		if ( ! $this->rss_setting['alternate_feed'] || $this->rss_setting['simplify_feed'] ) {
-			return;
+		if ( ! $this->rss_setting['alternate_feed'] ) {
+			return '';
 		}
 		$pretty_permalinks = get_option( 'permalink_structure' );
 		$url               = $pretty_permalinks ? 'feed/email' : '?feed=email';
@@ -471,8 +471,8 @@ class SendImagesRSS_Settings {
 			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 		);
-		if ( '1' === $this->rss_option ) {
-			$description = __( 'Sorry, your feed is set to show summaries, so no alternate feed can be created.', 'send-images-rss' );
+		if ( $this->rss_setting['simplify_feed'] ) {
+			$description = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
 		}
 
 		return $description;

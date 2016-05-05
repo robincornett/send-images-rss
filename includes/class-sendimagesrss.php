@@ -92,9 +92,8 @@ class SendImagesRSS {
 		// Add a new feed, but tell WP to treat it as a standard RSS2 feed
 		// We do this so the output is the same by default, but we can use
 		// the different querystring value to conditionally apply the fixes.
-		$alt_feed   = $this->rss_setting['alternate_feed'];
-		$rss_option = get_option( 'rss_use_excerpt' );
-		if ( $alt_feed && '0' === $rss_option ) {
+		$alt_feed = $this->rss_setting['alternate_feed'];
+		if ( $alt_feed ) {
 			add_feed( 'email', 'do_feed_rss2' );
 		}
 	}
@@ -149,7 +148,7 @@ class SendImagesRSS {
 	 * @param $attributes
 	 *
 	 * @return array
-	 * @since x.y.z
+	 * @since 3.2.0
 	 */
 	public function allow_display_inline_css( $attributes ) {
 		if ( is_feed() ) {
