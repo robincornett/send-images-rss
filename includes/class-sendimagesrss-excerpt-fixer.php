@@ -82,21 +82,22 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since  3.0.0
 	 */
 	protected function set_image_style( $alignment ) {
+		$margin = apply_filters( 'send_images_rss_excerpt_image_margin', '20px' );
 		switch ( $alignment ) {
 			case 'right':
-				$style = sprintf( 'margin: 0 0 20px 20px;' );
+				$style = sprintf( 'margin: 0 0 %1$s %1$s;', $margin );
 				break;
 
 			case 'center':
-				$style = sprintf( 'display: block;margin: 0 auto 12px;' );
+				$style = sprintf( 'display: block;margin: 0 auto %s;', $margin );
 				break;
 
 			case 'none':
-				$style = sprintf( 'margin: 0 0 0 20px;' );
+				$style = sprintf( 'margin: 0 0 0 $s;', $margin );
 				break;
 
 			default:
-				$style = sprintf( 'margin: 0 20px 20px 0;' );
+				$style = sprintf( 'margin: 0 %1$s %1$s 0;', $margin );
 				break;
 		}
 
