@@ -24,7 +24,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	public function do_excerpt( $content ) {
 		if ( ! is_feed() ) {
-			return;
+			return $content;
 		}
 		$this->setting  = sendimagesrss_get_setting();
 		/**
