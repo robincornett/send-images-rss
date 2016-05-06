@@ -99,7 +99,11 @@ class SendImagesRSS_Excerpt_Fixer {
 				$style = sprintf( 'margin: 0 20px 20px 0;' );
 				break;
 		}
-		return $style;
+
+		/**
+		 * Filter the image style.
+		 */
+		return apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment );
 	}
 
 	/**
@@ -126,7 +130,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			$image_source[0],
 			the_title_attribute( 'echo=0' ),
 			$alignment,
-			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment )
+			$style
 		);
 
 		return $image;
