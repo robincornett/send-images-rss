@@ -418,8 +418,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 2.6.0
 	 */
 	protected function process_external_images() {
-		$process_external = apply_filters( 'send_images_rss_process_external_images', false );
-		return (bool) true === $process_external ? true : false;
+		return (bool) apply_filters( 'send_images_rss_process_external_images', false );
 	}
 
 	/**
@@ -456,6 +455,6 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 3.0.1
 	 */
 	protected function does_image_size_exist( $source ) {
-		return ( isset( $source[3] ) && $source[3] ) ? true : false;
+		return (bool) isset( $source[3] ) && $source[3];
 	}
 }
