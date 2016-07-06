@@ -330,14 +330,15 @@ class SendImagesRSS_Feed_Fixer {
 
 		// If there is no url, return.
 		if ( '' === $attachment_url ) {
-			return;
+			return '';
 		}
 
 		// if we're running 4.0 or later, we can do this all using a new core function.
 		if ( function_exists( 'attachment_url_to_postid' ) ) {
 			$url_stripped = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
 
-			return attachment_url_to_postid( $url_stripped );
+			$attachment_id = attachment_url_to_postid( $url_stripped );
+			return $attachment_id > 0 ? $attachment_id : false;
 		}
 
 		// Get the upload directory paths
