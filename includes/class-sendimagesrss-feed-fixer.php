@@ -24,6 +24,12 @@ class SendImagesRSS_Feed_Fixer {
 	protected $hackrepair;
 
 	/**
+	 * The plugin setting, with defaults
+	 * @var $setting
+	 */
+	protected $setting;
+
+	/**
 	 * Fix parts of a feed.
 	 *
 	 * This function is applied as a callback to the_content filter.
@@ -165,6 +171,8 @@ class SendImagesRSS_Feed_Fixer {
 	 * @param $image
 	 */
 	protected function replace_images( $image ) {
+
+		$this->setting = sendimagesrss_get_setting();
 
 		$item = $this->get_image_variables( $image );
 
@@ -444,8 +452,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 3.0.1
 	 */
 	protected function get_image_size() {
-		$setting = sendimagesrss_get_setting();
-		return $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		return $this->setting ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 	}
 
 	/**
