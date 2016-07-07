@@ -67,8 +67,6 @@ class SendImagesRSS_Settings {
 		$this->rss_setting      = $this->get_rss_setting();
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'load-settings_page_sendimagesrss', array( $this, 'help' ) );
-		add_action( 'admin_notices', array( $this, 'do_admin_notice' ) );
 
 		$sections     = $this->register_sections();
 		$this->fields = $this->register_fields();
@@ -579,7 +577,7 @@ class SendImagesRSS_Settings {
 	 * @param  string $new_value New value
 	 * @param  string $old_value Previous value
 	 * @return string            New or previous value, depending on allowed image size.
-	 * @deprecated x.y.z and using check_value() instead.
+	 * @deprecated 3.1.2 and using check_value() instead.
 	 */
 	protected function media_value( $new_value ) {
 		if ( ! $new_value || $new_value < 200 || $new_value > 900 ) {
@@ -602,105 +600,5 @@ class SendImagesRSS_Settings {
 			return (int) $new_value;
 		}
 		return (int) $old_value;
-	}
-
-	/**
-	 * Help tab for settings screen
-	 * @return help tab with verbose information for plugin
-	 *
-	 * @since 2.4.0
-	 */
-	public function help() {
-		$screen = get_current_screen();
-
-		$general_help  = '<h3>' . __( 'RSS/Email Image Width', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS/Email Image width. The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content). Mad Mimi users should set this to 530.', 'send-images-rss' ) . '</p>';
-		$general_help .= '<p class="description">' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images\' style.', 'send-images-rss' ) . '</p>';
-
-		$full_text_help  = '<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'send-images-rss' ) . '</p>';
-
-		$full_text_help .= '<h3>' . __( 'Alternate Feed', 'send-images-rss' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'send-images-rss' ) . '</p>';
-		$full_text_help .= '<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'send-images-rss' ) . '</p>';
-
-		$full_text_help .= '<h3>' . __( 'Featured Image', 'send-images-rss' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'Some themes and/or plugins add the featured image to the front end of your site, but not to the feed. If you are using a full text feed and want the featured image to be added to it, use this setting. I definitely recommend double checking your feed after enabling this, in case your theme or another plugin already adds the featured image to the feed, because you may end up with duplicate images.', 'send-images-rss' ) . '</p>';
-		$full_text_help .= '<p>' . __( 'If you are using the Alternate Feed setting, the featured image will be added to both feeds, but the full size version will be used on your unprocessed feed.', 'send-images-rss' ) . '</p>';
-		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
-			$full_text_help .= '<p class="description">' . sprintf( __( 'As a <a href="%s">Display Featured Image for Genesis</a> user, you already have the option to add featured images to your feed using that plugin. If you have both plugins set to add the featured image to your full text feed, this plugin will step aside and not output the featured image until you have deactivated that setting in the other. This plugin gives you more control over the featured image output in the feed.', 'send-images-rss' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</p>';
-		}
-		$full_text_help .= '<p>' . __( 'Note: the plugin will attempt to see if the image is already in your post content. If it is, the featured image will not be added to the feed as it would be considered a duplication.', 'send-images-rss') . '</p>';
-
-		$general_help .= '<h3>' . __( 'Featured Image Size', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Select which size image you would like to use in your excerpt/summary.', 'send-images-rss' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Featured Image Alignment', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Set the alignment for your post\'s featured image.', 'send-images-rss' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Process Both Feeds', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Some users like to allow subscribers who use Feedly or another RSS reader to read the full post, with images, but use the summary for email subscribers. To get images processed on both, set your feed settings to Full Text, and check this option.', 'send-images-rss' ) . '</p>';
-
-		$summary_help  = '<h3>' . __( 'Excerpt Length', 'send-images-rss' ) . '</h3>';
-		$summary_help .= '<p>' . __( 'Set the target number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';
-
-		$summary_help .= '<h3>' . __( 'Read More Text', 'send-images-rss' ) . '</h3>';
-		$summary_help .= '<p>' . __( 'Enter the text you want your "read more" link in your feed to contain. You can use placeholders for the post title and blog name.', 'send-images-rss' ) . '</p>';
-		$summary_help .= '<p class="description">' . __( 'Hint: "Read More" is probably inadequate for your link\'s anchor text.', 'send-images-rss' ) . '</p>';
-
-		$help_tabs = array(
-			array(
-				'id'      => 'sendimagesrss_general-help',
-				'title'   => __( 'General Image Settings', 'send-images-rss' ),
-				'content' => $general_help,
-			),
-			array(
-				'id'      => 'sendimagesrss_full_text-help',
-				'title'   => __( 'Full Text Settings', 'send-images-rss' ),
-				'content' => $full_text_help,
-			),
-			array(
-				'id'      => 'sendimagesrss_summary-help',
-				'title'   => __( 'Summary Settings', 'send-images-rss' ),
-				'content' => $summary_help,
-			),
-		);
-
-		foreach ( $help_tabs as $tab ) {
-			$screen->add_help_tab( $tab );
-		}
-
-	}
-
-	/**
-	 * Set notices to display for settings incompatibilities/updates.
-	 * @return admin notice
-	 *
-	 * @since 3.0.0
-	 */
-	public function do_admin_notice() {
-		$class       = 'update-nag';
-		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There are new features and a <a href="%s">new settings page</a>. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
-		$rss_setting = get_option( 'sendimagesrss' );
-
-		if ( $rss_setting && ( ! $rss_setting['simplify_feed'] || ! $rss_setting['alternate_feed'] ) ) {
-			return;
-		}
-		$old_setting = get_option( 'sendimagesrss_image_size' );
-		if ( ! $old_setting && ! $rss_setting ) {
-			$class   = 'updated';
-			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
-		} elseif ( $rss_setting['simplify_feed'] && $rss_setting['alternate_feed'] ) {
-			if ( '1' === $this->rss_option ) {
-				return;
-			}
-			$screen = get_current_screen();
-			if ( ! in_array( $screen->id, array( 'settings_page_sendimagesrss', 'options-reading' ),  true ) ) {
-				return;
-			}
-			$class   = 'error';
-			$message = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
-		}
-		printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
 	}
 }
