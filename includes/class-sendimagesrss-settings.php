@@ -118,6 +118,7 @@ class SendImagesRSS_Settings {
 			'excerpt_length' => 75,
 			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
 			'featured_image' => 0,
+			'change_small'   => 1,
 		);
 
 		$setting = get_option( 'sendimagesrss', $defaults );
@@ -234,6 +235,13 @@ class SendImagesRSS_Settings {
 				'callback' => 'do_checkbox',
 				'section'  => 'general',
 				'args'     => array ( 'setting' => 'process_both', 'label' => __( 'Process both the full text and summary of the feed.', 'send-images-rss' ) ),
+			),
+			array (
+				'id'       => 'change_small',
+				'title'    => __( 'Change Small Images', 'send-images-rss' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'full',
+				'args'     => array ( 'setting' => 'change_small', 'label' => __( 'If the small size of an image is in the content, even if a larger version exists, use the email size.', 'send-images-rss' ) ),
 			),
 		);
 

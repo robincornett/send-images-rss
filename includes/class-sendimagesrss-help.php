@@ -87,6 +87,9 @@ class SendImagesRSS_Help {
 		}
 		$help .= '<p>' . __( 'Note: the plugin will attempt to see if the image is already in your post content. If it is, the featured image will not be added to the feed as it would be considered a duplication.', 'send-images-rss' ) . '</p>';
 
+		$help .= '<h3>' . __( 'Change Small Images', 'send-images-rss' ) . '</h3>';
+		$help .= '<p>' . __( 'By default, the plugin always attempts to use the email sized image in the feed, even if a smaller version of the image is added to the post. If you want the plugin to always use the size in the content (when adding small/thumbnail/medium size images), even if a larger size exists, disable this setting.', 'send-images-rss' ) . '</p>';
+
 		return $help;
 	}
 

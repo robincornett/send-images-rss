@@ -438,11 +438,11 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 */
 	protected function replace_this_image( $item, $maxwidth ) {
-		$replace_this_image = apply_filters( 'send_images_rss_change_small_images', true );
+		$replace_this_image = apply_filters( 'send_images_rss_change_small_images', $this->setting['change_small'] );
 		if ( ! $item->width || $item->width >= $maxwidth ) {
 			$replace_this_image = true;
 		}
-		return (bool) false === $replace_this_image ? false : true;
+		return (bool) $replace_this_image;
 	}
 
 	/**
