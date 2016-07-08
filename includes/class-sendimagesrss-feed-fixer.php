@@ -340,7 +340,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		// If there is no url, return.
 		if ( '' === $attachment_url ) {
-			return '';
+			return false;
 		}
 
 		// if we're running 4.0 or later, we can do this all using a new core function.
