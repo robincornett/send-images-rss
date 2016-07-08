@@ -109,7 +109,7 @@ class SendImagesRSS_Feed_Fixer {
 			$id  = $this->get_image_id( $url );
 
 			// if the image is not part of WP, we cannot use it, although we'll provide a filter to try anyway
-			if ( false === $id && false === $this->process_external_images() ) {
+			if ( false === $id && ! $this->process_external_images() ) {
 				continue;
 			}
 
@@ -117,7 +117,7 @@ class SendImagesRSS_Feed_Fixer {
 			$image->removeAttribute( 'style' );
 
 			// external images
-			if ( false === $id && true === $this->process_external_images() ) {
+			if ( false === $id && $this->process_external_images() ) {
 				$this->fix_other_images( $image );
 				$this->fix_captions( $image );
 				continue;
@@ -205,8 +205,10 @@ class SendImagesRSS_Feed_Fixer {
 			$style = apply_filters( 'send_images_rss_email_image_style', $style, $maxwidth );
 
 			// use the MC size image, or the large image if there is no MC, for source
-			$image->setAttribute( 'src', esc_url( $item->source[0] ) );
-			$image->setAttribute( 'width', (int) $item->source[1] );
+			if ( is_array( $item->source ) ) {
+				$image->setAttribute( 'src', esc_url( $item->source[0] ) );
+				$image->setAttribute( 'width', (int) $item->source[1] );
+			}
 			$image->setAttribute( 'style', esc_attr( $style ) );
 
 		} else {
@@ -422,12 +424,13 @@ class SendImagesRSS_Feed_Fixer {
 
 	/**
 	 * Add filter to optionally process external images as best we can.
+	 * As of 3.2.0, this is default to true.
 	 * @var boolean
 	 *
 	 * @since 2.6.0
 	 */
 	protected function process_external_images() {
-		return (bool) apply_filters( 'send_images_rss_process_external_images', false );
+		return (bool) apply_filters( 'send_images_rss_process_external_images', true );
 	}
 
 	/**
