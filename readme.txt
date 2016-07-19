@@ -5,7 +5,7 @@ Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 4.0
 Tested up to: 4.5
-Stable tag: 3.1.1
+Stable tag: 3.2.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -45,8 +45,6 @@ This plugin should work with any theme. Some themes and plugins do modify the fe
 * For summary feeds, this plugin will replace the image settings for _Display Featured Image for Genesis_ for versions 2.3.0 and later (because this plugin is smarter). If you're using _Display Featured Image for Genesis_ 2.2.2 or lower, this plugin will concede graciously. But you should update, please.
 * For full text feeds, this plugin will not duplicate featured images if they are being added by _Display Featured Image for Genesis_--you will want to disable that feature in _Display Featured Image for Genesis_.
 
-If you have added the featured image to your feed excerpt using your own functions, or another plugin, you will need to get rid of that before using this plugin.
-
 **NOTE: it is up to you to check that your feed output is still working, especially in your email system of choice, once it's installed.** I've attempted to set it up to handle XHTML or HTML5, and function even if your feed is wonky, but **please** double check, and let me know if you have issues, and if so, what specifically they are.
 
 = Props =
@@ -79,6 +77,8 @@ Mad Mimi users should set this to 530.
 
 If your site's feed settings are set to Summary instead of Full Text, the featured image (or first image) will be added to each post. As of version 3.1.0, you can now add your post's featured image to the full text feed as well. If you use this setting, please double check your feed (again) to make sure you don't have duplicate featured images, as some themes and plugins do this as well. (If you are a _Display Featured Image for Genesis_ user, I've got you covered--this setting will not work until you've deactivated this setting in that plugin.)
 
+If you have added the featured image to your feed excerpt using your own functions, or another plugin, you will need to get rid of that before using this plugin, or select "No Image" for the Featured Image Size.
+
 = Does this plugin work with excerpts? =
 
 **YES INDEEDY.** It's true, as of version 3.0.0, _Send Images to RSS_ works with RSS feeds set to show excerpts/summaries! With this change, there's a new plugin settings page to handle the additional settings, which allow you to add the featured image to your excerpt, set its alignment, and set the target number of words for the excerpt. If a post has images uploaded to it (attached), but no featured image, the plugin will use the first attached image for the excerpt.
@@ -89,9 +89,7 @@ Smaller images will still be small. WordPress handles image alignment differentl
 
 = I uploaded a large image to my post, but inserted a smaller version of it. The feed output a large version instead of the small. Can I change that? =
 
-Yes, you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, add this filter to your site, either in your functions.php file or a functionality plugin:
-
-    add_filter( 'send_images_rss_change_small_images', '__return_false' );
+Yes, you can change that. By default, the plugin simply looks to see if an email appropriate size image exists, and uses that, but this behavior will override small images in your posts if that large version exists. To make sure that the small image is used even if the large one exists, disable the "Change Small Images" setting in the plugin's settings page.
 
 Note to iThemes Security users: if you are using the HackRepair.com blacklist feature, you will not be able to make use of this filter, because it blocks how Send Images to RSS retrieves image data in the feed. I would **not** suggest disabling the security feature just to be able to use this filter.
 
@@ -117,9 +115,7 @@ If you use native WordPress galleries in your posts, they're sent to your feed a
 
 = What if I upload my images to [flickr] or use images hosted somewhere other than my website? =
 
-_Send Images to RSS_ works best with images uploaded through your WordPress website, because WordPress automatically creates the correct size images needed. Because there isn't really much we can do with images hosted elsewhere, the plugin ignores them by default. If, however, you want the plugin to at least _try_ to work with images hosted outside of your site (YMMV), you can add this filter to your site, either in your theme's functions.php file or a functionality plugin:
-
-    add_filter( 'send_images_rss_process_external_images', '__return_true' );
+_Send Images to RSS_ works best with images uploaded through your WordPress website, because WordPress automatically creates the correct size images needed. However, the plugin will add inline styling to all images to attempt to make them fit your email template.
 
 = Is there a way to change the styling on the images in my feed? =
 
@@ -127,9 +123,7 @@ Yes, there sure is. To modify large/email size images, use a filter like this:
 
     add_filter( 'send_images_rss_email_image_style', 'rgc_email_images', 10, 2 );
     function rgc_email_images( $style, $maxwidth ) {
-        $style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
-
-        return $style;
+        return sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
     }
 
 You can also filter styling for images with captions, or images which do not have an email size version generated for some reason. I would look into `/includes/class-sendimagesrss-feed-fixer.php` to really examine the filters, but here's a quick example for the images:
@@ -160,10 +154,19 @@ If you used the filter to set this up in earlier versions of the plugin, you can
 
 == Upgrade Notice ==
 
-= 3.1.1 =
-NEW: minimum WordPress version is now 4.0; new setting to process both feeds.
+= 3.2.0 =
+Added setting for small images; accessibility improvements on the settings page; bug fix for sites with changed wp-content directories
 
 == Changelog ==
+
+= 3.2.0 =
+* added: setting to not change small images in content, even if a larger version exists
+* added: filter to change the RSS thumbnail size
+* updated: now allows an alternate feed, even if it's summaries only
+* updated: reversed decision from 2.5 to ignore external images; back to doing what we can to make them fit
+* fixed: image ID properly returns as false if there is a URL mismatch
+* fixed: settings page is now accessible
+* fixed: centering images (smaller than email width)
 
 = 3.1.1 =
 * added: option to process both the full text and summary feeds simultaneously.

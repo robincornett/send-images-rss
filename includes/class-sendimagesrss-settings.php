@@ -241,7 +241,7 @@ class SendImagesRSS_Settings {
 				'title'    => __( 'Change Small Images', 'send-images-rss' ),
 				'callback' => 'do_checkbox',
 				'section'  => 'full',
-				'args'     => array ( 'setting' => 'change_small', 'label' => __( 'If the small size of an image is in the content, even if a larger version exists, use the email size.', 'send-images-rss' ) ),
+				'args'     => array ( 'setting' => 'change_small', 'label' => __( 'If a larger version of the image exists, the small image will be replaced in the email.', 'send-images-rss' ) ),
 			),
 		);
 

@@ -15,7 +15,7 @@
  * Description:       Makes your RSS emails look more like your website by converting overly large images and galleries to an email friendly format. Built with MailChimp in mind.
  * Version:           3.2.0
  * Author:            Robin Cornett
- * Author URI:        http://robincornett.com
+ * Author URI:        https://robincornett.com
  * Text Domain:       send-images-rss
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
