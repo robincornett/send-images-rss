@@ -13,14 +13,14 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Send Images RSS option from database
-	 * @var option
+	 * @var $setting array
 	 */
 	protected $setting;
 
 	/**
 	 * Build RSS excerpt
-	 * @param  excerpt $content default excerpt
-	 * @return new excerpt          Returns newly built excerpt
+	 * @param  string $content default excerpt
+	 * @return string excerpt          Returns newly built excerpt
 	 */
 	public function do_excerpt( $content ) {
 		if ( ! is_feed() ) {
@@ -42,7 +42,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Set up the featured image for the excerpt/full text.
-	 * @param $thumbnail_size image size to use
+	 * @param string $thumbnail_size image size to use
 	 * @param string $content post content (only needed for full text feeds)
 	 * @return string|void
 	 *
@@ -52,18 +52,18 @@ class SendImagesRSS_Excerpt_Fixer {
 
 		$concede = $this->concede_to_displayfeaturedimage();
 		if ( $concede ) {
-			return;
+			return '';
 		}
 
 		$this->setting = sendimagesrss_get_setting();
 		$image_id      = $this->get_image_id( get_the_ID() );
 		if ( ! $image_id || 'none' === $thumbnail_size ) {
-			return;
+			return '';
 		}
 		$rss_option = get_option( 'rss_use_excerpt' );
 		$in_content = '0' === $rss_option ? $this->is_image_in_content( $image_id, $content ) : false;
 		if ( $in_content ) {
-			return;
+			return '';
 		}
 
 		$image_source = wp_get_attachment_image_src( $image_id, $thumbnail_size );
@@ -207,7 +207,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
-	 * @param  $text original excerpt
+	 * @param  $text string original excerpt
 	 * @return string excerpt       ends in a complete sentence.
 	 *
 	 * @since 3.0.0
@@ -256,7 +256,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	/**
 	 * Get the ID of the first image in the post
 	 * @param  int $post_id first image in post ID
-	 * @return ID          ID of the first image attached to the post
+	 * @return mixed|string         ID of the first image attached to the post
 	 *
 	 * @since 3.0.0
 	 */
