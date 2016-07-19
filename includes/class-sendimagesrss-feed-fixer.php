@@ -100,6 +100,7 @@ class SendImagesRSS_Feed_Fixer {
 	protected function modify_images( DOMDocument &$doc ) {
 
 		$this->hackrepair = $this->is_hackrepair();
+		$this->setting    = sendimagesrss_get_setting();
 
 		// Now work on the images, which is why we're really here.
 		$images = $doc->getElementsByTagName( 'img' );
@@ -171,8 +172,6 @@ class SendImagesRSS_Feed_Fixer {
 	 * @param $image
 	 */
 	protected function replace_images( $image ) {
-
-		$this->setting = sendimagesrss_get_setting();
 
 		$item = $this->get_image_variables( $image );
 
