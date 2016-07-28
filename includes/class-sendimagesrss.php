@@ -21,14 +21,23 @@ class SendImagesRSS {
 	 * @var SendImagesRSS_Strip_Gallery $gallery_stripper Converts galleries to full size images.
 	 */
 	public $gallery_stripper;
+
 	/**
 	 * @var SendImagesRSS_Excerpt_Fixer $excerpt_fixer Fixes feed excerpts.
 	 */
 	public $excerpt_fixer;
+
 	/**
 	 * @var SendImagesRSS_Feed_Fixer $feed_fixer Fixes full text feeds.
 	 */
 	public $feed_fixer;
+
+	/**
+	 * Class for the help tabs/notices.
+	 * @var SendImagesRSS_Help $help
+	 */
+	public $help;
+
 	/**
 	 * @var SendImagesRSS_Settings $settings The settings class/page.
 	 */
@@ -44,10 +53,11 @@ class SendImagesRSS {
 	 *
 	 * @since 2.4.0
 	 */
-	public function __construct( $gallery_stripper, $excerpt_fixer, $feed_fixer, $settings ) {
+	public function __construct( $gallery_stripper, $excerpt_fixer, $feed_fixer, $help, $settings ) {
 		$this->gallery_stripper = $gallery_stripper;
 		$this->excerpt_fixer    = $excerpt_fixer;
 		$this->feed_fixer       = $feed_fixer;
+		$this->help             = $help;
 		$this->settings         = $settings;
 	}
 
@@ -63,6 +73,8 @@ class SendImagesRSS {
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
 		add_action( 'template_redirect', array( $this, 'fix_feed' ) );
 		add_filter( 'plugin_action_links_' . SENDIMAGESRSS_BASENAME, array( $this, 'add_settings_link' ) );
+		add_action( 'load-settings_page_sendimagesrss', array( $this->help, 'help' ) );
+		add_action( 'admin_notices', array( $this->help, 'do_admin_notice' ) );
 	}
 
 	/**
@@ -92,9 +104,8 @@ class SendImagesRSS {
 		// Add a new feed, but tell WP to treat it as a standard RSS2 feed
 		// We do this so the output is the same by default, but we can use
 		// the different querystring value to conditionally apply the fixes.
-		$alt_feed   = $this->rss_setting['alternate_feed'];
-		$rss_option = get_option( 'rss_use_excerpt' );
-		if ( $alt_feed && '0' === $rss_option ) {
+		$alt_feed = $this->rss_setting['alternate_feed'];
+		if ( $alt_feed ) {
 			add_feed( 'email', 'do_feed_rss2' );
 		}
 	}
@@ -118,6 +129,9 @@ class SendImagesRSS {
 		// because Photon refuses to use our new image size. Or behave.
 		add_filter( 'jetpack_photon_skip_image', '__return_true' );
 
+		// allow display:block; in the inline styles
+		add_filter( 'safe_style_css', array( $this, 'allow_display_inline_css' ) );
+
 		$rss_option = get_option( 'rss_use_excerpt' );
 
 		// have to remove the photon filter twice as it's really aggressive
@@ -139,7 +153,20 @@ class SendImagesRSS {
 		if ( $photon_removed ) {
 			add_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 		}
+	}
 
+	/**
+	 * Filter the allowed attributes for inline styles.
+	 * @param $attributes
+	 *
+	 * @return array
+	 * @since 3.2.0
+	 */
+	public function allow_display_inline_css( $attributes ) {
+		if ( is_feed() ) {
+			$attributes[] = 'display';
+		}
+		return $attributes;
 	}
 
 	/**

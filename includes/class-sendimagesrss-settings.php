@@ -64,10 +64,14 @@ class SendImagesRSS_Settings {
 
 		$this->rss_option       = get_option( 'rss_use_excerpt' );
 		$this->rss_option_words = '1' === $this->rss_option ? __( 'summaries', 'send-images-rss' ) : __( 'full text', 'send-images-rss' );
+		$this->rss_setting      = $this->get_rss_setting();
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'load-settings_page_sendimagesrss', array( $this, 'help' ) );
-		add_action( 'admin_notices', array( $this, 'do_admin_notice' ) );
+
+		$sections     = $this->register_sections();
+		$this->fields = $this->register_fields();
+		$this->add_sections( $sections );
+		$this->add_fields( $this->fields, $sections );
 
 	}
 
@@ -77,8 +81,6 @@ class SendImagesRSS_Settings {
 	 * @since 3.0.0
 	 */
 	public function do_settings_form() {
-
-		$this->rss_setting = $this->get_rss_setting();
 
 		echo '<div class="wrap">';
 			echo '<h1>' . esc_attr( get_admin_page_title() ) . '</h1>';
@@ -98,11 +100,7 @@ class SendImagesRSS_Settings {
 	 * @since 2.2.0
 	 */
 	public function register_settings() {
-
 		register_setting( 'sendimagesrss', 'sendimagesrss', array( $this, 'do_validation_things' ) );
-
-		$this->register_sections();
-
 	}
 
 	/**
@@ -120,12 +118,11 @@ class SendImagesRSS_Settings {
 			'excerpt_length' => 75,
 			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
 			'featured_image' => 0,
+			'change_small'   => 1,
 		);
 
 		$setting = get_option( 'sendimagesrss', $defaults );
-		$setting[ 'featured_image' ] = isset( $setting[ 'featured_image' ] ) ? $setting[ 'featured_image' ] : 0;
-		$setting[ 'process_both' ] = isset( $setting[ 'process_both' ] ) ? $setting[ 'process_both' ] : 0;
-		return $setting;
+		return wp_parse_args( $setting, $defaults );
 	}
 
 	/**
@@ -149,7 +146,14 @@ class SendImagesRSS_Settings {
 				'title' => __( 'Summary Settings', 'send-images-rss' ),
 			),
 		);
+		return $sections;
+	}
 
+	/**
+	 * Adds the registered sections to this settings page.
+	 * @param $sections array sections for this settings page.
+	 */
+	protected function add_sections( $sections ) {
 		foreach ( $sections as $section ) {
 			add_settings_section(
 				$section['id'],
@@ -158,21 +162,17 @@ class SendImagesRSS_Settings {
 				$this->page
 			);
 		}
-
-		$this->register_fields( $sections );
-
 	}
 
 	/**
 	 * Register settings fields
-	 * @param  settings sections $sections
-	 * @return fields           settings fields
+	 * @return array          settings fields
 	 *
 	 * @since 3.0.0
 	 */
-	protected function register_fields( $sections ) {
+	protected function register_fields() {
 
-		$this->fields = array(
+		$fields = array(
 			array(
 				'id'       => 'simplify_feed',
 				'title'    => __( 'Simplify Feed', 'send-images-rss' ),
@@ -236,9 +236,25 @@ class SendImagesRSS_Settings {
 				'section'  => 'general',
 				'args'     => array ( 'setting' => 'process_both', 'label' => __( 'Process both the full text and summary of the feed.', 'send-images-rss' ) ),
 			),
+			array (
+				'id'       => 'change_small',
+				'title'    => __( 'Change Small Images', 'send-images-rss' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'full',
+				'args'     => array ( 'setting' => 'change_small', 'label' => __( 'If a larger version of the image exists, the small image will be replaced in the email.', 'send-images-rss' ) ),
+			),
 		);
 
-		foreach ( $this->fields as $field ) {
+		return $fields;
+	}
+
+	/**
+	 * Adds the settings fields to each section.
+	 * @param $fields array
+	 * @param $sections array
+	 */
+	protected function add_fields( $fields, $sections ) {
+		foreach ( $fields as $field ) {
 			add_settings_field(
 				'[' . $field['id'] . ']',
 				sprintf( '<label for="%s">%s</label>', $field['id'], $field['title'] ),
@@ -343,13 +359,13 @@ class SendImagesRSS_Settings {
 	 */
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
-		$options  = $this->$function(); ?>
-		<select id="sendimagesrss[<?php echo esc_attr( $args['setting'] ); ?>]" name="sendimagesrss[<?php echo esc_attr( $args['setting'] ); ?>]">
-			<?php
+		$options  = $this->$function();
+		printf( '<label for="%s[%s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
+		printf( '<select id="%1$s[%2$s]" name="%1$s[%2$s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
 			foreach ( (array) $options as $name => $key ) {
 				printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $this->rss_setting[ $args['setting'] ], false ), esc_attr( $key ) );
-			} ?>
-		</select> <?php
+			}
+		echo '</select>';
 		$this->do_description( $args['setting'] );
 	}
 
@@ -359,7 +375,10 @@ class SendImagesRSS_Settings {
 	 * @since 3.0.0
 	 */
 	public function do_text_field( $args ) {
-		printf( '<input type="text" id="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->rss_setting[ $args['setting'] ] ), esc_attr( $this->page ) );
+		printf( '<input type="text" id="%3$s[%1$s]" aria-label="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />',
+			esc_attr( $args['setting'] ),
+			esc_attr( $this->rss_setting[ $args['setting'] ] ),
+			esc_attr( $this->page ) );
 		$this->do_description( $args['setting'] );
 	}
 
@@ -395,10 +414,10 @@ class SendImagesRSS_Settings {
 	 */
 	protected function pick_alignment() {
 		$options = array(
-			'left'   => 'Left',
-			'right'  => 'Right',
-			'center' => 'Center',
-			'none'   => 'None',
+			'left'   => __( 'Left', 'send-images-rss' ),
+			'right'  => __( 'Right', 'send-images-rss' ),
+			'center' => __( 'Center', 'send-images-rss' ),
+			'none'   => __( 'None', 'send-images-rss' ),
 		);
 		return $options;
 	}
@@ -449,8 +468,8 @@ class SendImagesRSS_Settings {
 	 */
 	protected function alternate_feed_description() {
 
-		if ( ! $this->rss_setting['alternate_feed'] || $this->rss_setting['simplify_feed'] ) {
-			return;
+		if ( ! $this->rss_setting['alternate_feed'] ) {
+			return '';
 		}
 		$pretty_permalinks = get_option( 'permalink_structure' );
 		$url               = $pretty_permalinks ? 'feed/email' : '?feed=email';
@@ -458,8 +477,8 @@ class SendImagesRSS_Settings {
 			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 		);
-		if ( '1' === $this->rss_option ) {
-			$description = __( 'Sorry, your feed is set to show summaries, so no alternate feed can be created.', 'send-images-rss' );
+		if ( $this->rss_setting['simplify_feed'] ) {
+			$description = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
 		}
 
 		return $description;
@@ -498,9 +517,10 @@ class SendImagesRSS_Settings {
 	}
 
 	protected function process_both_description() {
-		if ( '1' === $this->rss_option ) {
-			return __( 'This setting will not take effect until your RSS feed settings are changed to show the full text, not summaries.', 'send-images-rss' );
+		if ( '1' !== $this->rss_option ) {
+			return;
 		}
+		return __( 'This setting will not take effect until your RSS feed settings are changed to show the full text, not summaries.', 'send-images-rss' );
 	}
 
 	/**
@@ -517,6 +537,7 @@ class SendImagesRSS_Settings {
 		}
 
 		check_admin_referer( 'sendimagesrss_save-settings', 'sendimagesrss_nonce' );
+		$new_value = array_merge( $this->rss_setting, $new_value );
 
 		foreach ( $this->fields as $field ) {
 			switch ( $field['callback'] ) {
@@ -531,14 +552,15 @@ class SendImagesRSS_Settings {
 				case 'do_number':
 					$new_value[ $field['id'] ] = (int) $new_value[ $field['id'] ];
 					break;
+				
+				case 'do_text_field':
+					$new_value[ $field['id'] ]  = sanitize_text_field( $new_value[ $field['id'] ] );
+					break;
 			}
 		}
 
-		$new_value['image_size']     = $this->media_value( $new_value['image_size'] );
-
-		$new_value['thumbnail_size'] = esc_attr( $new_value['thumbnail_size'] );
-
-		$new_value['read_more']      = sanitize_text_field( $new_value['read_more'] );
+		$new_value['image_size']     = $this->check_value( $new_value['image_size'], $this->rss_setting['image_size'], 200, 900 );
+		$new_value['excerpt_length'] = $this->check_value( $new_value['excerpt_length'], $this->rss_setting['excerpt_length'], 1, 200 );
 
 		return $new_value;
 
@@ -563,6 +585,7 @@ class SendImagesRSS_Settings {
 	 * @param  string $new_value New value
 	 * @param  string $old_value Previous value
 	 * @return string            New or previous value, depending on allowed image size.
+	 * @deprecated 3.1.2 and using check_value() instead.
 	 */
 	protected function media_value( $new_value ) {
 		if ( ! $new_value || $new_value < 200 || $new_value > 900 ) {
@@ -572,103 +595,18 @@ class SendImagesRSS_Settings {
 	}
 
 	/**
-	 * Help tab for settings screen
-	 * @return help tab with verbose information for plugin
+	 * Check the numeric value against the allowed range. If it's within the range, return it; otherwise, return the old value.
+	 * @param $new_value int new submitted value
+	 * @param $old_value int old setting value
+	 * @param $min int minimum value
+	 * @param $max int maximum value
 	 *
-	 * @since 2.4.0
+	 * @return int
 	 */
-	public function help() {
-		$screen = get_current_screen();
-
-		$general_help  = '<h3>' . __( 'RSS/Email Image Width', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS/Email Image width. The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content). Mad Mimi users should set this to 530.', 'send-images-rss' ) . '</p>';
-		$general_help .= '<p class="description">' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images\' style.', 'send-images-rss' ) . '</p>';
-
-		$full_text_help  = '<h3>' . __( 'Simplify Feed', 'send-images-rss' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'send-images-rss' ) . '</p>';
-
-		$full_text_help .= '<h3>' . __( 'Alternate Feed', 'send-images-rss' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'By default, the Send Images to RSS plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'send-images-rss' ) . '</p>';
-		$full_text_help .= '<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'send-images-rss' ) . '</p>';
-
-		$full_text_help .= '<h3>' . __( 'Featured Image', 'send-images-rss' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'Some themes and/or plugins add the featured image to the front end of your site, but not to the feed. If you are using a full text feed and want the featured image to be added to it, use this setting. I definitely recommend double checking your feed after enabling this, in case your theme or another plugin already adds the featured image to the feed, because you may end up with duplicate images.', 'send-images-rss' ) . '</p>';
-		$full_text_help .= '<p>' . __( 'If you are using the Alternate Feed setting, the featured image will be added to both feeds, but the full size version will be used on your unprocessed feed.', 'send-images-rss' ) . '</p>';
-		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
-			$full_text_help .= '<p class="description">' . sprintf( __( 'As a <a href="%s">Display Featured Image for Genesis</a> user, you already have the option to add featured images to your feed using that plugin. If you have both plugins set to add the featured image to your full text feed, this plugin will step aside and not output the featured image until you have deactivated that setting in the other. This plugin gives you more control over the featured image output in the feed.', 'send-images-rss' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</p>';
+	protected function check_value( $new_value, $old_value, $min, $max ) {
+		if ( $new_value >= $min && $new_value <= $max ) {
+			return (int) $new_value;
 		}
-		$full_text_help .= '<p>' . __( 'Note: the plugin will attempt to see if the image is already in your post content. If it is, the featured image will not be added to the feed as it would be considered a duplication.', 'send-images-rss') . '</p>';
-
-		$general_help .= '<h3>' . __( 'Featured Image Size', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Select which size image you would like to use in your excerpt/summary.', 'send-images-rss' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Featured Image Alignment', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Set the alignment for your post\'s featured image.', 'send-images-rss' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Process Both Feeds', 'send-images-rss' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Some users like to allow subscribers who use Feedly or another RSS reader to read the full post, with images, but use the summary for email subscribers. To get images processed on both, set your feed settings to Full Text, and check this option.', 'send-images-rss' ) . '</p>';
-
-		$summary_help  = '<h3>' . __( 'Excerpt Length', 'send-images-rss' ) . '</h3>';
-		$summary_help .= '<p>' . __( 'Set the target number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'send-images-rss' ) . '</p>';
-
-		$summary_help .= '<h3>' . __( 'Read More Text', 'send-images-rss' ) . '</h3>';
-		$summary_help .= '<p>' . __( 'Enter the text you want your "read more" link in your feed to contain. You can use placeholders for the post title and blog name.', 'send-images-rss' ) . '</p>';
-		$summary_help .= '<p class="description">' . __( 'Hint: "Read More" is probably inadequate for your link\'s anchor text.', 'send-images-rss' ) . '</p>';
-
-		$help_tabs = array(
-			array(
-				'id'      => 'sendimagesrss_general-help',
-				'title'   => __( 'General Image Settings', 'send-images-rss' ),
-				'content' => $general_help,
-			),
-			array(
-				'id'      => 'sendimagesrss_full_text-help',
-				'title'   => __( 'Full Text Settings', 'send-images-rss' ),
-				'content' => $full_text_help,
-			),
-			array(
-				'id'      => 'sendimagesrss_summary-help',
-				'title'   => __( 'Summary Settings', 'send-images-rss' ),
-				'content' => $summary_help,
-			),
-		);
-
-		foreach ( $help_tabs as $tab ) {
-			$screen->add_help_tab( $tab );
-		}
-
+		return (int) $old_value;
 	}
-
-	/**
-	 * Set notices to display for settings incompatibilities/updates.
-	 * @return admin notice
-	 *
-	 * @since 3.0.0
-	 */
-	public function do_admin_notice() {
-		$class       = 'update-nag';
-		$message     = sprintf( __( 'Thanks for updating <strong>Send Images to RSS</strong>. There are new features and a <a href="%s">new settings page</a>. Please visit it to verify and resave your settings.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
-		$rss_setting = sendimagesrss_get_setting();
-
-		if ( $rss_setting && ( ! $rss_setting['simplify_feed'] || ! $rss_setting['alternate_feed'] ) ) {
-			return;
-		}
-		$old_setting = get_option( 'sendimagesrss_image_size' );
-		if ( ! $old_setting && ! $rss_setting ) {
-			$class   = 'updated';
-			$message = sprintf( __( 'Thanks for installing <strong>Send Images to RSS</strong>. The plugin works out of the box, but since you\'re installing for the first time, you might visit the <a href="%s">settings page</a> and make sure everything is set the way you want it.', 'send-images-rss' ), admin_url( 'options-general.php?page=sendimagesrss' ) );
-		} elseif ( $rss_setting['simplify_feed'] && $rss_setting['alternate_feed'] ) {
-			if ( '1' === $this->rss_option ) {
-				return;
-			}
-			$screen = get_current_screen();
-			if ( ! in_array( $screen->id, array( 'settings_page_sendimagesrss', 'options-reading' ),  true ) ) {
-				return;
-			}
-			$class   = 'error';
-			$message = __( 'Warning! You have the Simplify Feed option checked! Your Alternate Feed setting will be ignored.', 'send-images-rss' );
-		}
-		printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
-	}
-
 }

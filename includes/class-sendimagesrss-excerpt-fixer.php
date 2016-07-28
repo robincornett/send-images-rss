@@ -13,21 +13,25 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Send Images RSS option from database
-	 * @var option
+	 * @var $setting array
 	 */
 	protected $setting;
 
 	/**
 	 * Build RSS excerpt
-	 * @param  excerpt $content default excerpt
-	 * @return new excerpt          Returns newly built excerpt
+	 * @param  string $content default excerpt
+	 * @return string excerpt          Returns newly built excerpt
 	 */
 	public function do_excerpt( $content ) {
 		if ( ! is_feed() ) {
-			return;
+			return $content;
 		}
 		$this->setting  = sendimagesrss_get_setting();
-		$thumbnail_size = isset( $this->setting[ 'thumbnail_size' ] ) ? $this->setting[ 'thumbnail_size' ] : 'thumbnail';
+		/**
+		 * Add a filter to change the RSS thumbnail size.
+		 * @since 3.2.0
+		 */
+		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $this->setting[ 'thumbnail_size' ] );
 
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
 		$before  = $this->set_featured_image( $thumbnail_size );
@@ -38,7 +42,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Set up the featured image for the excerpt/full text.
-	 * @param $thumbnail_size image size to use
+	 * @param string $thumbnail_size image size to use
 	 * @param string $content post content (only needed for full text feeds)
 	 * @return string|void
 	 *
@@ -48,18 +52,18 @@ class SendImagesRSS_Excerpt_Fixer {
 
 		$concede = $this->concede_to_displayfeaturedimage();
 		if ( $concede ) {
-			return;
+			return '';
 		}
 
 		$this->setting = sendimagesrss_get_setting();
 		$image_id      = $this->get_image_id( get_the_ID() );
 		if ( ! $image_id || 'none' === $thumbnail_size ) {
-			return;
+			return '';
 		}
 		$rss_option = get_option( 'rss_use_excerpt' );
 		$in_content = '0' === $rss_option ? $this->is_image_in_content( $image_id, $content ) : false;
 		if ( $in_content ) {
-			return;
+			return '';
 		}
 
 		$image_source = wp_get_attachment_image_src( $image_id, $thumbnail_size );
@@ -78,24 +82,33 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since  3.0.0
 	 */
 	protected function set_image_style( $alignment ) {
+		/**
+		 * Add a filter to change the margin on the image.
+		 * @since 3.2.0
+		 */
+		$margin = apply_filters( 'sendimagesrss_image_margin', 20 );
 		switch ( $alignment ) {
 			case 'right':
-				$style = sprintf( 'margin: 0 0 20px 20px;' );
+				$style = sprintf( 'margin: 0 0 %1$spx %1$spx;', $margin );
 				break;
 
 			case 'center':
-				$style = sprintf( 'display: block;margin: 0 auto 12px;' );
+				$style = sprintf( 'display: block;margin: 0 auto %1$spx;', $margin );
 				break;
 
 			case 'none':
-				$style = sprintf( 'margin: 0 0 0 20px;' );
+				$style = sprintf( 'margin: 0 0 0 %1$spx;', $margin );
 				break;
 
 			default:
-				$style = sprintf( 'margin: 0 20px 20px 0;' );
+				$style = sprintf( 'margin: 0 %1$spx %1$spx 0;', $margin );
 				break;
 		}
-		return $style;
+
+		/**
+		 * Filter the image style.
+		 */
+		return apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment );
 	}
 
 	/**
@@ -122,7 +135,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			$image_source[0],
 			the_title_attribute( 'echo=0' ),
 			$alignment,
-			apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment )
+			$style
 		);
 
 		return $image;
@@ -198,7 +211,7 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
-	 * @param  $text original excerpt
+	 * @param  $text string original excerpt
 	 * @return string excerpt       ends in a complete sentence.
 	 *
 	 * @since 3.0.0
@@ -247,7 +260,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	/**
 	 * Get the ID of the first image in the post
 	 * @param  int $post_id first image in post ID
-	 * @return ID          ID of the first image attached to the post
+	 * @return mixed|string         ID of the first image attached to the post
 	 *
 	 * @since 3.0.0
 	 */

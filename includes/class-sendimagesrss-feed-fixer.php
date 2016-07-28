@@ -24,6 +24,12 @@ class SendImagesRSS_Feed_Fixer {
 	protected $hackrepair;
 
 	/**
+	 * The plugin setting, with defaults
+	 * @var $setting
+	 */
+	protected $setting;
+
+	/**
 	 * Fix parts of a feed.
 	 *
 	 * This function is applied as a callback to the_content filter.
@@ -94,6 +100,7 @@ class SendImagesRSS_Feed_Fixer {
 	protected function modify_images( DOMDocument &$doc ) {
 
 		$this->hackrepair = $this->is_hackrepair();
+		$this->setting    = sendimagesrss_get_setting();
 
 		// Now work on the images, which is why we're really here.
 		$images = $doc->getElementsByTagName( 'img' );
@@ -103,7 +110,7 @@ class SendImagesRSS_Feed_Fixer {
 			$id  = $this->get_image_id( $url );
 
 			// if the image is not part of WP, we cannot use it, although we'll provide a filter to try anyway
-			if ( false === $id && false === $this->process_external_images() ) {
+			if ( false === $id && ! $this->process_external_images() ) {
 				continue;
 			}
 
@@ -111,7 +118,7 @@ class SendImagesRSS_Feed_Fixer {
 			$image->removeAttribute( 'style' );
 
 			// external images
-			if ( false === $id && true === $this->process_external_images() ) {
+			if ( false === $id && $this->process_external_images() ) {
 				$this->fix_other_images( $image );
 				$this->fix_captions( $image );
 				continue;
@@ -197,8 +204,10 @@ class SendImagesRSS_Feed_Fixer {
 			$style = apply_filters( 'send_images_rss_email_image_style', $style, $maxwidth );
 
 			// use the MC size image, or the large image if there is no MC, for source
-			$image->setAttribute( 'src', esc_url( $item->source[0] ) );
-			$image->setAttribute( 'width', (int) $item->source[1] );
+			if ( is_array( $item->source ) ) {
+				$image->setAttribute( 'src', esc_url( $item->source[0] ) );
+				$image->setAttribute( 'width', (int) $item->source[1] );
+			}
 			$image->setAttribute( 'style', esc_attr( $style ) );
 
 		} else {
@@ -330,14 +339,15 @@ class SendImagesRSS_Feed_Fixer {
 
 		// If there is no url, return.
 		if ( '' === $attachment_url ) {
-			return;
+			return false;
 		}
 
 		// if we're running 4.0 or later, we can do this all using a new core function.
 		if ( function_exists( 'attachment_url_to_postid' ) ) {
 			$url_stripped = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
 
-			return attachment_url_to_postid( $url_stripped );
+			$attachment_id = attachment_url_to_postid( $url_stripped );
+			return $attachment_id > 0 ? $attachment_id : false;
 		}
 
 		// Get the upload directory paths
@@ -413,13 +423,13 @@ class SendImagesRSS_Feed_Fixer {
 
 	/**
 	 * Add filter to optionally process external images as best we can.
+	 * As of 3.2.0, this is default to true.
 	 * @var boolean
 	 *
 	 * @since 2.6.0
 	 */
 	protected function process_external_images() {
-		$process_external = apply_filters( 'send_images_rss_process_external_images', false );
-		return (bool) true === $process_external ? true : false;
+		return (bool) apply_filters( 'send_images_rss_process_external_images', true );
 	}
 
 	/**
@@ -430,11 +440,11 @@ class SendImagesRSS_Feed_Fixer {
 	 *
 	 */
 	protected function replace_this_image( $item, $maxwidth ) {
-		$replace_this_image = apply_filters( 'send_images_rss_change_small_images', true );
+		$replace_this_image = apply_filters( 'send_images_rss_change_small_images', $this->setting['change_small'] );
 		if ( ! $item->width || $item->width >= $maxwidth ) {
 			$replace_this_image = true;
 		}
-		return (bool) false === $replace_this_image ? false : true;
+		return (bool) $replace_this_image;
 	}
 
 	/**
@@ -444,8 +454,7 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 3.0.1
 	 */
 	protected function get_image_size() {
-		$setting = sendimagesrss_get_setting();
-		return $setting ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		return $this->setting ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 	}
 
 	/**
@@ -456,6 +465,6 @@ class SendImagesRSS_Feed_Fixer {
 	 * @since 3.0.1
 	 */
 	protected function does_image_size_exist( $source ) {
-		return ( isset( $source[3] ) && $source[3] ) ? true : false;
+		return (bool) isset( $source[3] ) && $source[3];
 	}
 }
