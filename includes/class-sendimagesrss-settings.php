@@ -119,6 +119,7 @@ class SendImagesRSS_Settings {
 			'read_more'      => sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
 			'featured_image' => 0,
 			'change_small'   => 1,
+			'process_both'   => 0,
 		);
 
 		$setting = get_option( 'sendimagesrss', $defaults );
