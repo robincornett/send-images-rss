@@ -177,6 +177,9 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 
 ## Changelog
 
+### 3.2.1
+* fixed: default settings key added for processing both feeds
+
 ### 3.2.0
 * added: setting to not change small images in content, even if a larger version exists
 * added: filter to change the RSS thumbnail size
