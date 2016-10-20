@@ -5,7 +5,7 @@ Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -154,10 +154,13 @@ If you used the filter to set this up in earlier versions of the plugin, you can
 
 == Upgrade Notice ==
 
-= 3.2.0 =
-Added setting for small images; accessibility improvements on the settings page; bug fix for sites with changed wp-content directories
+= 3.2.1 =
+bugfix on default settings
 
 == Changelog ==
+
+= 3.2.1 =
+* fixed: default settings key added for processing both feeds
 
 = 3.2.0 =
 * added: setting to not change small images in content, even if a larger version exists
