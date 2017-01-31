@@ -4,7 +4,7 @@ Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 4.0
-Tested up to: 4.6
+Tested up to: 4.7
 Stable tag: 3.2.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
