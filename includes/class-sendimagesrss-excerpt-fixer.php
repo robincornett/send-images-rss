@@ -31,7 +31,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		 * Add a filter to change the RSS thumbnail size.
 		 * @since 3.2.0
 		 */
-		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $this->setting[ 'thumbnail_size' ] );
+		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $this->setting['thumbnail_size'] );
 
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
 		$before  = $this->set_featured_image( $thumbnail_size );
@@ -44,7 +44,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Set up the featured image for the excerpt/full text.
 	 * @param string $thumbnail_size image size to use
 	 * @param string $content post content (only needed for full text feeds)
-	 * @return string|void
+	 * @return string
 	 *
 	 * @since 3.0.0
 	 */
@@ -108,7 +108,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		/**
 		 * Filter the image style.
 		 */
-		return apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment );
+		return apply_filters( 'send_images_rss_excerpt_image_style', $style, $alignment, $margin );
 	}
 
 	/**
@@ -144,6 +144,9 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
+	 *
+	 * @param $text
+	 *
 	 * @return string trimmed excerpt     Excerpt reduced to appropriate number of words, but as a full sentence.
 	 *
 	 * @since 3.0.0
@@ -269,10 +272,10 @@ class SendImagesRSS_Excerpt_Fixer {
 			get_children(
 				array(
 					'post_parent'    => $post_id ? $post_id : get_the_ID(),
-					'post_type'	     => 'attachment',
+					'post_type'      => 'attachment',
 					'post_mime_type' => 'image',
 					'orderby'        => 'menu_order',
-					'order'	         => 'ASC',
+					'order'          => 'ASC',
 					'numberposts'    => 1,
 				)
 			)
