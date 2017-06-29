@@ -197,7 +197,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		 *
 		 * @since 3.0.0
 		 */
-		$output = sprintf( '<a href="%s">%s</a>', esc_url( $permalink ), esc_html( $read_more ) );
+		$output = sprintf( '<a href="%s" rel="nofollow">%s</a>', esc_url( $permalink ), esc_html( $read_more ) );
 		return apply_filters( 'send_images_rss_excerpt_read_more', $output, $read_more, $blog_name, $post_name, $permalink );
 	}
 
