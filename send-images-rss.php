@@ -51,11 +51,11 @@ function send_images_rss_require() {
 send_images_rss_require();
 
 // Instantiate dependent classes
-$sendimagesrss_strip_gallery = new SendImagesRSS_Strip_Gallery;
-$sendimagesrss_excerpt_fixer = new SendImagesRSS_Excerpt_Fixer;
-$sendimagesrss_help          = new SendImagesRSS_Help;
-$sendimagesrss_feed_fixer    = new SendImagesRSS_Feed_Fixer;
-$sendimagesrss_settings      = new SendImagesRSS_Settings;
+$sendimagesrss_strip_gallery = new SendImagesRSS_Strip_Gallery();
+$sendimagesrss_excerpt_fixer = new SendImagesRSS_Excerpt_Fixer();
+$sendimagesrss_help          = new SendImagesRSS_Help();
+$sendimagesrss_feed_fixer    = new SendImagesRSS_Feed_Fixer();
+$sendimagesrss_settings      = new SendImagesRSS_Settings();
 
 // Instantiate main class and pass in dependencies
 $sendimagesrss = new SendImagesRSS(
