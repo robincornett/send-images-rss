@@ -4,8 +4,8 @@ Contributors: littler.chicken, garyj
 Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 4.0
-Tested up to: 4.7
-Stable tag: 3.2.1
+Tested up to: 4.8
+Stable tag: 3.2.2
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -154,10 +154,14 @@ If you used the filter to set this up in earlier versions of the plugin, you can
 
 == Upgrade Notice ==
 
-= 3.2.1 =
-bugfix on default settings
+= 3.2.2 =
+Updates excerpt link back to site to be nofollow; adds margin to excerpt style filter
 
 == Changelog ==
+
+= 3.2.2 =
+* changed: link back to site from excerpt is now nofollow
+* changed: added margin to excerpt style filter parameters
 
 = 3.2.1 =
 * fixed: default settings key added for processing both feeds

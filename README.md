@@ -177,6 +177,10 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 
 ## Changelog
 
+### 3.2.2
+* changed: link back to site from excerpt is now nofollow
+* changed: added margin to excerpt style filter parameters
+
 ### 3.2.1
 * fixed: default settings key added for processing both feeds
 
