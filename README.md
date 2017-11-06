@@ -41,7 +41,7 @@ Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary 
 Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 ## Requirements
-* WordPress 4.0, tested up to 4.6
+* WordPress 4.0, tested up to 4.9
 
 ## Installation
 
@@ -178,7 +178,7 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 ## Changelog
 
 ### 3.2.2
-* changed: link back to site from excerpt is now nofollow
+* changed: link back to site from excerpt is now nofollow, but can be overridden via filter
 * changed: added margin to excerpt style filter parameters
 
 ### 3.2.1
