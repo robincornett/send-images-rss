@@ -129,7 +129,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 
 		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
-			get_the_permalink(),
+			$this->get_permalink(),
 			$image_source[1],
 			$image_source[2],
 			$image_source[0],
@@ -186,7 +186,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	protected function read_more() {
 		$read_more = $this->setting['read_more'] ? $this->setting['read_more'] : sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' );
 		$post_name = get_the_title();
-		$permalink = get_permalink();
+		$permalink = $this->get_permalink();
 		$blog_name = get_bloginfo( 'name' );
 
 		$read_more = str_replace( '%%POSTNAME%%', $post_name, $read_more );
@@ -297,8 +297,20 @@ class SendImagesRSS_Excerpt_Fixer {
 	}
 
 	/**
+	 * Allow users to filter the permalink for the read more/image.
+	 *
+	 * @since 3.3.0
+	 * @return string
+	 */
+	protected function get_permalink() {
+		return apply_filters( 'sendimagesrss_get_permalink', get_permalink() );
+	}
+
+	/**
 	 * Check if we should not run and let (old) featured image plugin do its work instead.
+	 *
 	 * @param  boolean $concede false by default
+	 *
 	 * @return boolean          true only if plugin is 2.3.0 or later, and is set to add an image to the feed
 	 */
 	protected function concede_to_displayfeaturedimage() {
