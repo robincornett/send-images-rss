@@ -156,20 +156,21 @@ class SendImagesRSS_Excerpt_Fixer {
 		$raw_excerpt = $text;
 		if ( '' === $text ) {
 
-			$text = get_the_content( '' );
-			$text = strip_shortcodes( $text );
-			$text = apply_filters( 'the_content', $text );
-			$text = str_replace( ']]>', ']]&gt;', $text );
-			$text = strip_tags( $text, $this->allowed_tags() );
-			$text = $this->count_excerpt( $text );
-			$text = trim( force_balance_tags( $text ) );
+			$text    = get_the_content( '' );
+			$text    = apply_filters( 'sendimagesrss_keep_shortcodes', false ) ? $text : strip_shortcodes( $text );
+			$text    = apply_filters( 'the_content', $text );
+			$text    = str_replace( ']]>', ']]&gt;', $text );
+			$tags    = $this->allowed_tags();
+			$text    = strip_tags( $text, $tags );
+			$counted = $this->count_excerpt( $text );
+			$text    = trim( force_balance_tags( $counted ) );
 
 			/**
 			 * Filter to modify trimmed excerpt.
 			 *
 			 * @since 3.0.0
 			 */
-			$text = apply_filters( 'send_images_rss_trim_excerpt', $text, $raw_excerpt );
+			$text = apply_filters( 'send_images_rss_trim_excerpt', $text, $raw_excerpt, $tags, $counted );
 
 		}
 
