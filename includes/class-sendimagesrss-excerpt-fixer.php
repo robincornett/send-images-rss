@@ -97,7 +97,7 @@ class SendImagesRSS_Excerpt_Fixer {
 				break;
 
 			case 'none':
-				$style = sprintf( 'margin: 0 0 0 %1$spx;', $margin );
+				$style = sprintf( 'margin: 0 0 %1$spx 0;', $margin );
 				break;
 
 			default:
