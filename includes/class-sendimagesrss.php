@@ -52,6 +52,12 @@ class SendImagesRSS {
 	 * Inject dependencies.
 	 *
 	 * @since 2.4.0
+	 *
+	 * @param $gallery_stripper
+	 * @param $excerpt_fixer
+	 * @param $feed_fixer
+	 * @param $help
+	 * @param $settings
 	 */
 	public function __construct( $gallery_stripper, $excerpt_fixer, $feed_fixer, $help, $settings ) {
 		$this->gallery_stripper = $gallery_stripper;
@@ -94,8 +100,8 @@ class SendImagesRSS {
 	public function init() {
 
 		$this->rss_setting  = sendimagesrss_get_setting();
-		$simplify    = $this->rss_setting['simplify_feed'];
-		$image_width = $this->rss_setting['image_size'];
+		$simplify           = $this->rss_setting['simplify_feed'];
+		$image_width        = $this->rss_setting['image_size'];
 
 		if ( ! $simplify ) {
 			add_image_size( 'mailchimp', (int) $image_width, (int) ( $image_width * 2 ) );
@@ -115,7 +121,6 @@ class SendImagesRSS {
 	 *
 	 * @since 2.3.0
 	 *
-	 * @return null Return early if not a feed.
 	 */
 	public function fix_feed() {
 

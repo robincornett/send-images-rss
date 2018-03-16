@@ -75,11 +75,11 @@ class SendImagesRSS_Feed_Fixer {
 		// best option due to special character handling
 		if ( function_exists( 'mb_convert_encoding' ) ) {
 			$currentencoding = mb_internal_encoding();
-			$content = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding ); // convert the feed from XML to HTML
+			$content         = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding ); // convert the feed from XML to HTML
 		} elseif ( function_exists( 'iconv' ) ) {
 			// not sure this is an improvement over straight load (for special characters)
 			$currentencoding = iconv_get_encoding( 'internal_encoding' );
-			$content = iconv( $currentencoding, 'ISO-8859-1//IGNORE', $content );
+			$content         = iconv( $currentencoding, 'ISO-8859-1//IGNORE', $content );
 		}
 		$doc->LoadHTML( $content );
 		libxml_clear_errors(); // now that it's loaded, go ahead
