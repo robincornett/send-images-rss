@@ -28,12 +28,11 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( ! is_feed() ) {
 			return $content;
 		}
-		$setting = sendimagesrss_get_setting();
 		/**
 		 * Add a filter to change the RSS thumbnail size.
 		 * @since 3.2.0
 		 */
-		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $setting['thumbnail_size'] );
+		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $this->get_setting( 'thumbnail_size' ) );
 
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
 		$before  = $this->set_featured_image( $thumbnail_size );
@@ -83,15 +82,17 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * Get the plugin setting.
 	 * @since 3.3.0
 	 *
+	 * @param string $key
+	 *
 	 * @return array
 	 */
-	protected function get_setting() {
+	protected function get_setting( $key = '' ) {
 		if ( isset( $this->setting ) ) {
-			return $this->setting;
+			return $key ? $this->setting[ $key ] : $this->setting;
 		}
 		$this->setting = sendimagesrss_get_setting();
 
-		return $this->setting;
+		return $key ? $this->setting[ $key ] : $this->setting;
 	}
 
 	/**
@@ -209,8 +210,14 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 3.0.0
 	 */
 	protected function read_more() {
-		$setting   = $this->get_setting();
-		$read_more = $setting['read_more'] ? $setting['read_more'] : sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' );
+		$read_more = $this->get_setting( 'read_more' );
+		if ( ! $read_more ) {
+			/* translators: 1. post name 2. site name */
+			$read_more = sprintf( __( 'Continue reading %1$s at %2$s.', 'send-images-rss' ),
+				'%%POSTNAME%%',
+				'%%BLOGNAME%%'
+			);
+		}
 		$post_name = get_the_title();
 		$permalink = $this->get_permalink();
 		$blog_name = get_bloginfo( 'name' );
@@ -260,10 +267,12 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 3.0.0
 	 */
 	protected function count_excerpt( $text, $output = '' ) {
-		$setting        = $this->get_setting();
-		$excerpt_length = $setting['excerpt_length'] ? $setting['excerpt_length'] : 75;
-		$tokens         = array();
-		$count          = 0;
+		$excerpt_length = $this->get_setting( 'excerpt_length' );
+		if ( ! $excerpt_length ) {
+			$excerpt_length = 75;
+		}
+		$tokens = array();
+		$count  = 0;
 
 		// Divide the string into tokens; HTML tags, or words, followed by any whitespace
 		preg_match_all( '/(<[^>]+>|[^<>\s]+)\s*/u', $text, $tokens );
@@ -399,8 +408,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 3.1.0
 	 */
 	public function can_process( $can_process = false ) {
-		$setting  = sendimagesrss_get_setting();
-		$alt_feed = $setting['alternate_feed'];
+		$alt_feed = $this->get_setting( 'alternate_feed' );
 
 		return ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ? true : false;
 	}
