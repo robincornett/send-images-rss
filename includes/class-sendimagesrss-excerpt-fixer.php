@@ -19,31 +19,36 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Build RSS excerpt
+	 *
 	 * @param  string $content default excerpt
+	 *
 	 * @return string excerpt          Returns newly built excerpt
 	 */
 	public function do_excerpt( $content ) {
 		if ( ! is_feed() ) {
 			return $content;
 		}
-		$this->setting  = sendimagesrss_get_setting();
+		$setting = sendimagesrss_get_setting();
 		/**
 		 * Add a filter to change the RSS thumbnail size.
 		 * @since 3.2.0
 		 */
-		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $this->setting['thumbnail_size'] );
+		$thumbnail_size = apply_filters( 'send_images_rss_thumbnail_size', $setting['thumbnail_size'] );
 
 		add_filter( 'jetpack_photon_override_image_downsize', '__return_true' );
 		$before  = $this->set_featured_image( $thumbnail_size );
 		$content = wpautop( $this->trim_excerpt( $content ) );
 		$after   = wpautop( $this->read_more() );
+
 		return wp_kses_post( $before . $content . $after );
 	}
 
 	/**
 	 * Set up the featured image for the excerpt/full text.
+	 *
 	 * @param string $thumbnail_size image size to use
-	 * @param string $content post content (only needed for full text feeds)
+	 * @param string $content        post content (only needed for full text feeds)
+	 *
 	 * @return string
 	 *
 	 * @since 3.0.0
@@ -55,8 +60,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			return '';
 		}
 
-		$this->setting = sendimagesrss_get_setting();
-		$image_id      = $this->get_image_id( get_the_ID() );
+		$image_id = $this->get_image_id( get_the_ID() );
 		if ( ! $image_id || 'none' === $thumbnail_size ) {
 			return '';
 		}
@@ -76,8 +80,25 @@ class SendImagesRSS_Excerpt_Fixer {
 	}
 
 	/**
+	 * Get the plugin setting.
+	 * @since 3.3.0
+	 *
+	 * @return array
+	 */
+	protected function get_setting() {
+		if ( isset( $this->setting ) ) {
+			return $this->setting;
+		}
+		$this->setting = sendimagesrss_get_setting();
+
+		return $this->setting;
+	}
+
+	/**
 	 * Set the image alignment
+	 *
 	 * @param string $alignment image alignment as set in settings
+	 *
 	 * @return string
 	 * @since  3.0.0
 	 */
@@ -113,7 +134,9 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Build the featured image
+	 *
 	 * @param  array $image_source attachment url, width, height
+	 *
 	 * @return string               image HTML
 	 *
 	 * @since 3.0.0
@@ -121,9 +144,10 @@ class SendImagesRSS_Excerpt_Fixer {
 	protected function build_image( $image_source ) {
 
 		$rss_option = get_option( 'rss_use_excerpt' );
-		$alignment  = $this->setting['alignment'] ? $this->setting['alignment'] : 'left';
+		$setting    = $this->get_setting();
+		$alignment  = $setting['alignment'] ? $setting['alignment'] : 'left';
 		$style      = $this->set_image_style( $alignment );
-		$max_width  = isset( $this->setting['image_size'] ) ? $this->setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		$max_width  = isset( $setting['image_size'] ) ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 		if ( ( '1' === $rss_option || $this->can_process() ) && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
 			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
@@ -161,7 +185,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			$text    = apply_filters( 'the_content', $text );
 			$text    = str_replace( ']]>', ']]&gt;', $text );
 			$tags    = $this->allowed_tags();
-			$text    = strip_tags( $text, $tags );
+			$text    = wp_strip_all_tags( $text, $tags );
 			$counted = $this->count_excerpt( $text );
 			$text    = trim( force_balance_tags( $counted ) );
 
@@ -185,7 +209,8 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * @since 3.0.0
 	 */
 	protected function read_more() {
-		$read_more = $this->setting['read_more'] ? $this->setting['read_more'] : sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' );
+		$setting   = $this->get_setting();
+		$read_more = $setting['read_more'] ? $setting['read_more'] : sprintf( __( 'Continue reading %s at %s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' );
 		$post_name = get_the_title();
 		$permalink = $this->get_permalink();
 		$blog_name = get_bloginfo( 'name' );
@@ -207,6 +232,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		 * @since 3.0.0
 		 */
 		$output = sprintf( '<a href="%s"%s>%s</a>', esc_url( $permalink ), $rel, esc_html( $read_more ) );
+
 		return apply_filters( 'send_images_rss_excerpt_read_more', $output, $read_more, $blog_name, $post_name, $permalink );
 	}
 
@@ -218,18 +244,24 @@ class SendImagesRSS_Excerpt_Fixer {
 	 */
 	protected function allowed_tags( $tags = '' ) {
 		$tags = '<style>,<br>,<br/>,<em>,<i>,<ul>,<ol>,<li>,<strong>,<b>,<p>';
+
 		return apply_filters( 'send_images_rss_allowed_tags', $tags );
 	}
 
 	/**
 	 * Trim excerpt to word count, but to the end of a sentence.
-	 * @param  $text string original excerpt
+	 *
+	 * @param        $text string original excerpt
+	 *
+	 * @param string $output
+	 *
 	 * @return string excerpt       ends in a complete sentence.
 	 *
 	 * @since 3.0.0
 	 */
 	protected function count_excerpt( $text, $output = '' ) {
-		$excerpt_length = $this->setting['excerpt_length'] ? $this->setting['excerpt_length'] : 75;
+		$setting        = $this->get_setting();
+		$excerpt_length = $setting['excerpt_length'] ? $setting['excerpt_length'] : 75;
 		$tokens         = array();
 		$count          = 0;
 
@@ -245,7 +277,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			}
 
 			// Add words to complete sentence
-			$count++;
+			$count ++;
 
 			// Append what's left of the token
 			$output .= $token;
@@ -256,8 +288,10 @@ class SendImagesRSS_Excerpt_Fixer {
 
 	/**
 	 * Get the post's featured image id. Uses get_fallback_image_id if there is no featured image.
-	 * @param  int  $post_id current post ID
-	 * @param  boolean $image_id      image ID
+	 *
+	 * @param  int     $post_id  current post ID
+	 * @param  boolean $image_id image ID
+	 *
 	 * @return string  ID of featured image, fallback image if no featured image, or false if no image exists.
 	 *
 	 * Since 3.0.0
@@ -265,13 +299,16 @@ class SendImagesRSS_Excerpt_Fixer {
 	protected function get_image_id( $post_id, $image_id = false ) {
 
 		$image_id = has_post_thumbnail() ? get_post_thumbnail_id( $post_id ) : $this->get_fallback_image_id( $post_id );
+
 		return apply_filters( 'send_images_rss_featured_image_id', $image_id );
 
 	}
 
 	/**
 	 * Get the ID of the first image in the post
+	 *
 	 * @param  int $post_id first image in post ID
+	 *
 	 * @return mixed|string         ID of the first image attached to the post
 	 *
 	 * @since 3.0.0
@@ -310,8 +347,6 @@ class SendImagesRSS_Excerpt_Fixer {
 	/**
 	 * Check if we should not run and let (old) featured image plugin do its work instead.
 	 *
-	 * @param  boolean $concede false by default
-	 *
 	 * @return boolean          true only if plugin is 2.3.0 or later, and is set to add an image to the feed
 	 */
 	protected function concede_to_displayfeaturedimage() {
@@ -326,6 +361,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			return false;
 		}
 		$displaysetting = get_option( 'displayfeaturedimagegenesis' );
+
 		return $displaysetting['feed_image'] ? true : false;
 	}
 
@@ -333,9 +369,11 @@ class SendImagesRSS_Excerpt_Fixer {
 	 * For full text feeds when the featured image has been added to the feed, check
 	 * if the image already exists in the post content (mailchimp size for altered
 	 * feeds; full size for unaltered feeds).
-	 * @param $image_id
-	 * @param $content
+	 *
+	 * @param      $image_id
+	 * @param      $content
 	 * @param bool $in_content
+	 *
 	 * @return bool
 	 *
 	 * @since 3.1.0
@@ -348,11 +386,13 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( false !== $post_content ) {
 			$in_content = true;
 		}
+
 		return apply_filters( 'send_images_rss_image_in_content', $in_content, $image_id );
 	}
 
 	/**
 	 * Function to check whether the feed/image should be processed or not
+	 *
 	 * @param bool $can_process
 	 *
 	 * @return bool
@@ -361,6 +401,7 @@ class SendImagesRSS_Excerpt_Fixer {
 	public function can_process( $can_process = false ) {
 		$setting  = sendimagesrss_get_setting();
 		$alt_feed = $setting['alternate_feed'];
+
 		return ( $alt_feed && is_feed( 'email' ) ) || ! $alt_feed ? true : false;
 	}
 }
