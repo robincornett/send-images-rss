@@ -69,13 +69,25 @@ class SendImagesRSS_Excerpt_Fixer {
 			return '';
 		}
 
+		return $this->build_image( $image_id, $thumbnail_size );
+	}
+
+	/**
+	 * Get the image source.
+	 * @since 3.3.0
+	 *
+	 * @param $image_id
+	 * @param $thumbnail_size
+	 *
+	 * @return array|false
+	 */
+	protected function get_image_source( $image_id, $thumbnail_size ) {
 		$image_source = wp_get_attachment_image_src( $image_id, $thumbnail_size );
 		if ( isset( $image_source[3] ) && ! $image_source[3] && 'mailchimp' === $thumbnail_size ) {
 			$image_source = wp_get_attachment_image_src( $image_id, 'large' );
 		}
 
-		return $this->build_image( $image_source );
-
+		return $image_source;
 	}
 
 	/**
@@ -136,35 +148,36 @@ class SendImagesRSS_Excerpt_Fixer {
 	/**
 	 * Build the featured image
 	 *
-	 * @param  array $image_source attachment url, width, height
+	 * @param $image_id
+	 * @param $thumbnail_size
 	 *
 	 * @return string               image HTML
 	 *
 	 * @since 3.0.0
 	 */
-	protected function build_image( $image_source ) {
+	protected function build_image( $image_id, $thumbnail_size ) {
 
-		$rss_option = get_option( 'rss_use_excerpt' );
-		$setting    = $this->get_setting();
-		$alignment  = $setting['alignment'] ? $setting['alignment'] : 'left';
-		$style      = $this->set_image_style( $alignment );
-		$max_width  = isset( $setting['image_size'] ) ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
+		$image_source = $this->get_image_source( $image_id, $thumbnail_size );
+		$rss_option   = get_option( 'rss_use_excerpt' );
+		$setting      = $this->get_setting();
+		$alignment    = $setting['alignment'] ? $setting['alignment'] : 'left';
+		$permalink    = $this->get_permalink();
+		$title        = the_title_attribute( 'echo=0' );
+		$style        = $this->set_image_style( $alignment );
+		$max_width    = isset( $setting['image_size'] ) ? $setting['image_size'] : get_option( 'sendimagesrss_image_size', 560 );
 		if ( ( '1' === $rss_option || $this->can_process() ) && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
 			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
 
-		$image = sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
-			$this->get_permalink(),
+		return apply_filters( 'sendimagesrss_featured_image', sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
+			$permalink,
 			$image_source[1],
 			$image_source[2],
 			$image_source[0],
-			the_title_attribute( 'echo=0' ),
+			$title,
 			$alignment,
 			$style
-		);
-
-		return $image;
-
+		), $image_id, $image_source, $permalink, $title, $alignment, $style );
 	}
 
 	/**
