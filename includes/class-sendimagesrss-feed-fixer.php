@@ -196,7 +196,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		if ( true === $replace_this_image ) {
 
-			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;max-width:100%;', $maxwidth );
 			/**
 			 * filter the image style
 			 * @since 2.6.0
@@ -244,7 +244,7 @@ class SendImagesRSS_Feed_Fixer {
 		}
 
 		// guard clause: set everything to be centered
-		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
+		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;max-width:100%;', $maxwidth );
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out,
 		// but some plugins or users may remove the width on their own. Opting not to add the width in
@@ -302,7 +302,7 @@ class SendImagesRSS_Feed_Fixer {
 		$item->caption->removeAttribute( 'style' );
 
 		// guard clause: set the caption style to full width and center
-		$style = sprintf( 'margin:0 auto;max-width:%spx;', $maxwidth );
+		$style = sprintf( 'margin:0 auto;max-width:%spx;max-width:100%;', $maxwidth );
 
 		// if a width is set, then let's adjust for alignment
 		if ( ! empty( $width ) && $width < $maxwidth ) {

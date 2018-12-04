@@ -168,6 +168,7 @@ class SendImagesRSS_Excerpt_Fixer {
 		if ( ( '1' === $rss_option || $this->can_process() ) && isset( $image_source[1] ) && $image_source[1] > $max_width ) {
 			$style .= sprintf( 'max-width:%spx;', $max_width );
 		}
+		$style .= 'max-width:100%;';
 
 		return apply_filters( 'sendimagesrss_featured_image', sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
 			$permalink,
