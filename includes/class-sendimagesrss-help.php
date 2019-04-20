@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright $year Robin Cornett
+ * @copyright 2014-2019 Robin Cornett
  */
- 
+
 class SendImagesRSS_Help {
 	/**
 	 * Help tab for settings screen
