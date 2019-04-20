@@ -46,6 +46,7 @@ class SendImagesRSS_Feed_Fixer {
 		$doc = $this->load_html( $content );
 
 		$this->modify_images( $doc );
+		$this->modify_videos( $doc );
 
 		// Strip extra div added by new DOMDocument
 		if ( version_compare( PHP_VERSION, '5.3.6', '>=' ) ) {
@@ -126,6 +127,27 @@ class SendImagesRSS_Feed_Fixer {
 
 			$this->replace_images( $image );
 
+		}
+	}
+
+	/**
+	 * Maybe modify videos.
+	 * @since 3.3.0
+	 *
+	 * @param \DOMDocument $doc
+	 */
+	protected function modify_videos( DOMDocument &$doc ) {
+		$videos = $doc->getElementsByTagName( 'video' );
+		if ( ! $videos ) {
+			return;
+		}
+		foreach ( $videos as $video ) {
+			$video->removeAttribute( 'height' );
+			$video->setAttribute( 'width', $this->get_image_size() );
+			$container = $video->parentNode;
+			if ( false !== strpos( $container->getAttribute( 'class' ), 'wp-video' ) ) {
+				$container->removeAttribute( 'style' );
+			}
 		}
 	}
 
