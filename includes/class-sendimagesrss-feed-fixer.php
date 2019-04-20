@@ -159,10 +159,10 @@ class SendImagesRSS_Feed_Fixer {
 	 * Set variables for replace_images, fix_other_images, and fix_captions to use.
 	 *
 	 * Argument passed by reference, so no return needed.
-	 *
 	 * @since 2.5.0
 	 *
 	 * @param $image
+	 * @return object
 	 */
 	protected function get_image_variables( $image ) {
 		$item            = new stdClass();
@@ -353,10 +353,13 @@ class SendImagesRSS_Feed_Fixer {
 	/**
 	 * Get the ID of each image dynamically.
 	 *
-	 * @since 2.1.0
+	 * @param string $attachment_url
+	 *
+	 * @return bool|int
+	 * @link   http://philipnewcomer.net/2012/11/get-the-attachment-id-from-an-image-url-in-wordpress/
+	 * @since  2.1.0
 	 *
 	 * @author Philip Newcomer
-	 * @link   http://philipnewcomer.net/2012/11/get-the-attachment-id-from-an-image-url-in-wordpress/
 	 */
 	protected function get_image_id( $attachment_url = '' ) {
 
@@ -387,10 +390,10 @@ class SendImagesRSS_Feed_Fixer {
 			$attachment_url = str_replace( $base_url . '/', '', $attachment_url );
 
 			// If this is the URL of an auto-generated thumbnail, get the URL of the original image
-			$url_stripped   = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
+			$url_stripped = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
 
 			// Finally, run a custom database query to get the attachment ID from the modified attachment URL
-			$attachment_id  = $this->fetch_image_id_query( $url_stripped, $attachment_url );
+			$attachment_id = $this->fetch_image_id_query( $url_stripped, $attachment_url );
 
 		}
 
@@ -399,8 +402,8 @@ class SendImagesRSS_Feed_Fixer {
 
 	/**
 	 * Fetch image ID from database
-	 * @param  var $url_stripped   image url without WP resize string (eg 150x150)
-	 * @param  var $attachment_url image url
+	 * @param  string $url_stripped   image url without WP resize string (eg 150x150)
+	 * @param  string $attachment_url image url
 	 * @return int (image id)                 image ID, or false
 	 *
 	 * @since 2.6.0
@@ -427,10 +430,9 @@ class SendImagesRSS_Feed_Fixer {
 
 	/**
 	 * Check whether iThemes Security hack repair is running or not as it throws errors in the feed
-	 * @param  boolean $hack_repair false by default
 	 * @return boolean              true if hack repair is set and plugin is active
 	 *
-	 * since 3.0.0
+	 * @since 3.0.0
 	 */
 	protected function is_hackrepair() {
 		$hack_repair = false;
@@ -449,7 +451,6 @@ class SendImagesRSS_Feed_Fixer {
 	/**
 	 * Add filter to optionally process external images as best we can.
 	 * As of 3.2.0, this is default to true.
-	 * @var boolean
 	 *
 	 * @since 2.6.0
 	 */
@@ -459,10 +460,12 @@ class SendImagesRSS_Feed_Fixer {
 
 	/**
 	 * add a filter to optionally not replace smaller images, even if a larger version exists.
-	 * @var boolean
 	 *
+	 * @param $item
+	 * @param $maxwidth
+	 *
+	 * @return bool
 	 * @since 2.6.0
-	 *
 	 */
 	protected function replace_this_image( $item, $maxwidth ) {
 		$replace_this_image = apply_filters( 'send_images_rss_change_small_images', $this->setting['change_small'] );
