@@ -105,6 +105,9 @@ class SendImagesRSS_Feed_Fixer {
 
 		// Now work on the images, which is why we're really here.
 		$images = $doc->getElementsByTagName( 'img' );
+		if ( ! $images ) {
+			return;
+		}
 		foreach ( $images as $image ) {
 
 			$url = $image->getAttribute( 'src' );
