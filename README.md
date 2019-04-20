@@ -171,11 +171,19 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 ## Credits
 
 * Built by [Robin Cornett](https://robincornett.com/)
-* With major insight [Gary Jones](http://gamajo.com)
-* Inspired by [Erik Teichmann](http://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
-* Thanks to [Gretchen Louise](http://gretchenlouise.com/) for her suggestions and help on the new excerpt options
+* With major insight [Gary Jones](https://garyjones.io/)
+* Inspired by [Erik Teichmann](https://www.eriktdesign.com/) and [Chris Coyier, CSS-Tricks](http://css-tricks.com/dealing-content-images-email/)
+* Thanks to [Gretchen Louise](https://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### 3.3.0
+* added: filter for the excerpt permalink
+* added: filter to allow users to keep shortcodes in excerpts
+* added: support for <video> embeds in full text feeds
+* changed: additional max-width set on images to help prevent overflow (props @ivanpr)
+* fixed: margins on featured images set to align: none
+* fixed: featured images added to full content no longer remove iframes
 
 ### 3.2.2
 * changed: link back to site from excerpt is now nofollow, but can be overridden via filter
