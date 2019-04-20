@@ -196,7 +196,7 @@ class SendImagesRSS_Feed_Fixer {
 
 		if ( true === $replace_this_image ) {
 
-			$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;max-width:100%;', $maxwidth );
+			$style = "display:block;margin:10px auto;max-width:{$maxwidth}px;max-width:100%;";
 			/**
 			 * filter the image style
 			 * @since 2.6.0
@@ -244,7 +244,7 @@ class SendImagesRSS_Feed_Fixer {
 		}
 
 		// guard clause: set everything to be centered
-		$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;max-width:100%;', $maxwidth );
+		$style = "display:block;margin:10px auto;max-width:{$maxwidth}px;max-width:100%;";
 
 		// first check: only images uploaded before plugin activation in [gallery] should have had the width stripped out,
 		// but some plugins or users may remove the width on their own. Opting not to add the width in
