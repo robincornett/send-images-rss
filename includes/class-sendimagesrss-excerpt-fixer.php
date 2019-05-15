@@ -200,7 +200,7 @@ class SendImagesRSS_Excerpt_Fixer {
 			$text    = apply_filters( 'the_content', $text );
 			$text    = str_replace( ']]>', ']]&gt;', $text );
 			$tags    = $this->allowed_tags();
-			$text    = wp_strip_all_tags( $text, $tags );
+			$text    = strip_tags( $text, $tags );
 			$counted = $this->count_excerpt( $text );
 			$text    = trim( force_balance_tags( $counted ) );
 
