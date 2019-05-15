@@ -5,7 +5,7 @@ Donate link: https://robincornett.com/donate/
 Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner, email marketing, featured image RSS, excerpts
 Requires at least: 4.4
 Tested up to: 5.2
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -154,10 +154,13 @@ If you used the filter to set this up in earlier versions of the plugin, you can
 
 == Upgrade Notice ==
 
-= 3.3.0 =
-Adds new filters for more control on excerpts, improves styling in excerpt feeds
+3.3.1: Fixes overzealous tag stripping in excerpts
+3.3.0: Adds new filters for more control on excerpts, improves styling in excerpt feeds
 
 == Changelog ==
+
+= 3.3.1 =
+* fixed: overzealous tag stripping on excerpts (props @gretchenlouise for reporting)
 
 = 3.3.0 =
 * added: filter for the excerpt permalink

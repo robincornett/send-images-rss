@@ -41,7 +41,7 @@ Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary 
 Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 ## Requirements
-* WordPress 4.0, tested up to 4.9
+* WordPress 4.0, tested up to 5.2
 
 ## Installation
 
@@ -176,6 +176,9 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 * Thanks to [Gretchen Louise](https://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### 3.3.1
+* fixed: overzealous tag stripping on excerpts (props @gretchenlouise for reporting)
 
 ### 3.3.0
 * added: filter for the excerpt permalink
