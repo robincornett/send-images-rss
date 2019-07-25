@@ -327,7 +327,7 @@ class SendImagesRSS_Feed_Fixer {
 		$item->caption->removeAttribute( 'style' );
 
 		// guard clause: set the caption style to full width and center
-		$style = sprintf( 'margin:0 auto;max-width:%spx;max-width:100%;', $maxwidth );
+		$style = "display:block;margin:0 auto;max-width:{$maxwidth}px;max-width:100%;";
 
 		// if a width is set, then let's adjust for alignment
 		if ( ! empty( $width ) && $width < $maxwidth ) {
