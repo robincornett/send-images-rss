@@ -147,11 +147,11 @@ add_filter( 'send_images_rss_other_image_style', 'rgc_change_other_images', 10, 
 function rgc_change_other_images( $style, $width, $maxwidth, $halfwidth, $alignright, $alignleft ) {
 
 	$style = sprintf( 'display:block;margin:10px auto;max-width:%spx;', $maxwidth );
-	
+
 	if ( $width < $maxwidth ) {
 		$style = sprintf( 'maxwidth:%spx;', $halfwidth );
 	}
-	
+
 	return $style;
 }
 ```
@@ -176,6 +176,9 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 * Thanks to [Gretchen Louise](https://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### 3.3.2
+* fixed: error with external images/captions on full feeds
 
 ### 3.3.1
 * fixed: overzealous tag stripping on excerpts (props @gretchenlouise for reporting)
