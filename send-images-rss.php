@@ -37,6 +37,7 @@ if ( ! defined( 'SENDIMAGESRSS_BASENAME' ) ) {
 function send_images_rss_require() {
 	$files = array(
 		'class-sendimagesrss',
+		'class-sendimagesrss-document-getter',
 		'class-sendimagesrss-excerpt-fixer',
 		'class-sendimagesrss-feed-fixer',
 		'class-sendimagesrss-help',

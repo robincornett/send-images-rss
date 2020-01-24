@@ -42,8 +42,8 @@ class SendImagesRSS_Feed_Fixer {
 	 */
 	public function fix( $content ) {
 		$content = '<div>' . $content . '</div>'; // set up something you can scan
-
-		$doc = $this->load_html( $content );
+		$getter  = new SendImagesRSS_Document_Getter();
+		$doc     = $getter->load( $content );
 
 		$this->modify_images( $doc );
 		$this->modify_videos( $doc );
@@ -57,37 +57,6 @@ class SendImagesRSS_Feed_Fixer {
 
 		return $content;
 	}
-
-
-	/**
-	 * Try and load HTML as an HTML document with special characters, etc. intact.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $content Feed content.
-	 *
-	 * @return DOMDocument
-	 */
-	protected function load_html( $content ) {
-		$doc = new DOMDocument();
-
-		// Populate the document, hopefully cleanly, but otherwise, still load.
-		libxml_use_internal_errors( true ); // turn off errors for HTML5
-		// best option due to special character handling
-		if ( function_exists( 'mb_convert_encoding' ) ) {
-			$currentencoding = mb_internal_encoding();
-			$content         = mb_convert_encoding( $content, 'HTML-ENTITIES', $currentencoding ); // convert the feed from XML to HTML
-		} elseif ( function_exists( 'iconv' ) ) {
-			// not sure this is an improvement over straight load (for special characters)
-			$currentencoding = iconv_get_encoding( 'internal_encoding' );
-			$content         = iconv( $currentencoding, 'ISO-8859-1//IGNORE', $content );
-		}
-		$doc->LoadHTML( $content );
-		libxml_clear_errors(); // now that it's loaded, go ahead
-
-		return $doc;
-	}
-
 
 	/**
 	 * Modify images in content.
