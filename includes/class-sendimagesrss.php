@@ -201,6 +201,7 @@ class SendImagesRSS {
 	protected function fix_full_text() {
 
 		add_filter( 'the_content', array( $this->gallery_stripper, 'strip' ), 19 );
+		add_filter( 'render_block', array( $this->gallery_stripper, 'modify_block_gallery' ), 10, 2 );
 		$featured_image = isset( $this->rss_setting['featured_image'] ) ? $this->rss_setting['featured_image'] : 0;
 		if ( $featured_image ) {
 			add_filter( 'the_content_feed', array( $this, 'add_featured_image' ), 100 );
