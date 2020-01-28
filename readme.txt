@@ -6,6 +6,7 @@ Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner
 Requires at least: 4.4
 Tested up to: 5.2
 Stable tag: 3.3.2
+Requires PHP: 5.6.20
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 

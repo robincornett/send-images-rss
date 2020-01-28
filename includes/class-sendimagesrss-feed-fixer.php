@@ -49,13 +49,7 @@ class SendImagesRSS_Feed_Fixer {
 		$this->modify_videos( $doc );
 
 		// Strip extra div added by new DOMDocument
-		if ( version_compare( PHP_VERSION, '5.3.6', '>=' ) ) {
-			$content = substr( $doc->saveHTML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
-		} else {
-			$content = substr( $doc->saveXML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
-		}
-
-		return $content;
+		return substr( $doc->saveHTML( $doc->getElementsByTagName( 'div' )->item( 0 ) ), 5, -6 );
 	}
 
 	/**
