@@ -343,7 +343,7 @@ class SendImagesRSS_Excerpt_Fixer {
 					'post_parent'    => $post_id ? $post_id : get_the_ID(),
 					'post_type'      => 'attachment',
 					'post_mime_type' => 'image',
-					'orderby'        => 'menu_order',
+					'orderby'        => 'ID',
 					'order'          => 'ASC',
 					'numberposts'    => 1,
 				)
