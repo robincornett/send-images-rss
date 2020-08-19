@@ -335,6 +335,7 @@ class SendImagesRSS_Feed_Fixer {
 		$url_stripped  = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
 		$attachment_id = attachment_url_to_postid( $url_stripped );
 
+		// If an attachment ID is not returned, it's possible that it was a really large image uploaded.
 		if ( ! $attachment_id ) {
 			$url_stripped  = preg_replace( '/(?=\.(jpg|jpeg|png|gif)$)/i', '-scaled', $attachment_url );
 			$attachment_id = attachment_url_to_postid( $url_stripped );
