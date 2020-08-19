@@ -319,7 +319,6 @@ class SendImagesRSS_Feed_Fixer {
 	 * @param string $attachment_url
 	 *
 	 * @return bool|int
-	 * @link   http://philipnewcomer.net/2012/11/get-the-attachment-id-from-an-image-url-in-wordpress/
 	 * @since  2.1.0
 	 *
 	 * @author Philip Newcomer
@@ -333,62 +332,15 @@ class SendImagesRSS_Feed_Fixer {
 			return false;
 		}
 
-		// if we're running 4.0 or later, we can do this all using a new core function.
-		if ( function_exists( 'attachment_url_to_postid' ) ) {
-			$url_stripped = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
+		$url_stripped  = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
+		$attachment_id = attachment_url_to_postid( $url_stripped );
 
+		if ( ! $attachment_id ) {
+			$url_stripped  = preg_replace( '/(?=\.(jpg|jpeg|png|gif)$)/i', '-scaled', $attachment_url );
 			$attachment_id = attachment_url_to_postid( $url_stripped );
-			return $attachment_id > 0 ? $attachment_id : false;
 		}
 
-		// Get the upload directory paths
-		$upload_dir_paths = wp_upload_dir();
-		$base_url         = wp_make_link_relative( $upload_dir_paths['baseurl'] );
-		$attachment_url   = wp_make_link_relative( $attachment_url );
-
-		// Make sure the upload path base directory exists in the attachment URL, to verify that we're working with a media library image
-		if ( false !== strpos( $attachment_url, $base_url ) ) {
-
-			// Remove the upload path base directory from the attachment URL
-			$attachment_url = str_replace( $base_url . '/', '', $attachment_url );
-
-			// If this is the URL of an auto-generated thumbnail, get the URL of the original image
-			$url_stripped = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $attachment_url );
-
-			// Finally, run a custom database query to get the attachment ID from the modified attachment URL
-			$attachment_id = $this->fetch_image_id_query( $url_stripped, $attachment_url );
-
-		}
-
-		return $attachment_id;
-	}
-
-	/**
-	 * Fetch image ID from database
-	 * @param  string $url_stripped   image url without WP resize string (eg 150x150)
-	 * @param  string $attachment_url image url
-	 * @return int (image id)                 image ID, or false
-	 *
-	 * @since 2.6.0
-	 *
-	 * @author hellofromtonya
-	 */
-	protected function fetch_image_id_query( $url_stripped, $attachment_url ) {
-
-		global $wpdb;
-
-		$query_sql = $wpdb->prepare(
-			"
-				SELECT wposts.ID
-				FROM {$wpdb->posts} wposts, {$wpdb->postmeta} wpostmeta
-				WHERE wposts.ID = wpostmeta.post_id AND wpostmeta.meta_key = '_wp_attached_file' AND wpostmeta.meta_value IN ( %s, %s ) AND wposts.post_type = 'attachment'
-			",
-			$url_stripped, $attachment_url
-		);
-
-		$result = $wpdb->get_col( $query_sql );
-
-		return empty( $result ) || ! is_numeric( $result[0] ) ? false : intval( $result[0] );
+		return $attachment_id > 0 ? $attachment_id : false;
 	}
 
 	/**
