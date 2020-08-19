@@ -170,15 +170,25 @@ class SendImagesRSS_Excerpt_Fixer {
 		}
 		$style .= 'max-width:100%;';
 
-		return apply_filters( 'sendimagesrss_featured_image', sprintf( '<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
+		return apply_filters(
+			'sendimagesrss_featured_image',
+			sprintf(
+				'<a href="%s"><img width="%s" height="%s" src="%s" alt="%s" align="%s" style="%s" /></a>',
+				$permalink,
+				$image_source[1],
+				$image_source[2],
+				$image_source[0],
+				$title,
+				$alignment,
+				$style
+			),
+			$image_id,
+			$image_source,
 			$permalink,
-			$image_source[1],
-			$image_source[2],
-			$image_source[0],
 			$title,
 			$alignment,
 			$style
-		), $image_id, $image_source, $permalink, $title, $alignment, $style );
+		);
 	}
 
 	/**
@@ -227,7 +237,8 @@ class SendImagesRSS_Excerpt_Fixer {
 		$read_more = $this->get_setting( 'read_more' );
 		if ( ! $read_more ) {
 			/* translators: 1. post name 2. site name */
-			$read_more = sprintf( __( 'Continue reading %1$s at %2$s.', 'send-images-rss' ),
+			$read_more = sprintf(
+				__( 'Continue reading %1$s at %2$s.', 'send-images-rss' ),
 				'%%POSTNAME%%',
 				'%%BLOGNAME%%'
 			);
