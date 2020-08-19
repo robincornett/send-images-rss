@@ -39,7 +39,7 @@ class SendImagesRSS_Strip_Gallery {
 			$photon_removed = remove_filter( 'image_downsize', array( Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 		}
 
-		if ( has_shortcode( $post->post_content, 'gallery' ) ) {
+		if ( has_shortcode( $post->post_content, 'gallery' ) || has_block( 'core/gallery', $post ) ) {
 			$content = preg_replace( '(-\d{3,4}x\d{3,4}.)', '.', $content );
 			$content = preg_replace( '(width="\d{2,3}")', '', $content );
 			$content = preg_replace( '(height="\d{2,3}")', '', $content );
