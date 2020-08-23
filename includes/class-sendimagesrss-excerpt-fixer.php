@@ -236,8 +236,8 @@ class SendImagesRSS_Excerpt_Fixer {
 	protected function read_more() {
 		$read_more = $this->get_setting( 'read_more' );
 		if ( ! $read_more ) {
-			/* translators: 1. post name 2. site name */
 			$read_more = sprintf(
+				/* translators: 1. post name 2. site name */
 				__( 'Continue reading %1$s at %2$s.', 'send-images-rss' ),
 				'%%POSTNAME%%',
 				'%%BLOGNAME%%'

@@ -116,6 +116,7 @@ class SendImagesRSS_Settings {
 			'thumbnail_size' => 'thumbnail',
 			'alignment'      => 'left',
 			'excerpt_length' => 75,
+			/* translators: placeholders for 1. the post title 2. the site title */
 			'read_more'      => sprintf( __( 'Continue reading %1$s at %2$s.', 'send-images-rss' ), '%%POSTNAME%%', '%%BLOGNAME%%' ),
 			'featured_image' => 0,
 			'change_small'   => 1,
@@ -304,7 +305,8 @@ class SendImagesRSS_Settings {
 	 * @since 2.4.0
 	 */
 	public function general_section_description() {
-		$description  = __( 'The <em>Send Images to RSS</em> plugin works out of the box without changing any settings. However, depending on your RSS settings, you may want to tweak some things.', 'send-images-rss' );
+		$description = __( 'The <em>Send Images to RSS</em> plugin works out of the box without changing any settings. However, depending on your RSS settings, you may want to tweak some things.', 'send-images-rss' );
+		/* translators: 1. the RSS feed option (full content or descriptions) 2. link to the settings page */
 		$description .= sprintf( __( ' Your feed is currently set to show the <strong>%1$s</strong> for each post. You can change that on the <a href="%2$s">Settings > Reading page</a>.', 'send-images-rss' ), $this->rss_option_words, admin_url( 'options-reading.php' ) );
 		$description .= __( ' Not sure what a setting does? Check the help tab for more information.', 'send-images-rss' );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
@@ -316,9 +318,11 @@ class SendImagesRSS_Settings {
 	 * @since 3.0.0
 	 */
 	public function full_section_description() {
-		$description  = __( 'These settings apply only if your RSS feed is set to show the full text of each post.', 'send-images-rss' );
+		$description = __( 'These settings apply only if your RSS feed is set to show the full text of each post.', 'send-images-rss' );
+		/* translators: the the RSS feed option (full content or descriptions) */
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
 		if ( '0' === $this->rss_option ) {
+			/* translators: the RSS feed option (full content or descriptions) */
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
 		}
 		if ( $this->rss_setting['process_both'] ) {
@@ -338,9 +342,11 @@ class SendImagesRSS_Settings {
 	 * @since 3.0.0
 	 */
 	public function summary_section_description() {
-		$description  = __( 'These settings apply only if your RSS feed is set to show the summaries of each post.', 'send-images-rss' );
+		$description = __( 'These settings apply only if your RSS feed is set to show the summaries of each post.', 'send-images-rss' );
+		/* translators: the RSS feed option (full content or descriptions) */
 		$description .= sprintf( __( ' Since your feed is set to <strong>%s</strong>, these settings will not apply.', 'send-images-rss' ), $this->rss_option_words );
 		if ( '1' === $this->rss_option ) {
+			/* translators: the RSS feed option (full content or descriptions) */
 			$description = sprintf( __( 'Your RSS feeds are set to show the <strong>%s</strong> of each post, so these settings will apply.', 'send-images-rss' ), $this->rss_option_words );
 		}
 		if ( $this->rss_setting['process_both'] ) {
@@ -510,6 +516,7 @@ class SendImagesRSS_Settings {
 		$pretty_permalinks = get_option( 'permalink_structure' );
 		$url               = $pretty_permalinks ? 'feed/email' : '?feed=email';
 		$description       = sprintf(
+			/* translators: the link to the new RSS feed */
 			__( 'Hey! Your new feed is at <a href="%1$s" target="_blank">%1$s</a>.', 'send-images-rss' ),
 			esc_url( trailingslashit( home_url() ) . esc_attr( $url ) )
 		);
@@ -546,6 +553,7 @@ class SendImagesRSS_Settings {
 		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
 			$setting = get_option( 'displayfeaturedimagegenesis', false );
 			if ( isset( $setting['feed_image'] ) && $setting['feed_image'] && '0' === $this->rss_option && $this->rss_setting['featured_image'] ) {
+				/* translators: link to the Display Featured Images for Genesis plugin settings page */
 				$description .= ' <strong>' . sprintf( __( 'Hold on there, cowboy! You are attempting to add the featured image to your feed twice: once here and once over in <a href="%s">Display Featured Image for Genesis</a>. Please check the help tab on this screen for suggestions of how to fix this issue.', 'send-images-rss' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</strong>';
 			}
 		}
