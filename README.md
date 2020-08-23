@@ -41,7 +41,7 @@ Special thanks to [Gretchen Louise](http://gretchenlouise.com/) for her summary 
 Spanish translation offered by [Web Hosting Hub](http://www.webhostinghub.com/)
 
 ## Requirements
-* WordPress 4.0, tested up to 5.2
+* WordPress 4.9, tested up to 5.5
 
 ## Installation
 
@@ -176,6 +176,12 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 * Thanks to [Gretchen Louise](https://gretchenlouise.com/) for her suggestions and help on the new excerpt options
 
 ## Changelog
+
+### 3.4.0
+* added: support for core gallery block
+* updated: new minimum WordPress version 4.9
+* updated: new minimum PHP version 5.6.20
+* fixed: image IDs not being properly retrieved if the original image is larger than 2560 px wide
 
 ### 3.3.2
 * fixed: error with external images/captions on full feeds
