@@ -177,6 +177,9 @@ __Screenshot of the plugin settings in Settings > Send Images to RSS.__
 
 ## Changelog
 
+### 3.4.1
+* fixed: undefined function for sites running WordPress 4.9
+
 ### 3.4.0
 * added: support for core gallery block
 * updated: new minimum WordPress version 4.9

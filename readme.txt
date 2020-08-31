@@ -6,7 +6,7 @@ Tags: email, RSS, images, feed, mailchimp, email campaign, RSS email, feedburner
 Requires at least: 4.9
 Tested up to: 5.5
 Requires PHP: 5.6.20
-Stable tag: 3.4.0
+Stable tag: 3.4.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -155,9 +155,13 @@ If you used the filter to set this up in earlier versions of the plugin, you can
 
 == Upgrade Notice ==
 
+3.4.1: bug fix for users on WordPress 4.9
 3.4.0: Adds support for core gallery block; updated minimum WP and PHP versions
 
 == Changelog ==
+
+= 3.4.1 =
+* fixed: undefined function for sites running WordPress 4.9
 
 = 3.4.0 =
 * added: support for core gallery block
